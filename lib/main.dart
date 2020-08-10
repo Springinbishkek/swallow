@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lastochki/views/screens/home_page.dart';
+import 'package:lastochki/views/screens/onboarding_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(title: 'Flutter Demo Home Page'),
+      home: OnboardingPage(),
     );
   }
 }
