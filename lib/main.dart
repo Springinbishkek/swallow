@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lastochki/views/home_page.dart';
+import 'package:lastochki/views/screens/home_page.dart';
 
 void main() {
   runApp(MyApp());
