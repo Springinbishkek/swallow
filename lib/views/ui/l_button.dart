@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class LButton extends StatelessWidget {
-  String text;
-  String icon;
-  Function func;
+  final String text;
+  final String icon;
+  final Function func;
 
   LButton({@required this.text, @required this.func, this.icon});
 
