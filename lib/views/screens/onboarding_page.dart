@@ -14,6 +14,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final TextEditingController _textController = TextEditingController();
   final String _forwardIcon = 'assets/icons/forward_arrow.png';
   final String _onboardingBG = 'assets/backgrounds/onboardingBackground.png';
+  final String _settingsIcon = 'assets/icons/settingsHomeIcon.png';
 
   String name = 'Бегайым';
 
@@ -24,6 +25,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   dispose() {
+    _textController.clear();
     _textController.dispose();
     super.dispose();
   }
@@ -152,9 +154,18 @@ class _OnboardingPageState extends State<OnboardingPage> {
         ),
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Text(
-            'Сменить имя, язык игры или начать игру заново всегда можно в пункте Настроек с вот таким значком:',
-            style: TextStyle(color: Color(0xFF1F2E6C), fontSize: 21.0),
+          child: Text.rich(
+            TextSpan(children: [
+              TextSpan(
+                  text:
+                      'Сменить имя, язык игры или начать игру заново всегда можно в пункте Настроек с вот таким значком: ',
+                  style: TextStyle(color: Color(0xFF1F2E6C), fontSize: 21.0)),
+              WidgetSpan(
+                  child: Image.asset(
+                _settingsIcon,
+                height: 20,
+              ))
+            ]),
             textAlign: TextAlign.center,
           ),
         ),
