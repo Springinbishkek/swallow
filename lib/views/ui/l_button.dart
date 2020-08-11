@@ -4,21 +4,41 @@ class LButton extends StatelessWidget {
   final String text;
   final String icon;
   final Function func;
+  final bool iconOnRightSide;
 
-  LButton({@required this.text, @required this.func, this.icon});
+  LButton(
+      {@required this.text,
+      @required this.func,
+      this.icon,
+      this.iconOnRightSide = true});
 
   Widget _getButton() {
     if (icon == null) {
       return RaisedButton(child: _getText(), onPressed: func);
     } else {
-      return RaisedButton.icon(
-          onPressed: func, icon: _getText(), label: _getIcon());
+      if (iconOnRightSide) {
+        return RaisedButton.icon(
+            onPressed: func, icon: _getText(), label: _getIcon());
+      } else {
+        return RaisedButton.icon(
+            onPressed: func, icon: _getIcon(), label: _getText());
+      }
     }
   }
 
-  EdgeInsets _getTextPadding() => icon == null
-      ? const EdgeInsets.symmetric(horizontal: 16.0)
-      : const EdgeInsets.only(left: 16.0, right: 8.0);
+  EdgeInsets _getTextPadding(){
+    if(icon==null){
+      return const EdgeInsets.symmetric(horizontal: 16.0);
+    }
+    else {
+      if(iconOnRightSide) {
+        return const EdgeInsets.only(left: 16.0);
+      }
+      else{
+        return const EdgeInsets.only(right: 16.0);
+      }
+    }
+  }
 
   Widget _getText() {
     return Padding(
@@ -35,7 +55,7 @@ class LButton extends StatelessWidget {
 
   Widget _getIcon() {
     return Padding(
-      padding: const EdgeInsets.only(right: 8.0),
+      padding: const EdgeInsets.only(right: 8.0, left: 8.0),
       child: Image.asset(
         icon,
         height: 14,
