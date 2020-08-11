@@ -8,8 +8,8 @@ class LLanguageCheckbox extends StatefulWidget {
 }
 
 class _LLanguageCheckboxState extends State<LLanguageCheckbox> {
-  final String _kgIcon = 'assets/icons/kgIcon.png';
-  final String _ruIcon = 'assets/icons/ruIcon.png';
+  final String _kgIcon = 'assets/icons/kg_icon.png';
+  final String _ruIcon = 'assets/icons/ru_icon.png';
   int _radioVal = 0;
 
   @override

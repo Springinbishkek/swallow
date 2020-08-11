@@ -13,9 +13,8 @@ class OnboardingPage extends StatefulWidget {
 class _OnboardingPageState extends State<OnboardingPage> {
   final PageController _pageController = PageController(initialPage: 0);
   final TextEditingController _textController = TextEditingController();
-  final String _forwardIcon = 'assets/icons/forward_arrow.png';
-  final String _onboardingBG = 'assets/backgrounds/onboardingBackground.png';
-  final String _settingsIcon = 'assets/icons/settingsHomeIcon.png';
+  final String _onboardingBG = 'assets/backgrounds/onboarding_background.png';
+
 
   String name = 'Бегайым';
 
@@ -148,7 +147,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   style: contentTextStyle),
               WidgetSpan(
                   child: Image.asset(
-                _settingsIcon,
+                settingsIcon,
                 height: 20,
               ))
             ]),
@@ -194,7 +193,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       child: LButton(
         text: 'ДАЛЕЕ',
         func: func,
-        icon: _forwardIcon,
+        icon: forwardIcon,
       ),
     );
   }
