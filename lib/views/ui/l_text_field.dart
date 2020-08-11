@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lastochki/views/theme.dart';
 
 class LTextField extends StatelessWidget{
   final TextEditingController controller;
@@ -11,7 +12,7 @@ class LTextField extends StatelessWidget{
       decoration: InputDecoration(
         border: OutlineInputBorder(),
         filled: true,
-        fillColor: Color(0xFFFFFFFF),
+        fillColor: menuBgColor,
         hintText: 'Бегайым',
       ),
       maxLength: 12,

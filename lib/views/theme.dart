@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // TODO rewrite example
-const Color menuBgColor = Color.fromRGBO(239, 239, 239, 1);
+const Color menuBgColor = Color(0xFFFAFAFA);
 const Color textColor = Color(0xFF1F2E6C);
 
 const TextStyle titleTextStyle =

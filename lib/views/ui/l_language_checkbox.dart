@@ -36,7 +36,7 @@ class _LLanguageCheckboxState extends State<LLanguageCheckbox> {
         width: MediaQuery.of(context).size.width/2,
         height: 55,
         decoration: BoxDecoration(
-          color: Color(0xFFFFFFFF),
+          color: menuBgColor,
           borderRadius: BorderRadius.all(Radius.circular(12.0)),
         ),
         child: Row(
