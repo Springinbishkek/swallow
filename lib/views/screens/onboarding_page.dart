@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/views/screens/home_page.dart';
+import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_language_checkbox.dart';
 import 'package:lastochki/views/ui/l_text_field.dart';
@@ -39,10 +40,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           padding: const EdgeInsets.all(24.0),
           child: Text(
             'Привет!',
-            style: TextStyle(
-                color: Color(0xFF1F2E6C),
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold),
+            style: titleTextStyle,
           ),
         ),
         Padding(
@@ -50,7 +48,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           child: Text(
             'Это игра про кыргизских девченок, дружбу, любовь и все такое прочее. '
             'Главная героиня игры — это ты. ',
-            style: TextStyle(color: Color(0xFF1F2E6C), fontSize: 21.0),
+            style: contentTextStyle,
             textAlign: TextAlign.center,
           ),
         ),
@@ -58,10 +56,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           padding: const EdgeInsets.all(24.0),
           child: Text(
             ' От твоих решений зависит, что будет происходить, и чем все закончится.',
-            style: TextStyle(
-              color: Color(0xFF1F2E6C),
-              fontSize: 21.0,
-            ),
+            style: contentTextStyle,
             textAlign: TextAlign.center,
           ),
         ),
@@ -80,10 +75,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           padding: const EdgeInsets.all(24.0),
           child: Text(
             'На каком языке ты хочешь играть?',
-            style: TextStyle(
-                color: Color(0xFF1F2E6C),
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold),
+            style: titleTextStyle,
             textAlign: TextAlign.center,
           ),
         ),
@@ -104,10 +96,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           padding: const EdgeInsets.all(24.0),
           child: Text(
             'Выбери имя для героини',
-            style: TextStyle(
-                color: Color(0xFF1F2E6C),
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold),
+            style: titleTextStyle,
             textAlign: TextAlign.center,
           ),
         ),
@@ -115,7 +104,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           padding: const EdgeInsets.all(16.0),
           child: Text(
             'Можно дать ей свое имя или то, которое очень нравится',
-            style: TextStyle(color: Color(0xFF1F2E6C), fontSize: 21.0),
+            style: contentTextStyle,
             textAlign: TextAlign.center,
           ),
         ),
@@ -145,10 +134,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           padding: const EdgeInsets.all(24.0),
           child: Text(
             'Отлично, $name',
-            style: TextStyle(
-                color: Color(0xFF1F2E6C),
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold),
+            style: titleTextStyle,
             textAlign: TextAlign.center,
           ),
         ),
@@ -159,7 +145,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               TextSpan(
                   text:
                       'Сменить имя, язык игры или начать игру заново всегда можно в пункте Настроек с вот таким значком: ',
-                  style: TextStyle(color: Color(0xFF1F2E6C), fontSize: 21.0)),
+                  style: contentTextStyle),
               WidgetSpan(
                   child: Image.asset(
                 _settingsIcon,
@@ -173,10 +159,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           padding: const EdgeInsets.all(24.0),
           child: Text(
             'А теперь давай перейдем к первой главе!',
-            style: TextStyle(
-                color: Color(0xFF1F2E6C),
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold),
+            style: titleTextStyle,
             textAlign: TextAlign.center,
           ),
         ),

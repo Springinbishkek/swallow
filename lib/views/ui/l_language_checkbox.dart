@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
+import 'package:lastochki/views/theme.dart';
 
 class LLanguageCheckbox extends StatefulWidget {
   @override
@@ -43,7 +44,7 @@ class _LLanguageCheckboxState extends State<LLanguageCheckbox> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Radio(
-                activeColor: Color(0xFF1F2E6C),
+                activeColor: textColor,
                   value: val,
                   groupValue: _radioVal,
                   onChanged: (int value) => _onCheckboxTap(value, language)),
@@ -56,7 +57,7 @@ class _LLanguageCheckboxState extends State<LLanguageCheckbox> {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 language,
-                style: TextStyle(fontSize: 21.0, color: Color(0xFF1F2E6C)),
+                style: contentTextStyle,
               ),
             )
           ],
