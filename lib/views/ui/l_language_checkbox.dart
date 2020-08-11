@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/views/theme.dart';
 
 class LLanguageCheckbox extends StatefulWidget {
@@ -14,18 +13,18 @@ class _LLanguageCheckboxState extends State<LLanguageCheckbox> {
 
   @override
   void initState() {
-    if(Name.curLocale==Locale('kg')) _radioVal=1;
+    //if(Name.curLocale==Locale('kg')) _radioVal=1;
     super.initState();
   }
 
   void _onCheckboxTap(int val, String language) {
     setState(() {
       _radioVal = val;
-      if (language == 'Русский' && Name.curLocale == Locale('kg')) {
-        Name.setLocale(Locale('ru'));
-      } else if (language == 'Кыргызча' && Name.curLocale == Locale('ru')) {
-        Name.setLocale(Locale('kg'));
-      }
+//      if (language == 'Русский' && Name.curLocale == Locale('kg')) {
+//        Name.setLocale(Locale('ru'));
+//      } else if (language == 'Кыргызча' && Name.curLocale == Locale('ru')) {
+//        Name.setLocale(Locale('kg'));
+//      }
     });
   }
 

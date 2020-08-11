@@ -26,15 +26,13 @@ class LButton extends StatelessWidget {
     }
   }
 
-  EdgeInsets _getTextPadding(){
-    if(icon==null){
+  EdgeInsets _getTextPadding() {
+    if (icon == null) {
       return const EdgeInsets.symmetric(horizontal: 16.0);
-    }
-    else {
-      if(iconOnRightSide) {
+    } else {
+      if (iconOnRightSide) {
         return const EdgeInsets.only(left: 16.0);
-      }
-      else{
+      } else {
         return const EdgeInsets.only(right: 16.0);
       }
     }
@@ -44,11 +42,12 @@ class LButton extends StatelessWidget {
     return Padding(
       padding: _getTextPadding(),
       child: Text(
-        text,
+        text.toUpperCase(),
         style: TextStyle(
-            color: Color(0xFFFFFFFF),
-            fontWeight: FontWeight.bold,
-            fontSize: 17.0),
+          color: Color(0xFFFFFFFF),
+          fontWeight: FontWeight.bold,
+          fontSize: 17.0,
+        ),
       ),
     );
   }

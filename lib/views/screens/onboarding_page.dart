@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/views/screens/home_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_button.dart';
@@ -11,22 +12,32 @@ class OnboardingPage extends StatefulWidget {
 }
 
 class _OnboardingPageState extends State<OnboardingPage> {
-  final PageController _pageController = PageController(initialPage: 0);
-  final TextEditingController _textController = TextEditingController();
-  final String _onboardingBG = 'assets/backgrounds/onboarding_background.png';
+  Name greeting = Name(ru: 'Привет!');
+  Name aboutGame = Name(ru: 'Это игра про кыргизских девчонок, дружбу, любовь и'
+      ' все такое прочее. Главная героиня игры — это ты.' );
+  Name aboutDecisions = Name(ru: ' От твоих решений зависит, что будет происходить, и чем все закончится.');
+  Name askLanguage = Name(ru: 'На каком языке ты хочешь играть?');
+  Name askName = Name(ru:  'Выбери имя для героини');
+  Name aboutName = Name(ru: 'Можно дать ей свое имя или то, которое очень нравится');
+  Name greetingName = Name(ru: 'Отлично, ');
+  Name aboutSettings = Name(ru: 'Сменить имя, язык игры или начать игру заново всегда можно в пункте Настроек с вот таким значком: ');
+  Name letsStart = Name(ru: 'А теперь давай перейдем к первой главе!');
 
+  final PageController _pageStateController = PageController(initialPage: 0);
+  final TextEditingController _textNameController = TextEditingController();
+  final String _onboardingBG = 'assets/backgrounds/onboarding_background.png';
 
   String name = 'Бегайым';
 
   void _navigateToNextPage() {
-    _pageController.nextPage(
+    _pageStateController.nextPage(
         duration: Duration(microseconds: 500), curve: Curves.ease);
   }
 
   @override
   dispose() {
-    _textController.clear();
-    _textController.dispose();
+    _textNameController.clear();
+    _textNameController.dispose();
     super.dispose();
   }
 
@@ -38,15 +49,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
         Padding(
           padding: const EdgeInsets.all(24.0),
           child: Text(
-            'Привет!',
+            greeting.toString(),
             style: titleTextStyle,
           ),
         ),
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            'Это игра про кыргизских девченок, дружбу, любовь и все такое прочее. '
-            'Главная героиня игры — это ты. ',
+            aboutGame.toString(),
             style: contentTextStyle,
             textAlign: TextAlign.center,
           ),
@@ -54,7 +64,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         Padding(
           padding: const EdgeInsets.all(24.0),
           child: Text(
-            ' От твоих решений зависит, что будет происходить, и чем все закончится.',
+            aboutDecisions.toString(),
             style: contentTextStyle,
             textAlign: TextAlign.center,
           ),
@@ -73,7 +83,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         Padding(
           padding: const EdgeInsets.all(24.0),
           child: Text(
-            'На каком языке ты хочешь играть?',
+            askLanguage.toString(),
             style: titleTextStyle,
             textAlign: TextAlign.center,
           ),
@@ -94,7 +104,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         Padding(
           padding: const EdgeInsets.all(24.0),
           child: Text(
-            'Выбери имя для героини',
+            askName.toString(),
             style: titleTextStyle,
             textAlign: TextAlign.center,
           ),
@@ -102,20 +112,20 @@ class _OnboardingPageState extends State<OnboardingPage> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            'Можно дать ей свое имя или то, которое очень нравится',
+            aboutName.toString(),
             style: contentTextStyle,
             textAlign: TextAlign.center,
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 56.0),
-          child: LTextField(_textController),
+          child: LTextField(_textNameController),
         ),
         Expanded(child: Container()),
         _getButton(() {
-          if (_textController.text != '') {
+          if (_textNameController.text != '') {
             setState(() {
-              name = _textController.text;
+              name = _textNameController.text;
             });
           }
           _navigateToNextPage();
@@ -132,7 +142,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         Padding(
           padding: const EdgeInsets.all(24.0),
           child: Text(
-            'Отлично, $name',
+            greetingName.toString()+name,
             style: titleTextStyle,
             textAlign: TextAlign.center,
           ),
@@ -142,8 +152,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           child: Text.rich(
             TextSpan(children: [
               TextSpan(
-                  text:
-                      'Сменить имя, язык игры или начать игру заново всегда можно в пункте Настроек с вот таким значком: ',
+                  text: aboutSettings.toString(),
                   style: contentTextStyle),
               WidgetSpan(
                   child: Image.asset(
@@ -157,7 +166,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         Padding(
           padding: const EdgeInsets.all(24.0),
           child: Text(
-            'А теперь давай перейдем к первой главе!',
+            letsStart.toString(),
             style: titleTextStyle,
             textAlign: TextAlign.center,
           ),
@@ -191,7 +200,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: LButton(
-        text: 'ДАЛЕЕ',
+        text: 'далее',
         func: func,
         icon: forwardIcon,
       ),
@@ -211,7 +220,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             color: Colors.transparent,
             child: PageView(
               physics: NeverScrollableScrollPhysics(),
-              controller: _pageController,
+              controller: _pageStateController,
               children: <Widget>[
                 firstPage(),
                 secondPage(),
