@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:lastochki/views/theme.dart';
 
 class LButton extends StatelessWidget {
   final String text;
   final String icon;
   final Function func;
   final bool iconOnRightSide;
+  final Color buttonColor;
+  final Color borderColor;
 
   LButton(
       {@required this.text,
       @required this.func,
       this.icon,
-      this.iconOnRightSide = true});
+      this.iconOnRightSide = true,
+      this.buttonColor = accentColor,
+      this.borderColor = accentColor});
 
   Widget _getButton() {
     if (icon == null) {
@@ -44,12 +49,24 @@ class LButton extends StatelessWidget {
       child: Text(
         text.toUpperCase(),
         style: TextStyle(
-          color: Color(0xFFFFFFFF),
+          color: _getChildColor(),
           fontWeight: FontWeight.bold,
           fontSize: 17.0,
         ),
       ),
     );
+  }
+
+  Color _getChildColor(){
+    if(buttonColor==accentColor) {
+      return whiteColor;
+    }
+    else if (borderColor!=whiteColor){
+      return borderColor;
+    }
+    else{
+      return accentColor;
+    }
   }
 
   Widget _getIcon() {
@@ -58,6 +75,7 @@ class LButton extends StatelessWidget {
       child: Image.asset(
         icon,
         height: 14,
+        color: _getChildColor(),
       ),
     );
   }
@@ -67,10 +85,11 @@ class LButton extends StatelessWidget {
     return ButtonTheme(
       height: 45.0,
       minWidth: 127.0,
-      buttonColor: Color(0xFF31D3B2),
-      highlightColor: Color(0xFF21A68B),
+      buttonColor: buttonColor,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(22.5))),
+        borderRadius: BorderRadius.all(Radius.circular(22.5)),
+        side: BorderSide(color: borderColor, width: 2.0),
+      ),
       child: _getButton(),
     );
   }
