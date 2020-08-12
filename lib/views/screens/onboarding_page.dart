@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
-import 'package:lastochki/views/screens/home_page.dart';
+import 'package:lastochki/views/screens/settings_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_language_checkbox.dart';
@@ -13,14 +13,18 @@ class OnboardingPage extends StatefulWidget {
 
 class _OnboardingPageState extends State<OnboardingPage> {
   Name greeting = Name(ru: 'Привет!');
-  Name aboutGame = Name(ru: 'Это игра про кыргизских девчонок, дружбу, любовь и'
-      ' все такое прочее. Главная героиня игры — это ты.' );
-  Name aboutDecisions = Name(ru: ' От твоих решений зависит, что будет происходить, и чем все закончится.');
+  Name aboutGame = Name(
+      ru: 'Это игра про кыргизских девчонок, дружбу, любовь и'
+          ' все такое прочее. Главная героиня игры — это ты.');
+  Name aboutDecisions = Name(
+      ru: ' От твоих решений зависит, что будет происходить, и чем все закончится.');
   Name askLanguage = Name(ru: 'На каком языке ты хочешь играть?');
-  Name askName = Name(ru:  'Выбери имя для героини');
-  Name aboutName = Name(ru: 'Можно дать ей свое имя или то, которое очень нравится');
+  Name askName = Name(ru: 'Выбери имя для героини');
+  Name aboutName =
+      Name(ru: 'Можно дать ей свое имя или то, которое очень нравится');
   Name greetingName = Name(ru: 'Отлично, ');
-  Name aboutSettings = Name(ru: 'Сменить имя, язык игры или начать игру заново всегда можно в пункте Настроек с вот таким значком: ');
+  Name aboutSettings = Name(
+      ru: 'Сменить имя, язык игры или начать игру заново всегда можно в пункте Настроек с вот таким значком: ');
   Name letsStart = Name(ru: 'А теперь давай перейдем к первой главе!');
 
   final PageController _pageStateController = PageController(initialPage: 0);
@@ -142,7 +146,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         Padding(
           padding: const EdgeInsets.all(24.0),
           child: Text(
-            greetingName.toString()+name,
+            greetingName.toString() + name,
             style: titleTextStyle,
             textAlign: TextAlign.center,
           ),
@@ -151,9 +155,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           padding: const EdgeInsets.all(16.0),
           child: Text.rich(
             TextSpan(children: [
-              TextSpan(
-                  text: aboutSettings.toString(),
-                  style: contentTextStyle),
+              TextSpan(text: aboutSettings.toString(), style: contentTextStyle),
               WidgetSpan(
                   child: Image.asset(
                 settingsIcon,
@@ -176,9 +178,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) => HomePage(
-                        title: 'Title',
-                      )));
+                  builder: (BuildContext context) => SettingsPage()));
         })
       ],
     ));
