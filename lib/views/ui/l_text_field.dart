@@ -17,6 +17,7 @@ class LTextField extends StatelessWidget{
       ),
       maxLength: 12,
       autofocus: false,
+      textCapitalization: TextCapitalization.words,
       inputFormatters: <TextInputFormatter>[
         WhitelistingTextInputFormatter(RegExp('[а-яА-Я]'))
       ],
