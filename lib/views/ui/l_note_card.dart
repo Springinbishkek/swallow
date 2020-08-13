@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lastochki/views/screens/onboarding_page.dart';
 import 'package:lastochki/views/theme.dart';
 
 class LNoteCard extends StatelessWidget {
@@ -66,7 +65,7 @@ class LNoteCard extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
         onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>OnboardingPage()));
+          debugPrint('tap on ${index+1} note');
         },
         child: Container(
             height: 85.0,
@@ -77,9 +76,9 @@ class LNoteCard extends StatelessWidget {
                   image: AssetImage(backgrounds[index % 2]), fit: BoxFit.cover),
               boxShadow: <BoxShadow>[
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.6),
+                  color: Colors.grey.withOpacity(0.4),
                   offset: const Offset(4, 4),
-                  blurRadius: 20,
+                  blurRadius: 8,
                 ),
               ],
             ),

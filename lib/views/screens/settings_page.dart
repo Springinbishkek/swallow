@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
+import 'package:lastochki/views/screens/notes_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_appbar.dart';
 import 'package:lastochki/views/ui/l_button.dart';
@@ -79,6 +80,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: LButton(
                 text: saveSettings.toString(),
                 func: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>NotesPage()));
                   debugPrint('button tapped');
                 },
                 icon: checkIcon,
