@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/views/theme.dart';
 
-AppBar LAppbar({String title, Function func}) {
+AppBar LAppbar({@required String title, @required Function func}) {
   return AppBar(
     backgroundColor: appbarBgColor,
     title: Text(
