@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:lastochki/views/theme.dart';
 
 class LLanguageCheckbox extends StatefulWidget {
+  final bool isColumn;
+
+  LLanguageCheckbox({this.isColumn = true});
+
   @override
   _LLanguageCheckboxState createState() => _LLanguageCheckboxState();
 }
@@ -29,51 +33,75 @@ class _LLanguageCheckboxState extends State<LLanguageCheckbox> {
   }
 
   Widget _getCheckbox(int val, String flag, String language) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Container(
-        width: MediaQuery.of(context).size.width/2,
-        height: 55,
-        decoration: BoxDecoration(
-          color: menuBgColor,
-          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+    return Row(
+      children: <Widget>[
+        Radio(
+            activeColor: textColor,
+            value: val,
+            groupValue: _radioVal,
+            onChanged: (int value) => _onCheckboxTap(value, language)),
+        Image.asset(
+          flag,
+          height: 22,
         ),
-        child: Row(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Radio(
-                activeColor: textColor,
-                  value: val,
-                  groupValue: _radioVal,
-                  onChanged: (int value) => _onCheckboxTap(value, language)),
-            ),
-            Image.asset(
-              flag,
-              height: 22,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                language,
-                style: contentTextStyle,
-              ),
-            )
-          ],
-        ),
-      ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            language,
+            style: widget.isColumn
+                ? contentTextStyle
+                : TextStyle(color: textColor, fontSize: 17.0),
+          ),
+        )
+      ],
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _getRow() {
     return Container(
-      child: Column(
+      height: 55,
+      decoration: BoxDecoration(
+        color: menuBgColor,
+        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           _getCheckbox(0, _ruIcon, 'Русский'),
           _getCheckbox(1, _kgIcon, 'Кыргызча')
         ],
       ),
     );
+  }
+
+  Widget _getColumnCheckBox({Widget child}) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Container(
+        width: MediaQuery.of(context).size.width / 2,
+        height: 55,
+        decoration: BoxDecoration(
+          color: menuBgColor,
+          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+        ),
+        child: child,
+      ),
+    );
+  }
+
+  Widget _getColumn() {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          _getColumnCheckBox(child: _getCheckbox(0, _ruIcon, 'Русский')),
+          _getColumnCheckBox(child: _getCheckbox(1, _kgIcon, 'Кыргызча'))
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.isColumn ? _getColumn() : _getRow();
   }
 }
