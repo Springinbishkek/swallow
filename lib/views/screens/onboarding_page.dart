@@ -22,6 +22,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Name greetingName = Name(ru: 'Отлично, ');
   Name aboutSettings = Name(ru: 'Сменить имя, язык игры или начать игру заново всегда можно в пункте Настроек с вот таким значком: ');
   Name letsStart = Name(ru: 'А теперь давай перейдем к первой главе!');
+  Name next = Name(ru: 'Далее');
 
   final PageController _pageStateController = PageController(initialPage: 0);
   final TextEditingController _textNameController = TextEditingController();
@@ -200,7 +201,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: LButton(
-        text: 'далее',
+        text: next.toString(),
         func: func,
         icon: forwardIcon,
       ),
