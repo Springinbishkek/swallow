@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lastochki/views/screens/note_page.dart';
 import 'package:lastochki/views/theme.dart';
 
 class LNoteCard extends StatelessWidget {
@@ -64,8 +65,10 @@ class LNoteCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
-        onTap: (){
-          debugPrint('tap on ${index+1} note');
+        onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (BuildContext context) => NotePage()));
+          debugPrint('tap on ${index + 1} note');
         },
         child: Container(
             height: 85.0,
@@ -94,9 +97,9 @@ class LNoteCard extends StatelessWidget {
                       (index + 1).toString() + '. ' + title,
                       style: isRead
                           ? TextStyle(
-                          color: textColor.withOpacity(0.6),
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.bold)
+                              color: textColor.withOpacity(0.6),
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.bold)
                           : subtitleTextStyle,
                     ),
                   ),
@@ -108,5 +111,3 @@ class LNoteCard extends StatelessWidget {
     );
   }
 }
-
-
