@@ -41,7 +41,7 @@ class _SettingsPageState extends State<SettingsPage> {
           child: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.all(32.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[

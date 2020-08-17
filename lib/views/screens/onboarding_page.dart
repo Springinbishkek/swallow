@@ -94,7 +94,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           ),
         ),
         Padding(
-            padding: const EdgeInsets.all(24.0), child: LLanguageCheckbox()),
+            padding: const EdgeInsets.only(top: 24.0), child: LLanguageCheckbox()),
         Expanded(child: Container()),
         _getButton(() => _navigateToNextPage())
       ],

@@ -45,7 +45,7 @@ class _LLanguageCheckboxState extends State<LLanguageCheckbox> {
           height: 22,
         ),
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.only(right: 8.0, left: 4.0),
           child: Text(
             language,
             style: widget.isColumn
@@ -78,8 +78,8 @@ class _LLanguageCheckboxState extends State<LLanguageCheckbox> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Container(
-        width: MediaQuery.of(context).size.width / 2,
         height: 55,
+        width: 220,
         decoration: BoxDecoration(
           color: menuBgColor,
           borderRadius: BorderRadius.all(Radius.circular(12.0)),
