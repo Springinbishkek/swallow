@@ -23,3 +23,4 @@ final String forwardIcon = 'assets/icons/forward_arrow.png';
 final String backIcon = 'assets/icons/back_arrow.png';
 final String checkIcon = 'assets/icons/check_icon.png';
 final String closeIcon = 'assets/icons/close_icon.png';
+final String swallowIcon = 'assets/icons/swallow.png';
