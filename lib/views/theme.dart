@@ -18,6 +18,8 @@ const TextStyle appbarTextStyle =
     TextStyle(color: textColor, fontSize: 21.0, fontWeight: FontWeight.bold);
 const TextStyle noteTextStyle = TextStyle(color: textColor, fontSize: 17.0);
 
+const boxBorderRadius = BorderRadius.all(Radius.circular(12.0));
+
 final String settingsIcon = 'assets/icons/settings_home_icon.png';
 final String forwardIcon = 'assets/icons/forward_arrow.png';
 final String backIcon = 'assets/icons/back_arrow.png';

@@ -59,7 +59,7 @@ class _NotesPageState extends State<NotesPage> {
             decoration: BoxDecoration(
                 image: DecorationImage(
                     image: AssetImage(bottomBanner), fit: BoxFit.cover),
-                borderRadius: BorderRadius.all(Radius.circular(12.0))),
+                borderRadius: boxBorderRadius),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
