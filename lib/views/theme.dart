@@ -16,9 +16,11 @@ const TextStyle subtitleTextStyle =
 const TextStyle contentTextStyle = TextStyle(color: textColor, fontSize: 21.0);
 const TextStyle appbarTextStyle =
     TextStyle(color: textColor, fontSize: 21.0, fontWeight: FontWeight.bold);
+const TextStyle noteTextStyle = TextStyle(color: textColor, fontSize: 17.0);
 
 final String settingsIcon = 'assets/icons/settings_home_icon.png';
 final String forwardIcon = 'assets/icons/forward_arrow.png';
 final String backIcon = 'assets/icons/back_arrow.png';
 final String checkIcon = 'assets/icons/check_icon.png';
+final String closeIcon = 'assets/icons/close_icon.png';
 final String swallowIcon = 'assets/icons/swallow.png';
