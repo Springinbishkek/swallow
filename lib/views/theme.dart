@@ -8,6 +8,7 @@ const Color textColor = Color(0xFF1F2E6C);
 const Color accentColor = Color(0xFF31D3B2);
 const Color whiteColor = Color(0xFFFFFFFF);
 const Color boxBorderColor = Color(0xFFA4E3FF);
+const Color errorColor = Color(0xFFD83E58);
 
 const TextStyle titleTextStyle =
     TextStyle(color: textColor, fontSize: 24.0, fontWeight: FontWeight.bold);
