@@ -38,7 +38,10 @@ class _NotesPageState extends State<NotesPage> {
               actions: LButton(
                   text: startTest.toString(),
                   func: () {
-                    debugPrint('start test');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => TestPage()));
                   }),
             ));
   }

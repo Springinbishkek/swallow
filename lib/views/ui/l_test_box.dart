@@ -70,6 +70,7 @@ class _LTestBoxState extends State<LTestBox> {
     );
   }
 
+//TODO: переписать логику
   Widget _buildAnswerIcon(int val) {
     switch (val) {
       case 0:
