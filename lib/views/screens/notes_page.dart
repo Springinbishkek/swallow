@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
+import 'package:lastochki/views/screens/test_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_appbar.dart';
 import 'package:lastochki/views/ui/l_button.dart';
@@ -73,7 +74,16 @@ class _NotesPageState extends State<NotesPage> {
                         fontWeight: FontWeight.bold),
                   ),
                 ),
-                LButton(text: test.toString(), func: (){debugPrint('passed test');}, icon: forwardIcon)
+                LButton(
+                    text: test.toString(),
+                    func: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => TestPage()));
+                      debugPrint('passed test');
+                    },
+                    icon: forwardIcon)
               ],
             ),
           ),
