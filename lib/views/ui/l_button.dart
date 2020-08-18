@@ -57,14 +57,12 @@ class LButton extends StatelessWidget {
     );
   }
 
-  Color _getChildColor(){
-    if(buttonColor==accentColor) {
+  Color _getChildColor() {
+    if (buttonColor == accentColor) {
       return whiteColor;
-    }
-    else if (borderColor!=whiteColor){
+    } else if (borderColor != whiteColor) {
       return borderColor;
-    }
-    else{
+    } else {
       return accentColor;
     }
   }
@@ -86,6 +84,7 @@ class LButton extends StatelessWidget {
       height: 45.0,
       minWidth: 127.0,
       buttonColor: buttonColor,
+      disabledColor: buttonColor.withOpacity(0.6),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(22.5)),
         side: BorderSide(color: borderColor, width: 2.0),

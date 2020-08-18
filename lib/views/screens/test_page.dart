@@ -28,11 +28,17 @@ class _TestPageState extends State<TestPage> {
 
   Widget _buildButton() {
     if (_currentPage == 9) {
-      return LButton(text: done.toString(), func: () {
-        debugPrint('done');
-      }, icon: checkIcon,);
+      return LButton(
+        text: done.toString(),
+        func: null,
+        icon: checkIcon,
+      );
     }
-    return LButton(text: next.toString(), func: () => _navigateToNextPage());
+    return LButton(
+      text: next.toString(),
+      func: () => _navigateToNextPage(),
+      icon: forwardIcon,
+    );
   }
 
   Widget _buildBody({Widget testBox}) {
@@ -57,7 +63,7 @@ class _TestPageState extends State<TestPage> {
             ),
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.only(top:24.0),
+                padding: const EdgeInsets.only(top: 24.0),
                 child: _buildButton(),
               ),
             ),
@@ -93,21 +99,21 @@ class _TestPageState extends State<TestPage> {
       ),
       body: Container(
           child: PageView(
-            physics: NeverScrollableScrollPhysics(),
-            controller: _testPageController,
-            children: [
-              _buildBody(testBox: LTestBox()),
-              _buildBody(testBox: LTestBox()),
-              _buildBody(testBox: LTestBox()),
-              _buildBody(testBox: LTestBox()),
-              _buildBody(testBox: LTestBox()),
-              _buildBody(testBox: LTestBox()),
-              _buildBody(testBox: LTestBox()),
-              _buildBody(testBox: LTestBox()),
-              _buildBody(testBox: LTestBox()),
-              _buildBody(testBox: LTestBox()),
-            ],
-          )),
+        physics: NeverScrollableScrollPhysics(),
+        controller: _testPageController,
+        children: [
+          _buildBody(testBox: LTestBox()),
+          _buildBody(testBox: LTestBox()),
+          _buildBody(testBox: LTestBox()),
+          _buildBody(testBox: LTestBox()),
+          _buildBody(testBox: LTestBox()),
+          _buildBody(testBox: LTestBox()),
+          _buildBody(testBox: LTestBox()),
+          _buildBody(testBox: LTestBox()),
+          _buildBody(testBox: LTestBox()),
+          _buildBody(testBox: LTestBox()),
+        ],
+      )),
     );
   }
 }
