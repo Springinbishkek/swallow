@@ -4,6 +4,7 @@ import 'package:lastochki/views/screens/test_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_appbar.dart';
 import 'package:lastochki/views/ui/l_button.dart';
+import 'package:lastochki/views/ui/l_info_popup.dart';
 import 'package:lastochki/views/ui/l_note_card.dart';
 
 class NotesPage extends StatefulWidget {
@@ -18,8 +19,29 @@ class _NotesPageState extends State<NotesPage> {
   Name thirdNote = Name(ru: 'Куда звонить, если что-то случилось?');
   Name bottom = Name(ru: 'Хочешь больше ласточек?');
   Name test = Name(ru: 'Пройти тест');
+  Name title = Name(ru: 'Тест');
+  Name content =
+      Name(ru: 'Ответь правильно на все вопросы и получи новую стаю ласточек!');
+  Name startTest = Name(ru: 'Начать тест');
 
   final String bottomBanner = 'assets/backgrounds/note_bottom_banner.png';
+  final String rocketImg = 'assets/icons/mw_rocket.png';
+
+  void _openInfoPopup() {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) => LInfoPopup(
+              image: rocketImg,
+              title: title.toString(),
+              content: content.toString(),
+              actions: LButton(
+                  text: startTest.toString(),
+                  func: () {
+                    debugPrint('start test');
+                  }),
+            ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,13 +98,7 @@ class _NotesPageState extends State<NotesPage> {
                 ),
                 LButton(
                     text: test.toString(),
-                    func: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) => TestPage()));
-                      debugPrint('passed test');
-                    },
+                    func: _openInfoPopup,
                     icon: forwardIcon)
               ],
             ),
