@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
+import 'package:lastochki/views/screens/test_result_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_test_box.dart';
@@ -12,7 +13,6 @@ class TestPage extends StatefulWidget {
 class _TestPageState extends State<TestPage> {
   Name done = Name(ru: 'Готово');
   Name next = Name(ru: 'Далее');
-  final String _testBG = 'assets/backgrounds/test_bottom_background.png';
 
   final PageController _testPageController = PageController(initialPage: 0);
 
@@ -30,7 +30,12 @@ class _TestPageState extends State<TestPage> {
     if (_currentPage == 9) {
       return LButton(
         text: done.toString(),
-        func: null,
+        func: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => TestResultPage()));
+        },
         icon: checkIcon,
       );
     }
@@ -58,8 +63,8 @@ class _TestPageState extends State<TestPage> {
           Container(
             height: 200,
             decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage(_testBG), fit: BoxFit.cover),
+              image:
+                  DecorationImage(image: AssetImage(testBG), fit: BoxFit.cover),
             ),
             child: Center(
               child: Padding(
