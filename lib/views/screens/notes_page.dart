@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
+import 'package:lastochki/views/screens/test_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_appbar.dart';
 import 'package:lastochki/views/ui/l_button.dart';
@@ -59,7 +60,7 @@ class _NotesPageState extends State<NotesPage> {
             decoration: BoxDecoration(
                 image: DecorationImage(
                     image: AssetImage(bottomBanner), fit: BoxFit.cover),
-                borderRadius: BorderRadius.all(Radius.circular(12.0))),
+                borderRadius: boxBorderRadius),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -73,7 +74,16 @@ class _NotesPageState extends State<NotesPage> {
                         fontWeight: FontWeight.bold),
                   ),
                 ),
-                LButton(text: test.toString(), func: (){debugPrint('passed test');}, icon: forwardIcon)
+                LButton(
+                    text: test.toString(),
+                    func: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => TestPage()));
+                      debugPrint('passed test');
+                    },
+                    icon: forwardIcon)
               ],
             ),
           ),

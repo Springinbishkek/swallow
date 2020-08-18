@@ -62,7 +62,7 @@ class _LLanguageCheckboxState extends State<LLanguageCheckbox> {
       height: 55,
       decoration: BoxDecoration(
         color: menuBgColor,
-        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+        borderRadius: boxBorderRadius,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,7 +82,7 @@ class _LLanguageCheckboxState extends State<LLanguageCheckbox> {
         width: 220,
         decoration: BoxDecoration(
           color: menuBgColor,
-          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+          borderRadius: boxBorderRadius,
         ),
         child: child,
       ),
