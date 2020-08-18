@@ -74,7 +74,7 @@ class LNoteCard extends StatelessWidget {
             height: 85.0,
             padding: EdgeInsets.symmetric(horizontal: 8.0),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(12.0)),
+              borderRadius: boxBorderRadius,
               image: DecorationImage(
                   image: AssetImage(backgrounds[index % 2]), fit: BoxFit.cover),
               boxShadow: <BoxShadow>[

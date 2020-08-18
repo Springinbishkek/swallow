@@ -43,6 +43,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   dispose() {
     _textNameController.clear();
     _textNameController.dispose();
+    _pageStateController.dispose();
     super.dispose();
   }
 
