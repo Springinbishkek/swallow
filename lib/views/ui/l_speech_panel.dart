@@ -84,19 +84,26 @@ class LSpeechPanel extends StatelessWidget {
 
   Widget _buildNamePanel() {
     return Align(
-      alignment: leftSide? Alignment(-0.4, 0.0) : Alignment(0.4, 0.0),
+      alignment: leftSide ? Alignment(-0.4, 0.0) : Alignment(0.4, 0.0),
       child: Container(
         height: 30.0,
-        width: 120,
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(15.0)),
             color: Color(0xFF48BFF5)),
-        child: Center(
-          child: Text(
-            name.toUpperCase(),
-            style: TextStyle(
-                color: whiteColor, fontWeight: FontWeight.bold, fontSize: 16.0),
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Text(
+                name.toUpperCase(),
+                style: TextStyle(
+                    color: whiteColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -112,7 +119,9 @@ class LSpeechPanel extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 5.0,),
+            SizedBox(
+              height: 5.0,
+            ),
             _buildNamePanel(),
             Padding(
               padding:
