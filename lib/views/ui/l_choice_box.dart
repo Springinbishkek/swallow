@@ -9,15 +9,13 @@ class LChoiceBox extends StatelessWidget {
   final String option1;
   final String option2;
   final String premiumOption;
-  final bool withPremium;
 
   LChoiceBox(
       {@required this.name,
       @required this.speech,
       @required this.option1,
       @required this.option2,
-      this.premiumOption,
-      this.withPremium = false});
+      this.premiumOption});
 
   Widget _buildOptionButton(String option, Function func, double width) {
     return Container(
@@ -115,18 +113,19 @@ class LChoiceBox extends StatelessWidget {
           ),
         ),
         Container(
-          transform: Matrix4.translationValues(width / 2 - 15, -75, 0),
-          child: Image.asset(
-            premiumStar,
-            height: 55.0,
-          ),
+          transform: Matrix4.translationValues(width / 2 - 20, -75, 0),
+          height: 70,
+          width: 70,
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage(premiumStar), fit: BoxFit.contain)),
         ),
       ],
     );
   }
 
   Widget _buildButtons(double width) {
-    if (withPremium) {
+    if (premiumOption != null) {
       return Column(
         children: [
           _buildOptionButton(option1, () {

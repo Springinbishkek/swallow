@@ -125,7 +125,7 @@ class LSpeechPanel extends StatelessWidget {
             _buildNamePanel(),
             Padding(
               padding:
-                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+                  const EdgeInsets.only(left: 24.0, top: 16.0, right: 24.0, bottom: 24.0),
               child: Text(
                 speech,
                 style: contentTextStyle,
