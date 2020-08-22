@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lastochki/models/entities/ChoiceOption.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_speech_panel.dart';
 
@@ -6,18 +7,16 @@ class LChoiceBox extends StatelessWidget {
   final String premiumStar = 'assets/icons/premium_star.png';
   final String name;
   final String speech;
-  final String option1;
-  final String option2;
-  final String premiumOption;
+  final List<ChoiceOption> options;
+  final Function onChoose;
 
   LChoiceBox(
       {@required this.name,
       @required this.speech,
-      @required this.option1,
-      @required this.option2,
-      this.premiumOption});
+      @required this.options,
+      @required this.onChoose});
 
-  Widget _buildOptionButton(String option, Function func, double width) {
+  Widget _buildOptionButton(ChoiceOption option, double width) {
     return Container(
       height: 50.0,
       width: width,
@@ -37,11 +36,11 @@ class LChoiceBox extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           highlightColor: Color(0xFFA3D5EC),
-          onTap: func,
+          onTap: () => Function.apply(onChoose, [option]),
           child: Padding(
             padding: const EdgeInsets.only(left: 16.0, top: 10.0),
             child: Text(
-              option,
+              option.title,
               style: contentTextStyle,
             ),
           ),
@@ -50,13 +49,12 @@ class LChoiceBox extends StatelessWidget {
     );
   }
 
-  Widget _buildPremiumOptionButton(String option, Function func, double width) {
+  Widget _buildPremiumOptionButton(ChoiceOption option, double width) {
     return Column(
       children: [
         Container(
           height: 50.0,
           width: width,
-          margin: EdgeInsets.only(bottom: 8.0),
           decoration: BoxDecoration(
               borderRadius: boxBorderRadius,
               border: Border.all(color: Color(0xFFFFBA06), width: 2.0),
@@ -72,14 +70,14 @@ class LChoiceBox extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               highlightColor: Color(0xFFFAD289),
-              onTap: func,
+              onTap: () => Function.apply(onChoose, [option]),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      option,
+                      option.title,
                       style: contentTextStyle,
                     ),
                     Container(
@@ -92,7 +90,7 @@ class LChoiceBox extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            '-15',
+                            '-${option.price}',
                             style: TextStyle(
                                 color: whiteColor,
                                 fontWeight: FontWeight.bold,
@@ -113,7 +111,7 @@ class LChoiceBox extends StatelessWidget {
           ),
         ),
         Container(
-          transform: Matrix4.translationValues(width / 2 - 20, -75, 0),
+          transform: Matrix4.translationValues(width / 2 - 20, -70, 0),
           height: 70,
           width: 70,
           decoration: BoxDecoration(
@@ -125,29 +123,19 @@ class LChoiceBox extends StatelessWidget {
   }
 
   Widget _buildButtons(double width) {
-    if (premiumOption != null) {
+    if (options.length == 3) {
       return Column(
         children: [
-          _buildOptionButton(option1, () {
-            debugPrint('first option');
-          }, width),
-          _buildOptionButton(option2, () {
-            debugPrint('second option');
-          }, width),
-          _buildPremiumOptionButton(premiumOption, () {
-            debugPrint('premium option');
-          }, width)
+          _buildOptionButton(options[0], width),
+          _buildOptionButton(options[1], width),
+          _buildPremiumOptionButton(options[2], width)
         ],
       );
     }
     return Column(
       children: [
-        _buildOptionButton(option1, () {
-          debugPrint('first option');
-        }, width),
-        _buildOptionButton(option2, () {
-          debugPrint('second option');
-        }, width),
+        _buildOptionButton(options[0], width),
+        _buildOptionButton(options[1], width),
       ],
     );
   }
@@ -156,13 +144,13 @@ class LChoiceBox extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width * 0.8;
     return Container(
-      padding: EdgeInsets.all(16.0),
+      padding: EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
         children: [
           LSpeechPanel(name: name, speech: speech),
           Container(
-              padding: EdgeInsets.all(16.0),
-              transform: Matrix4.translationValues(0.0, -30.0, 0.0),
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              transform: Matrix4.translationValues(0.0, -15.0, 0.0),
               child: _buildButtons(width))
         ],
       ),

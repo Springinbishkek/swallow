@@ -5,9 +5,9 @@ import 'package:lastochki/views/theme.dart';
 
 class PanelPainter extends CustomPainter {
   final double radius;
-  final bool leftSide;
+  final bool isLeftSide;
 
-  PanelPainter({@required this.radius, @required this.leftSide});
+  PanelPainter({@required this.radius, @required this.isLeftSide});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -64,10 +64,10 @@ class PanelPainter extends CustomPainter {
           pi / 2, false)
       ..lineTo(size.width - radius - height - height, height);
 
-    canvas.drawShadow(leftSide ? leftPath : rightPath,
+    canvas.drawShadow(isLeftSide ? leftPath : rightPath,
         Colors.grey.withOpacity(0.6), 10.0, true);
-    canvas.drawPath(leftSide ? leftPath : rightPath, fillPaint);
-    canvas.drawPath(leftSide ? leftPath : rightPath, borderPaint);
+    canvas.drawPath(isLeftSide ? leftPath : rightPath, fillPaint);
+    canvas.drawPath(isLeftSide ? leftPath : rightPath, borderPaint);
   }
 
   @override
@@ -77,14 +77,14 @@ class PanelPainter extends CustomPainter {
 class LSpeechPanel extends StatelessWidget {
   final String name;
   final String speech;
-  final bool leftSide;
+  final bool isLeftSide;
 
   LSpeechPanel(
-      {@required this.name, @required this.speech, this.leftSide = true});
+      {@required this.name, @required this.speech, this.isLeftSide = true});
 
   Widget _buildNamePanel() {
     return Align(
-      alignment: leftSide ? Alignment(-0.4, 0.0) : Alignment(0.4, 0.0),
+      alignment: isLeftSide ? Alignment(-0.4, 0.0) : Alignment(0.4, 0.0),
       child: Container(
         height: 30.0,
         padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -112,10 +112,8 @@ class LSpeechPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: BoxConstraints(minHeight: 100),
-      width: MediaQuery.of(context).size.width,
       child: CustomPaint(
-        painter: PanelPainter(radius: 12.0, leftSide: leftSide),
+        painter: PanelPainter(radius: 12.0, isLeftSide: isLeftSide),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -124,8 +122,8 @@ class LSpeechPanel extends StatelessWidget {
             ),
             _buildNamePanel(),
             Padding(
-              padding:
-                  const EdgeInsets.only(left: 24.0, top: 16.0, right: 24.0, bottom: 24.0),
+              padding: const EdgeInsets.only(
+                  left: 24.0, top: 16.0, right: 24.0, bottom: 24.0),
               child: Text(
                 speech,
                 style: contentTextStyle,
