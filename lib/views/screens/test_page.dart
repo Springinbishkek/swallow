@@ -49,18 +49,10 @@ class _TestPageState extends State<TestPage> {
   Widget _buildBody({Widget testBox}) {
     return Container(
       margin: EdgeInsets.only(top: 8.0),
-      child: Column(
-        children: [
-          Text(
-            '${_currentPage + 1}/10',
-            style: TextStyle(
-                color: accentColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 17.0),
-          ),
-          testBox,
-          Expanded(child: Container()),
-          Container(
+      child: Stack(children: [
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
             height: 200,
             decoration: BoxDecoration(
               image:
@@ -68,13 +60,25 @@ class _TestPageState extends State<TestPage> {
             ),
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.only(top: 24.0),
+                padding: const EdgeInsets.only(top: 36.0),
                 child: _buildButton(),
               ),
             ),
-          )
-        ],
-      ),
+          ),
+        ),
+        Column(
+          children: [
+            Text(
+              '${_currentPage + 1}/10',
+              style: TextStyle(
+                  color: accentColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17.0),
+            ),
+            testBox,
+          ],
+        ),
+      ]),
     );
   }
 

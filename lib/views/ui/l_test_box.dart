@@ -12,8 +12,9 @@ class LTestBox extends StatefulWidget {
 
 class _LTestBoxState extends State<LTestBox> {
   final String question = '1. Работает ли в Кыргызтане единая служба спасения?';
-  final String answer1 = 'Может и работает, но все равно не дозвонишься';
-  final String answer2 = 'Работала до 2017 года, но сейчас нет';
+  final String answer1 =
+      'Спросить его прямо или понаблюдать за его поведением, а потом сделать выводы';
+  final String answer2 = 'Дать ему повод для ревности и посмотреть на реакцию.';
   final String answer3 = 'Работает по номеру 112';
 
   int _radioVal;
@@ -28,7 +29,7 @@ class _LTestBoxState extends State<LTestBox> {
     return Container(
       height: 20,
       width: 20,
-      margin: EdgeInsets.only(right: 16.0, left: 24.0),
+      margin: EdgeInsets.only(right: 16.0, left: 24.0, top: 16.0, bottom: 16.0),
       decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(color: textColor, width: 2.0)),
@@ -42,7 +43,7 @@ class _LTestBoxState extends State<LTestBox> {
     return Container(
       height: 20,
       width: 20,
-      margin: EdgeInsets.only(right: 16.0, left: 24.0),
+      margin: EdgeInsets.only(right: 16.0, left: 24.0, top: 16.0, bottom: 16.0),
       child: CircleAvatar(
         backgroundColor: accentColor,
         child: Image.asset(
@@ -58,7 +59,7 @@ class _LTestBoxState extends State<LTestBox> {
     return Container(
       height: 20,
       width: 20,
-      margin: EdgeInsets.only(right: 16.0, left: 24.0),
+      margin: EdgeInsets.only(right: 16.0, left: 24.0, top: 16.0, bottom: 16.0),
       child: CircleAvatar(
         backgroundColor: errorColor,
         child: Image.asset(
@@ -91,21 +92,23 @@ class _LTestBoxState extends State<LTestBox> {
   }
 
   Widget _buildCheckBox(int val, String answer) {
-    return Container(
-      height: 50.0,
-      width: MediaQuery.of(context).size.width - 40,
-      padding: EdgeInsets.symmetric(horizontal: 8.0),
-      margin: EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          widget.isResult ? _buildAnswerIcon(val) : _buildRadioButton(val),
-          Flexible(
-              child: Text(
-            answer,
-            style: noteTextStyle,
-          ))
-        ],
+    return GestureDetector(
+      onTap: () => widget.isResult ? null : _onAnswerTap(val),
+      child: Container(
+        width: MediaQuery.of(context).size.width - 40,
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        margin: EdgeInsets.symmetric(vertical: 8.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            widget.isResult ? _buildAnswerIcon(val) : _buildRadioButton(val),
+            Flexible(
+                child: Text(
+              answer,
+              style: noteTextStyle,
+            ))
+          ],
+        ),
       ),
     );
   }
@@ -116,19 +119,15 @@ class _LTestBoxState extends State<LTestBox> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
-            child: Container(
-              height: 80.0,
-              padding: EdgeInsets.symmetric(horizontal: 32.0),
-              decoration: BoxDecoration(
-                  borderRadius: boxBorderRadius, color: scaffoldBgColor),
-              child: Center(
-                child: Text(
-                  question,
-                  style: appbarTextStyle,
-                ),
+          Container(
+            margin: EdgeInsets.all(24.0),
+            padding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+            decoration: BoxDecoration(
+                borderRadius: boxBorderRadius, color: scaffoldBgColor),
+            child: Center(
+              child: Text(
+                question,
+                style: appbarTextStyle,
               ),
             ),
           ),
