@@ -17,45 +17,41 @@ class LNoteCard extends StatelessWidget {
       {@required this.index, @required this.title, @required this.isRead});
 
   Widget _readIcon() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-          height: 24.0,
-          padding: EdgeInsets.all(2.0),
-          decoration: BoxDecoration(color: accentColor, shape: BoxShape.circle),
-          child: CircleAvatar(
-            backgroundColor: accentColor,
-            child: Image.asset(
-              checkIcon,
-              height: 14,
-            ),
-          )),
-    );
+    return Container(
+        height: 24.0,
+        margin: EdgeInsets.only(top: 8.0, right: 8.0),
+        padding: EdgeInsets.all(2.0),
+        decoration: BoxDecoration(color: accentColor, shape: BoxShape.circle),
+        child: CircleAvatar(
+          backgroundColor: accentColor,
+          child: Image.asset(
+            checkIcon,
+            height: 14,
+          ),
+        ));
   }
 
   Widget _unreadIcon() {
     Color unread = Color(0xFF2589F6);
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        height: 30.0,
-        width: 60.0,
-        padding: EdgeInsets.all(4.0),
-        decoration: BoxDecoration(
-          border: Border.all(color: unread, width: 2.0),
-          borderRadius: BorderRadius.all(Radius.circular(14.0)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(
-              '+15',
-              style: TextStyle(
-                  color: unread, fontWeight: FontWeight.bold, fontSize: 16.0),
-            ),
-            Image.asset(swallowIcon)
-          ],
-        ),
+    return Container(
+      height: 30.0,
+      width: 60.0,
+      margin: EdgeInsets.only(top: 8.0, right: 8.0),
+      padding: EdgeInsets.all(4.0),
+      decoration: BoxDecoration(
+        border: Border.all(color: unread, width: 2.0),
+        borderRadius: BorderRadius.all(Radius.circular(14.0)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            '+15',
+            style: TextStyle(
+                color: unread, fontWeight: FontWeight.bold, fontSize: 16.0),
+          ),
+          Image.asset(swallowIcon)
+        ],
       ),
     );
   }
@@ -63,7 +59,8 @@ class LNoteCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding:
+          const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0, bottom: 4.0),
       child: GestureDetector(
         onTap: () {
           Navigator.push(context,
@@ -71,7 +68,7 @@ class LNoteCard extends StatelessWidget {
           debugPrint('tap on ${index + 1} note');
         },
         child: Container(
-            height: 85.0,
+            height: 85,
             padding: EdgeInsets.symmetric(horizontal: 8.0),
             decoration: BoxDecoration(
               borderRadius: boxBorderRadius,
@@ -85,14 +82,12 @@ class LNoteCard extends StatelessWidget {
                 ),
               ],
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Stack(
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Container(
-                    width: 250,
+                Container(
+                  margin: EdgeInsets.only(left: 16.0),
+                  width: MediaQuery.of(context).size.width * 0.65,
+                  child: Center(
                     child: Text(
                       (index + 1).toString() + '. ' + title,
                       style: isRead
@@ -104,7 +99,10 @@ class LNoteCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                isRead ? _readIcon() : _unreadIcon()
+                Align(
+                  alignment: Alignment.topRight,
+                  child: isRead ? _readIcon() : _unreadIcon(),
+                )
               ],
             )),
       ),
