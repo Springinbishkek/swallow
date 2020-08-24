@@ -36,7 +36,7 @@ class App extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: !isFirstStart ? OnboardingPage() : HomePage(),
+      home: isFirstStart ? OnboardingPage() : HomePage(),
     );
   }
 }

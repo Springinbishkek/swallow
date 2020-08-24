@@ -12,11 +12,11 @@ class LTextField extends StatelessWidget {
     return TextFormField(
       decoration: InputDecoration(
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+          borderRadius: boxBorderRadius,
           borderSide: BorderSide(color: boxBorderColor)
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+          borderRadius: boxBorderRadius,
         ),
         filled: true,
         fillColor: menuBgColor,
@@ -26,7 +26,7 @@ class LTextField extends StatelessWidget {
       autofocus: false,
       textCapitalization: TextCapitalization.words,
       inputFormatters: <TextInputFormatter>[
-        WhitelistingTextInputFormatter(RegExp('[а-яА-Я]'))
+        FilteringTextInputFormatter.allow(RegExp('[а-яА-Я]'))
       ],
       controller: controller,
     );
