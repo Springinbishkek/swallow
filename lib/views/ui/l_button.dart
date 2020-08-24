@@ -17,16 +17,16 @@ class LButton extends StatelessWidget {
       this.buttonColor = accentColor,
       this.borderColor = accentColor});
 
-  Widget _getButton() {
+  Widget _buildButton() {
     if (icon == null) {
-      return RaisedButton(child: _getText(), onPressed: func);
+      return RaisedButton(child: _buildText(), onPressed: func);
     } else {
       if (iconOnRightSide) {
         return RaisedButton.icon(
-            onPressed: func, icon: _getText(), label: _getIcon());
+            onPressed: func, icon: _buildText(), label: _buildIcon());
       } else {
         return RaisedButton.icon(
-            onPressed: func, icon: _getIcon(), label: _getText());
+            onPressed: func, icon: _buildIcon(), label: _buildText());
       }
     }
   }
@@ -43,7 +43,7 @@ class LButton extends StatelessWidget {
     }
   }
 
-  Widget _getText() {
+  Widget _buildText() {
     return Padding(
       padding: _getTextPadding(),
       child: Text(
@@ -57,19 +57,17 @@ class LButton extends StatelessWidget {
     );
   }
 
-  Color _getChildColor(){
-    if(buttonColor==accentColor) {
+  Color _getChildColor() {
+    if (buttonColor == accentColor) {
       return whiteColor;
-    }
-    else if (borderColor!=whiteColor){
+    } else if (borderColor != whiteColor) {
       return borderColor;
-    }
-    else{
+    } else {
       return accentColor;
     }
   }
 
-  Widget _getIcon() {
+  Widget _buildIcon() {
     return Padding(
       padding: const EdgeInsets.only(right: 8.0, left: 8.0),
       child: Image.asset(
@@ -86,11 +84,12 @@ class LButton extends StatelessWidget {
       height: 45.0,
       minWidth: 127.0,
       buttonColor: buttonColor,
+      disabledColor: buttonColor.withOpacity(0.6),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(22.5)),
         side: BorderSide(color: borderColor, width: 2.0),
       ),
-      child: _getButton(),
+      child: _buildButton(),
     );
   }
 }
