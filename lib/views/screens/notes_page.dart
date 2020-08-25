@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
+import 'package:lastochki/models/entities/Question.dart';
 import 'package:lastochki/views/screens/test_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_appbar.dart';
@@ -27,6 +28,19 @@ class _NotesPageState extends State<NotesPage> {
   final String bottomBanner = 'assets/backgrounds/note_bottom_banner.png';
   final String rocketImg = 'assets/icons/mw_rocket.png';
 
+  List<Question> questions = [
+    Question(),
+    Question(),
+    Question(),
+    Question(),
+    Question(),
+    Question(),
+    Question(),
+    Question(),
+    Question(),
+    Question(),
+  ];
+
   void _openInfoPopup() {
     showDialog(
         barrierDismissible: false,
@@ -42,7 +56,7 @@ class _NotesPageState extends State<NotesPage> {
                         context,
                         MaterialPageRoute(
                             builder: (BuildContext context) => TestPage(
-                                  questionCount: 10,
+                                  questions: questions,
                                 )));
                   }),
             ));

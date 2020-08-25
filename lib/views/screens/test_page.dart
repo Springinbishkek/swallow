@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
+import 'package:lastochki/models/entities/Question.dart';
 import 'package:lastochki/views/screens/test_result_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_test_box.dart';
 
 class TestPage extends StatefulWidget {
-  final int questionCount;
-  TestPage({@required this.questionCount});
+  final List<Question> questions;
+  TestPage({@required this.questions});
   @override
   _TestPageState createState() => _TestPageState();
 }
@@ -71,7 +72,7 @@ class _TestPageState extends State<TestPage> {
         Column(
           children: [
             Text(
-              '${_currentPage + 1}/${widget.questionCount}',
+              '${_currentPage + 1}/${widget.questions.length}',
               style: TextStyle(
                   color: accentColor,
                   fontWeight: FontWeight.bold,

@@ -82,7 +82,7 @@ class _LTestBoxState extends State<LTestBox> {
           children: [
             widget.isResult
                 ? _buildAnswerIcon(val)
-                : _buildRadioButton(val, (val) => _onAnswerTap(val)),
+                : _buildRadioButton(val, _onAnswerTap),
             Flexible(
                 child: Text(
               answer,
