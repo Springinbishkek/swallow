@@ -41,7 +41,9 @@ class _NotesPageState extends State<NotesPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (BuildContext context) => TestPage()));
+                            builder: (BuildContext context) => TestPage(
+                                  questionCount: 10,
+                                )));
                   }),
             ));
   }

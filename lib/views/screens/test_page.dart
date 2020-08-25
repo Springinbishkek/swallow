@@ -6,6 +6,8 @@ import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_test_box.dart';
 
 class TestPage extends StatefulWidget {
+  final int questionCount;
+  TestPage({@required this.questionCount});
   @override
   _TestPageState createState() => _TestPageState();
 }
@@ -69,7 +71,7 @@ class _TestPageState extends State<TestPage> {
         Column(
           children: [
             Text(
-              '${_currentPage + 1}/10',
+              '${_currentPage + 1}/${widget.questionCount}',
               style: TextStyle(
                   color: accentColor,
                   fontWeight: FontWeight.bold,
