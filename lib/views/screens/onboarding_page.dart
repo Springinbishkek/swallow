@@ -139,7 +139,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 24.0),
-          child: LTextField(_textNameController),
+          child: LTextField(_textNameController, ),
         ),
         Expanded(child: Container()),
         _getButton(next.toString(), () {
