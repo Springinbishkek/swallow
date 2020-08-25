@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/views/theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LLanguageCheckbox extends StatefulWidget {
   final bool isColumn;
+  final Function callback;
 
-  LLanguageCheckbox({this.isColumn = true});
+  LLanguageCheckbox({this.callback, this.isColumn = true});
 
   @override
   _LLanguageCheckboxState createState() => _LLanguageCheckboxState();
@@ -22,39 +24,44 @@ class _LLanguageCheckboxState extends State<LLanguageCheckbox> {
     super.initState();
   }
 
-  void _onCheckboxTap(int val, String language) {
-    setState(() {
+  void _onCheckboxTap(int val, String language) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState((){
       _radioVal = val;
-//      if (language == 'Русский' && Name.curLocale == Locale('kg')) {
-//        Name.setLocale(Locale('ru'));
-//      } else if (language == 'Кыргызча' && Name.curLocale == Locale('ru')) {
-//        Name.setLocale(Locale('kg'));
-//      }
+      if (val==0) {
+        prefs.setString('languageCode', 'ru');
+      } else {
+        prefs.setString('languageCode', 'kg');
+      }
+      widget.callback(prefs.getString('languageCode'));
     });
   }
 
   Widget _getCheckbox(int val, String flag, String language) {
-    return Row(
-      children: <Widget>[
-        Radio(
-            activeColor: textColor,
-            value: val,
-            groupValue: _radioVal,
-            onChanged: (int value) => _onCheckboxTap(value, language)),
-        Image.asset(
-          flag,
-          height: 22,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 8.0, left: 4.0),
-          child: Text(
-            language,
-            style: widget.isColumn
-                ? contentTextStyle
-                : TextStyle(color: textColor, fontSize: 17.0),
+    return GestureDetector(
+      onTap: () => _onCheckboxTap(val, language),
+      child: Row(
+        children: <Widget>[
+          Radio(
+              activeColor: textColor,
+              value: val,
+              groupValue: _radioVal,
+              onChanged: (int value) => _onCheckboxTap(value, language)),
+          Image.asset(
+            flag,
+            height: 22,
           ),
-        )
-      ],
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0, left: 4.0),
+            child: Text(
+              language,
+              style: widget.isColumn
+                  ? contentTextStyle
+                  : TextStyle(color: textColor, fontSize: 17.0),
+            ),
+          )
+        ],
+      ),
     );
   }
 

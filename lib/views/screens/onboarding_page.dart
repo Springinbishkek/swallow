@@ -44,10 +44,17 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final String _onboardingBG = 'assets/backgrounds/onboarding_background.png';
 
   String name = 'Бегайым';
+  String languageCode;
 
   void _navigateToNextPage() {
     _pageStateController.nextPage(
-        duration: Duration(microseconds: 500), curve: Curves.ease);
+        duration: Duration(milliseconds: 500), curve: Curves.ease);
+  }
+
+  void callback(String code) {
+    setState(() {
+      languageCode = code;
+    });
   }
 
   @override
@@ -100,7 +107,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
         ),
         Padding(
             padding: const EdgeInsets.only(top: 24.0),
-            child: LLanguageCheckbox()),
+            child: LLanguageCheckbox(
+              callback: callback,
+            )),
         Expanded(child: Container()),
         _getButton(next.toString(), () => _navigateToNextPage())
       ],
@@ -228,6 +237,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
             child: PageView(
               physics: NeverScrollableScrollPhysics(),
               controller: _pageStateController,
+              onPageChanged: (int page) {
+                if (page == 2) {
+                  if(languageCode!=null){
+                    setState(() {
+                      Name.curLocale = Locale(languageCode);
+                    });
+                  }
+                }
+              },
               children: <Widget>[
                 firstPage(),
                 secondPage(),
