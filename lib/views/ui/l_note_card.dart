@@ -16,7 +16,7 @@ class LNoteCard extends StatelessWidget {
   LNoteCard(
       {@required this.index, @required this.title, @required this.isRead});
 
-  Widget _readIcon() {
+  Widget _buildReadIcon() {
     return Container(
         height: 24.0,
         margin: EdgeInsets.only(top: 8.0, right: 8.0),
@@ -31,30 +31,34 @@ class LNoteCard extends StatelessWidget {
         ));
   }
 
-  Widget _unreadIcon() {
-    Color unread = Color(0xFF2589F6);
+  Widget _buildUnreadIcon({int profit}) {
+    Color blueColor = Color(0xFF2589F6);
     return Container(
       height: 30.0,
       width: 60.0,
-      margin: EdgeInsets.only(top: 8.0, right: 8.0),
+      margin: EdgeInsets.only(top: 8.0, right: 16.0, left: 16.0),
       padding: EdgeInsets.all(4.0),
       decoration: BoxDecoration(
-        border: Border.all(color: unread, width: 2.0),
+        border: Border.all(color: blueColor, width: 2.0),
         borderRadius: BorderRadius.all(Radius.circular(14.0)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            '+15',
+            '+$profit',
             style: TextStyle(
-                color: unread, fontWeight: FontWeight.bold, fontSize: 16.0),
+                color: blueColor, fontWeight: FontWeight.bold, fontSize: 16.0),
           ),
           Image.asset(swallowIcon)
         ],
       ),
     );
   }
+
+  //TODO: получение значения profit
+  Widget _buildIcon() =>
+      isRead ? _buildReadIcon() : _buildUnreadIcon(profit: 15);
 
   @override
   Widget build(BuildContext context) {
@@ -82,27 +86,27 @@ class LNoteCard extends StatelessWidget {
                 ),
               ],
             ),
-            child: Stack(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(left: 16.0),
-                  width: MediaQuery.of(context).size.width * 0.65,
-                  child: Center(
-                    child: Text(
-                      (index + 1).toString() + '. ' + title,
-                      style: isRead
-                          ? TextStyle(
-                              color: textColor.withOpacity(0.6),
-                              fontSize: 17.0,
-                              fontWeight: FontWeight.bold)
-                          : subtitleTextStyle,
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.only(left: 16.0, right: 8.0),
+                    child: Center(
+                      child: Text(
+                        '${index + 1}. $title',
+                        maxLines: 3,
+                        style: isRead
+                            ? TextStyle(
+                                color: textColor.withOpacity(0.6),
+                                fontSize: 17.0,
+                                fontWeight: FontWeight.bold)
+                            : subtitleTextStyle,
+                      ),
                     ),
                   ),
                 ),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: isRead ? _readIcon() : _unreadIcon(),
-                )
+                _buildIcon()
               ],
             )),
       ),
