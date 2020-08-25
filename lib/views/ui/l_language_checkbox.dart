@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/views/theme.dart';
 
 class LLanguageCheckbox extends StatefulWidget {
@@ -17,7 +18,7 @@ class _LLanguageCheckboxState extends State<LLanguageCheckbox> {
 
   @override
   void initState() {
-    //if(Name.curLocale==Locale('kg')) _radioVal=1;
+    if(Name.curLocale==Locale('kg')) _radioVal=1;
     super.initState();
   }
 

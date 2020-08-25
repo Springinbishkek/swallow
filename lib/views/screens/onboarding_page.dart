@@ -12,21 +12,32 @@ class OnboardingPage extends StatefulWidget {
 }
 
 class _OnboardingPageState extends State<OnboardingPage> {
-  Name greeting = Name(ru: 'Привет!');
   Name aboutGame = Name(
-      ru: 'Это игра про кыргизских девчонок, дружбу, любовь и'
-          ' все такое прочее. Главная героиня игры — это ты.');
+      ru: 'Это игра про девчонок, дружбу, любовь и свободу. '
+          'Главная героиня игры — это ты.',
+      kg: 'Бул кыздар жөнүндө оюн, анда достук, сүйүү жана эркиндик жөнүндө айтылат.'
+          ' Оюндун башкы каарманы - сенсиң!');
   Name aboutDecisions = Name(
-      ru: ' От твоих решений зависит, что будет происходить, и чем все закончится.');
-  Name askLanguage = Name(ru: 'На каком языке ты хочешь играть?');
-  Name askName = Name(ru: 'Выбери имя для героини');
-  Name aboutName =
-      Name(ru: 'Можно дать ей свое имя или то, которое очень нравится');
-  Name greetingName = Name(ru: 'Отлично, ');
+      ru: 'Именно от твоих решений зависит, как будет меняться жизнь героев, и чем всё закончится. \n'
+          'Обещаем: будет интересно и очень волнительно!',
+      kg: 'Каармандардын жашоосу кандайча өзгөрүп, кандайча аяктаганы сенин чечимиңден көз каранды.'
+          ' Бул оюн кызыктуу жана абдан толкунданткан болот деп, убада беребиз!');
+  Name askLanguage = Name(
+      ru: 'На каком языке ты хочешь играть?',
+      kg: 'Кайсы тилде ойногонду каалайсың?');
+  Name askName = Name(
+      ru: 'Как тебя зовут?',
+      kg: 'Сенин атың ким болсо, башкы каармандын да\nаты ошондой болот');
+  Name aboutName = Name(ru: 'Также будут звать главную героиню игры', kg: '');
+  Name greetingName = Name(ru: 'Отлично, ', kg: 'Абдан жакшы, ');
   Name aboutSettings = Name(
-      ru: 'Сменить имя, язык игры или начать игру заново всегда можно в пункте Настроек с вот таким значком: ');
-  Name letsStart = Name(ru: 'А теперь давай перейдем к первой главе!');
-  Name next = Name(ru: 'Далее');
+      ru: 'Поменять имя, язык или начать игру заново можно в разделе «Настройки» с таким значком: ',
+      kg: 'Төмөнкү белги менен "Баптоолор" бөлүмүндө атын, тилин өзгөртүп жана оюнду кайрадан баштаса болот: ');
+  Name letsStart =
+      Name(ru: 'А теперь давай начнём игру!', kg: 'Эми оюнду баштайлы!');
+  Name next1 = Name(ru: 'Далее', kg: 'Андан ары');
+  Name next = Name(ru: 'Далее', kg: 'Кийинкиси');
+  Name letsPlay = Name(ru: 'Играть!', kg: 'Ойноо!');
 
   final PageController _pageStateController = PageController(initialPage: 0);
   final TextEditingController _textNameController = TextEditingController();
@@ -55,20 +66,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
         Padding(
           padding: const EdgeInsets.all(24.0),
           child: Text(
-            greeting.toString(),
-            style: titleTextStyle,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
             aboutGame.toString(),
-            style: contentTextStyle,
+            style: titleTextStyle,
             textAlign: TextAlign.center,
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(16.0),
           child: Text(
             aboutDecisions.toString(),
             style: contentTextStyle,
@@ -76,7 +80,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           ),
         ),
         Expanded(child: Container()),
-        _getButton(() => _navigateToNextPage())
+        _getButton(next1.toString(), () => _navigateToNextPage())
       ],
     ));
   }
@@ -98,7 +102,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             padding: const EdgeInsets.only(top: 24.0),
             child: LLanguageCheckbox()),
         Expanded(child: Container()),
-        _getButton(() => _navigateToNextPage())
+        _getButton(next.toString(), () => _navigateToNextPage())
       ],
     ));
   }
@@ -125,11 +129,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 56.0),
+          padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 24.0),
           child: LTextField(_textNameController),
         ),
         Expanded(child: Container()),
-        _getButton(() {
+        _getButton(next.toString(), () {
           if (_textNameController.text != '') {
             setState(() {
               name = _textNameController.text;
@@ -177,7 +181,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           ),
         ),
         Expanded(child: Container()),
-        _getButton(() {
+        _getButton(letsPlay.toString(), () {
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -199,11 +203,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
   }
 
-  Widget _getButton(Function func) {
+  Widget _getButton(String text, Function func) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: LButton(
-        text: next.toString(),
+        text: text,
         func: func,
         icon: forwardIcon,
       ),

@@ -13,10 +13,10 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  Name settings = Name(ru: 'Настройки');
-  Name changeLanguage = Name(ru: 'Сменить язык');
-  Name changeName = Name(ru: 'Сменить имя героини');
-  Name saveSettings = Name(ru: 'Сохранить настройки');
+  Name settings = Name(ru: 'Настройки', kg: 'test');
+  Name changeLanguage = Name(ru: 'Сменить язык', kg: 'test');
+  Name changeName = Name(ru: 'Сменить имя героини', kg: 'test');
+  Name saveSettings = Name(ru: 'Сохранить настройки', kg: 'test');
 
   TextEditingController _textNameController = TextEditingController();
 

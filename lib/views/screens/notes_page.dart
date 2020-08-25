@@ -13,16 +13,16 @@ class NotesPage extends StatefulWidget {
 }
 
 class _NotesPageState extends State<NotesPage> {
-  Name notes = Name(ru: 'Блокнот');
-  Name firstNote = Name(ru: 'Что такое Заметки и зачем они нужны для игры?');
-  Name secondNote = Name(ru: 'Что делать, если идешь одна поздно ночью домой?');
-  Name thirdNote = Name(ru: 'Куда звонить, если что-то случилось?');
-  Name bottom = Name(ru: 'Хочешь больше ласточек?');
-  Name test = Name(ru: 'Пройти тест');
-  Name title = Name(ru: 'Тест');
+  Name notes = Name(ru: 'Блокнот', kg: 'test');
+  Name firstNote = Name(ru: 'Что такое Заметки и зачем они нужны для игры?', kg: 'test');
+  Name secondNote = Name(ru: 'Что делать, если идешь одна поздно ночью домой?', kg: 'test');
+  Name thirdNote = Name(ru: 'Куда звонить, если что-то случилось?', kg: 'test');
+  Name bottom = Name(ru: 'Хочешь больше ласточек?', kg: 'test');
+  Name test = Name(ru: 'Пройти тест', kg: 'test');
+  Name title = Name(ru: 'Тест', kg: 'test');
   Name content =
-      Name(ru: 'Ответь правильно на все вопросы и получи новую стаю ласточек!');
-  Name startTest = Name(ru: 'Начать тест');
+      Name(ru: 'Ответь правильно на все вопросы и получи новую стаю ласточек!', kg: 'test');
+  Name startTest = Name(ru: 'Начать тест', kg: 'test');
 
   final String bottomBanner = 'assets/backgrounds/note_bottom_banner.png';
   final String rocketImg = 'assets/icons/mw_rocket.png';
