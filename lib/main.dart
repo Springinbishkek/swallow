@@ -33,6 +33,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'Ласточки. Весна в Бишкеке',
       theme: ThemeData(
+        fontFamily: 'SourceSansPro',
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
