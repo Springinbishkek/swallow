@@ -12,8 +12,7 @@ class OpenlineLogoPage extends StatefulWidget {
   _OpenlineLogoPageState createState() => _OpenlineLogoPageState();
 }
 
-class _OpenlineLogoPageState extends State<OpenlineLogoPage>
-    with SingleTickerProviderStateMixin {
+class _OpenlineLogoPageState extends State<OpenlineLogoPage> {
   final String openLine = 'assets/backgrounds/open_line_logo.png';
   SharedPreferences prefs;
   bool isFirstStart;
