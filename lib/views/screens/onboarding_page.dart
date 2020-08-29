@@ -51,7 +51,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         duration: Duration(milliseconds: 500), curve: Curves.ease);
   }
 
-  void callback(String code) {
+  void onChangeLanguageCode(String code) {
     setState(() {
       languageCode = code;
     });
@@ -108,7 +108,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         Padding(
             padding: const EdgeInsets.only(top: 24.0),
             child: LLanguageCheckbox(
-              onChanged: callback,
+              onChanged: onChangeLanguageCode,
             )),
         Expanded(child: Container()),
         _getButton(next.toString(), () => _navigateToNextPage())

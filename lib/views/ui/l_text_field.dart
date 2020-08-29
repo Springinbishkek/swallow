@@ -6,7 +6,7 @@ class LTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final int maxLength;
-  final Function onChanged;
+  final Function(String) onChanged;
 
   LTextField(this.controller, this.hintText, this.maxLength, this.onChanged);
 
