@@ -3,8 +3,8 @@ import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/views/screens/settings_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_button.dart';
+import 'package:lastochki/views/ui/l_character_name_input.dart';
 import 'package:lastochki/views/ui/l_language_checkbox.dart';
-import 'package:lastochki/views/ui/l_text_field.dart';
 
 class OnboardingPage extends StatefulWidget {
   @override
@@ -108,7 +108,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         Padding(
             padding: const EdgeInsets.only(top: 24.0),
             child: LLanguageCheckbox(
-              callback: callback,
+              onChanged: callback,
             )),
         Expanded(child: Container()),
         _getButton(next.toString(), () => _navigateToNextPage())
@@ -139,7 +139,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 24.0),
-          child: LTextField(_textNameController, ),
+          child: LCharacterNameInput(_textNameController),
         ),
         Expanded(child: Container()),
         _getButton(next.toString(), () {
@@ -239,7 +239,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               controller: _pageStateController,
               onPageChanged: (int page) {
                 if (page == 2) {
-                  if(languageCode!=null){
+                  if (languageCode != null) {
                     setState(() {
                       Name.curLocale = Locale(languageCode);
                     });

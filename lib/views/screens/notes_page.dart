@@ -13,6 +13,7 @@ class NotesPage extends StatefulWidget {
 }
 
 class _NotesPageState extends State<NotesPage> {
+  //TODO: вставить переводы
   Name notes = Name(ru: 'Блокнот', kg: 'test');
   Name firstNote = Name(ru: 'Что такое Заметки и зачем они нужны для игры?', kg: 'test');
   Name secondNote = Name(ru: 'Что делать, если идешь одна поздно ночью домой?', kg: 'test');

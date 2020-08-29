@@ -10,6 +10,7 @@ class TestResultPage extends StatefulWidget {
 }
 
 class _TestResultPageState extends State<TestResultPage> {
+  //TODO: вставить переводы
   Name done = Name(ru: 'Готово', kg: 'test');
   Name checkRes = Name(ru: 'Проверь свои ответы', kg: 'test');
 

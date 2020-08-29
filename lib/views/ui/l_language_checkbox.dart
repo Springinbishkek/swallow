@@ -5,9 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LLanguageCheckbox extends StatefulWidget {
   final bool isColumn;
-  final Function callback;
+  final Function(String) onChanged;
 
-  LLanguageCheckbox({this.callback, this.isColumn = true});
+  LLanguageCheckbox({this.onChanged, this.isColumn = true});
 
   @override
   _LLanguageCheckboxState createState() => _LLanguageCheckboxState();
@@ -28,12 +28,8 @@ class _LLanguageCheckboxState extends State<LLanguageCheckbox> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState((){
       _radioVal = val;
-      if (val==0) {
-        prefs.setString('languageCode', 'ru');
-      } else {
-        prefs.setString('languageCode', 'kg');
-      }
-      widget.callback(prefs.getString('languageCode'));
+      prefs.setString('languageCode', val==0?'ru':'kg');
+      widget.onChanged(prefs.getString('languageCode')??'ru');
     });
   }
 

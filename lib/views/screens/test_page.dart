@@ -11,6 +11,7 @@ class TestPage extends StatefulWidget {
 }
 
 class _TestPageState extends State<TestPage> {
+  //TODO: вставить переводы
   Name done = Name(ru: 'Готово', kg: 'test');
   Name next = Name(ru: 'Далее', kg: 'test');
 

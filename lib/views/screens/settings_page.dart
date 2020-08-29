@@ -4,8 +4,8 @@ import 'package:lastochki/views/screens/notes_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_appbar.dart';
 import 'package:lastochki/views/ui/l_button.dart';
+import 'package:lastochki/views/ui/l_character_name_input.dart';
 import 'package:lastochki/views/ui/l_language_checkbox.dart';
-import 'package:lastochki/views/ui/l_text_field.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -13,6 +13,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  //TODO: вставить переводы
   Name settings = Name(ru: 'Настройки', kg: 'test');
   Name changeLanguage = Name(ru: 'Сменить язык', kg: 'test');
   Name changeName = Name(ru: 'Сменить имя героини', kg: 'test');
@@ -67,7 +68,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0, bottom: 36.0),
-                  child: LTextField(_textNameController),
+                  child: LCharacterNameInput(_textNameController),
                 ),
               ],
             ),
@@ -80,7 +81,10 @@ class _SettingsPageState extends State<SettingsPage> {
               child: LButton(
                 text: saveSettings.toString(),
                 func: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>NotesPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => NotesPage()));
                   debugPrint('button tapped');
                 },
                 icon: checkIcon,
