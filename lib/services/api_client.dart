@@ -26,8 +26,22 @@ class ApiClient {
     dio.options.headers['Accept'] = 'application/json';
   }
 
+  // TODO
+
   Future<Response> getChapters() async {
     Response response = await dio.get('/info.json');
+    return response;
+  }
+
+  // TODO
+  Future<Response> loadChapter(String path) async {
+    Response response = await dio.get(path);
+    return response;
+  }
+
+  // TODO
+  Future<Response> loadNotes(String path) async {
+    Response response = await dio.get(path);
     return response;
   }
 }

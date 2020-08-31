@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'Name.dart';
+import 'Story.dart';
 
 class Chapter {
   final int number;
@@ -11,7 +12,6 @@ class Chapter {
   final String mediaUri;
   final String noteUri;
   final String storyUri;
-  Note note;
   Story story;
   Chapter({
     this.number,
@@ -22,7 +22,6 @@ class Chapter {
     this.mediaUri,
     this.noteUri,
     this.storyUri,
-    this.note,
     this.story,
   });
 
@@ -35,7 +34,6 @@ class Chapter {
     String mediaUri,
     String noteUri,
     String storyUri,
-    Note note,
     Story story,
   }) {
     return Chapter(
@@ -47,7 +45,6 @@ class Chapter {
       mediaUri: mediaUri ?? this.mediaUri,
       noteUri: noteUri ?? this.noteUri,
       storyUri: storyUri ?? this.storyUri,
-      note: note ?? this.note,
       story: story ?? this.story,
     );
   }
@@ -62,7 +59,6 @@ class Chapter {
       'mediaUri': mediaUri,
       'noteUri': noteUri,
       'storyUri': storyUri,
-      'note': note?.toMap(),
       'story': story?.toMap(),
     };
   }
@@ -79,7 +75,6 @@ class Chapter {
       mediaUri: map['mediaUri'],
       noteUri: map['noteUri'],
       storyUri: map['storyUri'],
-      note: Note.fromMap(map['note']),
       story: Story.fromMap(map['story']),
     );
   }
@@ -91,7 +86,7 @@ class Chapter {
 
   @override
   String toString() {
-    return 'Chapter(number: $number, version: $version, title: $title, description: $description, mBytes: $mBytes, mediaUri: $mediaUri, noteUri: $noteUri, storyUri: $storyUri, note: $note, story: $story)';
+    return 'Chapter(number: $number, version: $version, title: $title, description: $description, mBytes: $mBytes, mediaUri: $mediaUri, noteUri: $noteUri, storyUri: $storyUri, story: $story)';
   }
 
   @override
@@ -107,7 +102,6 @@ class Chapter {
         o.mediaUri == mediaUri &&
         o.noteUri == noteUri &&
         o.storyUri == storyUri &&
-        o.note == note &&
         o.story == story;
   }
 
@@ -121,7 +115,6 @@ class Chapter {
         mediaUri.hashCode ^
         noteUri.hashCode ^
         storyUri.hashCode ^
-        note.hashCode ^
         story.hashCode;
   }
 }
