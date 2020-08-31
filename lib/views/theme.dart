@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// TODO rewrite example
 const Color menuBgColor = Color(0xFFFAFAFA);
 const Color appbarBgColor = Color(0xFFEFF9FF);
 const Color scaffoldBgColor = Color(0xFFDFECF3);
