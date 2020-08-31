@@ -14,8 +14,9 @@ class TestPage extends StatefulWidget {
 }
 
 class _TestPageState extends State<TestPage> {
-  Name done = Name(ru: 'Готово');
-  Name next = Name(ru: 'Далее');
+  //TODO: вставить переводы
+  Name done = Name(ru: 'Готово', kg: 'test');
+  Name next = Name(ru: 'Далее', kg: 'test');
 
   final PageController _testPageController = PageController(initialPage: 0);
 

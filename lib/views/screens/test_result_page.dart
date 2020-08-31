@@ -10,8 +10,9 @@ class TestResultPage extends StatefulWidget {
 }
 
 class _TestResultPageState extends State<TestResultPage> {
-  Name done = Name(ru: 'Готово');
-  Name checkRes = Name(ru: 'Проверь свои ответы');
+  //TODO: вставить переводы
+  Name done = Name(ru: 'Готово', kg: 'test');
+  Name checkRes = Name(ru: 'Проверь свои ответы', kg: 'test');
 
   @override
   Widget build(BuildContext context) {
