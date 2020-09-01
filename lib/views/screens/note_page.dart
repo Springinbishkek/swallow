@@ -22,26 +22,11 @@ class _NotePageState extends State<NotePage> {
       kg: 'test');
   Name okay = Name(ru: 'Понятно', kg: 'test');
   final String bottomBG = 'assets/backgrounds/note_bottom_background.png';
+  final String topBG = 'assets/backgrounds/note_top_background.jpg';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        automaticallyImplyLeading: false,
-        actions: <Widget>[
-          IconButton(
-              icon: Image.asset(
-                closeIcon,
-                height: 14.0,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              })
-        ],
-      ),
       body: Scrollbar(
           child: ListView(
         padding: EdgeInsets.only(top: 0.0),
@@ -50,9 +35,18 @@ class _NotePageState extends State<NotePage> {
             height: 180.0,
             decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: NetworkImage(
-                        'https://sun9-48.userapi.com/c854520/v854520307/252b21/ausgjIvyTks.jpg'),
-                    fit: BoxFit.cover)),
+                    image: AssetImage(topBG), fit: BoxFit.cover)),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                  icon: Image.asset(
+                    closeIcon,
+                    height: 14.0,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+            ),
           ),
           Column(
             children: <Widget>[

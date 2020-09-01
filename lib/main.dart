@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lastochki/services/api_client.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/services/note_service.dart';
 import 'package:lastochki/views/screens/openline_logo_page.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
-void main() => runApp(App());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIOverlays([]);
+  runApp(App());
+}
 
 class App extends StatelessWidget {
   final ApiClient apiClient = ApiClient();
