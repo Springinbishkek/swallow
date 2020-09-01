@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/views/theme.dart';
+import 'package:lastochki/views/translation.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 
 class NotePage extends StatefulWidget {
@@ -9,14 +10,14 @@ class NotePage extends StatefulWidget {
 }
 
 class _NotePageState extends State<NotePage> {
-  //TODO: вставить переводы
-  Name title = Name(ru: 'Что такое Заметки и зачем они нужны для игры', kg: 'test');
+  Name title =
+      Name(ru: 'Что такое Заметки и зачем они нужны для игры', kg: 'test');
   Name note = Name(
       ru: 'Более трёх четвертей территории Киргизии занимают горы. Территория страны расположена в пределах двух горных систем. Северо-восточная её часть лежит в пределах Тянь-Шаня, юго-западная — в пределах Памиро-Алая. Вся территория республики лежит выше 394 м над уровнем моря, средняя высота над уровнем моря 2750 м.\n\n'
           'Более половины её располагается на высотах от 1000 до 3000 м и примерно треть — на высотах от 3000 до 4000 м. Пик Победы является наивысшей точкой страны и самый северным семитысячником на Земле, его высота 7439 м. На востоке главные хребты Тянь-Шаня сближаются в районе Меридионального хребта, создавая мощный горный узел.\n\n'
           'На границе с Китаем и Казахстаном поднимается пик Победы (7439 м) и Хан-Тенгри (7010 м или 6995 м без учёта ледяного покрова)[27]. Западная часть Киргизии расположена в пределах Западного Тянь-Шаня.\n\n'
-          'Более трёх четвертей территории Киргизии занимают горы. Территория страны расположена в пределах двух горных систем. ', kg: 'test');
-  Name okay = Name(ru: 'Понятно', kg: 'test');
+          'Более трёх четвертей территории Киргизии занимают горы. Территория страны расположена в пределах двух горных систем. ',
+      kg: 'test');
   final String bottomBG = 'assets/backgrounds/note_bottom_background.png';
 
   @override
@@ -29,7 +30,10 @@ class _NotePageState extends State<NotePage> {
         automaticallyImplyLeading: false,
         actions: <Widget>[
           IconButton(
-              icon: Image.asset(closeIcon, height: 14.0,),
+              icon: Image.asset(
+                closeIcon,
+                height: 14.0,
+              ),
               onPressed: () {
                 Navigator.pop(context);
               })
@@ -37,7 +41,7 @@ class _NotePageState extends State<NotePage> {
       ),
       body: Scrollbar(
           child: ListView(
-            padding: EdgeInsets.only(top: 0.0),
+        padding: EdgeInsets.only(top: 0.0),
         children: <Widget>[
           Container(
             height: 180.0,
@@ -72,7 +76,7 @@ class _NotePageState extends State<NotePage> {
                     image: AssetImage(bottomBG), fit: BoxFit.cover)),
             child: Center(
               child: LButton(
-                  text: okay.toString(),
+                  text: understood.toString(),
                   func: () {
                     debugPrint('okay');
                   }),

@@ -6,6 +6,8 @@ import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_character_name_input.dart';
 import 'package:lastochki/views/ui/l_language_checkbox.dart';
 
+import '../translation.dart';
+
 class OnboardingPage extends StatefulWidget {
   @override
   _OnboardingPageState createState() => _OnboardingPageState();
@@ -35,9 +37,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       kg: 'Төмөнкү белги менен "Баптоолор" бөлүмүндө атын, тилин өзгөртүп жана оюнду кайрадан баштаса болот: ');
   Name letsStart =
       Name(ru: 'А теперь давай начнём игру!', kg: 'Эми оюнду баштайлы!');
-  Name next1 = Name(ru: 'Далее', kg: 'Андан ары');
-  Name next = Name(ru: 'Далее', kg: 'Кийинкиси');
-  Name letsPlay = Name(ru: 'Играть!', kg: 'Ойноо!');
+  Name nextFirstPage = Name(ru: 'Далее', kg: 'Андан ары');
 
   final PageController _pageStateController = PageController(initialPage: 0);
   final TextEditingController _textNameController = TextEditingController();
@@ -87,7 +87,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           ),
         ),
         Expanded(child: Container()),
-        _getButton(next1.toString(), () => _navigateToNextPage())
+        _getButton(nextFirstPage.toString(), () => _navigateToNextPage())
       ],
     ));
   }
