@@ -30,6 +30,7 @@ dependencies:
   shared_preferences: ^0.5.10
   dio: ^3.0.10
   states_rebuilder: ^2.3.1
+  flutter_html: ^1.0.2
 
 dev_dependencies:
   flutter_test:
