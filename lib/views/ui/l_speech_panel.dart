@@ -29,9 +29,9 @@ class PanelPainter extends CustomPainter {
       ..color = whiteColor;
 
     final Path leftPath = Path()
-      ..moveTo(radius + height, height)
-      ..lineTo(radius + height + height, 0.0)
-      ..lineTo(radius + height + height, height)
+      ..moveTo(radius + height / 2, height)
+      ..lineTo(radius + height / 2 + height, 0.0)
+      ..lineTo(radius + height / 2 + height, height)
       ..lineTo(size.width - radius, height)
       ..arcTo(Rect.fromCircle(center: topRightCenter, radius: radius), -pi / 2,
           pi / 2, false)
@@ -44,12 +44,12 @@ class PanelPainter extends CustomPainter {
       ..lineTo(0.0, radius + height)
       ..arcTo(Rect.fromCircle(center: topLeftCenter, radius: radius), pi,
           pi / 2, false)
-      ..lineTo(radius + height, height);
+      ..lineTo(radius + height / 2, height);
 
     final Path rightPath = Path()
-      ..moveTo(size.width - radius - height - height, height)
-      ..lineTo(size.width - radius - height - height, 0.0)
-      ..lineTo(size.width - radius - height, height)
+      ..moveTo(size.width - radius - height / 2 - height, height)
+      ..lineTo(size.width - radius - height / 2 - height, 0.0)
+      ..lineTo(size.width - radius - height / 2, height)
       ..lineTo(size.width - radius, height)
       ..arcTo(Rect.fromCircle(center: topRightCenter, radius: radius), -pi / 2,
           pi / 2, false)
@@ -62,7 +62,7 @@ class PanelPainter extends CustomPainter {
       ..lineTo(0.0, radius + height)
       ..arcTo(Rect.fromCircle(center: topLeftCenter, radius: radius), pi,
           pi / 2, false)
-      ..lineTo(size.width - radius - height - height, height);
+      ..lineTo(size.width - radius - height / 2 - height, height);
 
     canvas.drawShadow(isLeftSide ? leftPath : rightPath,
         Colors.grey.withOpacity(0.6), 10.0, true);
@@ -83,11 +83,16 @@ class LSpeechPanel extends StatelessWidget {
       {@required this.name, @required this.speech, this.isLeftSide = true});
 
   Widget _buildNamePanel() {
-    return Align(
-      alignment: isLeftSide ? Alignment(-0.4, 0.0) : Alignment(0.4, 0.0),
+    return Positioned(
+      left: isLeftSide ? 24.0 : null,
+      right: isLeftSide ? null : 24.0,
+      top: 5.0,
       child: Container(
         height: 30.0,
-        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        margin: isLeftSide
+            ? EdgeInsets.only(left: 32.0)
+            : EdgeInsets.only(right: 32.0),
+        padding: EdgeInsets.symmetric(horizontal: 10.0),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(15.0)),
             color: Color(0xFF48BFF5)),
@@ -114,21 +119,17 @@ class LSpeechPanel extends StatelessWidget {
     return Container(
       child: CustomPaint(
         painter: PanelPainter(radius: 12.0, isLeftSide: isLeftSide),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            SizedBox(
-              height: 5.0,
-            ),
-            _buildNamePanel(),
             Padding(
               padding: const EdgeInsets.only(
-                  left: 24.0, top: 16.0, right: 24.0, bottom: 24.0),
+                  left: 24.0, top: 40.0, right: 24.0, bottom: 16.0),
               child: Text(
                 speech,
                 style: contentTextStyle,
               ),
             ),
+            _buildNamePanel(),
           ],
         ),
       ),

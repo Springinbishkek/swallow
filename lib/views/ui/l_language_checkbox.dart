@@ -16,20 +16,22 @@ class LLanguageCheckbox extends StatefulWidget {
 class _LLanguageCheckboxState extends State<LLanguageCheckbox> {
   final String _kgIcon = 'assets/icons/kg_icon.png';
   final String _ruIcon = 'assets/icons/ru_icon.png';
+  String currentLanguageCode;
   int _radioVal = 0;
 
   @override
   void initState() {
-    if(Name.curLocale==Locale('kg')) _radioVal=1;
+    if (Name.curLocale == Locale('kg')) _radioVal = 1;
     super.initState();
   }
 
-  void _onCheckboxTap(int val, String language) async{
+  void _onCheckboxTap(int val, String language) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState((){
+    setState(() {
       _radioVal = val;
-      prefs.setString('languageCode', val==0?'ru':'kg');
-      widget.onChanged(prefs.getString('languageCode')??'ru');
+      currentLanguageCode = val == 0 ? 'ru' : 'kg';
+      prefs.setString('languageCode', currentLanguageCode);
+      widget.onChanged(currentLanguageCode);
     });
   }
 
