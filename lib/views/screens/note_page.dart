@@ -3,6 +3,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/style.dart';
 import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/views/theme.dart';
+import 'package:lastochki/views/translation.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 
 class NotePage extends StatefulWidget {
@@ -11,7 +12,6 @@ class NotePage extends StatefulWidget {
 }
 
 class _NotePageState extends State<NotePage> {
-  //TODO: вставить переводы
   Name title =
       Name(ru: 'Что такое Заметки и зачем они нужны для игры', kg: 'test');
   Name note = Name(
@@ -20,7 +20,6 @@ class _NotePageState extends State<NotePage> {
           'На границе с Китаем и Казахстаном поднимается пик Победы (7439 м) и Хан-Тенгри (7010 м или 6995 м без учёта ледяного покрова)[27]. Западная часть Киргизии расположена в пределах Западного Тянь-Шаня.\n\n'
           'Более трёх четвертей территории Киргизии занимают горы. Территория страны расположена в пределах двух горных систем. ',
       kg: 'test');
-  Name okay = Name(ru: 'Понятно', kg: 'test');
   final String bottomBG = 'assets/backgrounds/note_bottom_background.png';
   final String topBG = 'assets/backgrounds/note_top_background.jpg';
 
@@ -74,7 +73,7 @@ class _NotePageState extends State<NotePage> {
                     image: AssetImage(bottomBG), fit: BoxFit.cover)),
             child: Center(
               child: LButton(
-                  text: okay.toString(),
+                  text: understood.toString(),
                   func: () {
                     debugPrint('okay');
                   }),
