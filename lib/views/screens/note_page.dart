@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/style.dart';
-import 'package:lastochki/models/entities/Name.dart';
+import 'package:lastochki/models/entities/Note.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/translation.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 
 class NotePage extends StatefulWidget {
+  final Note note;
+  final Function onTap;
+
+  NotePage({@required this.note, @required this.onTap});
+
   @override
   _NotePageState createState() => _NotePageState();
 }
 
 class _NotePageState extends State<NotePage> {
-  Name title =
-      Name(ru: 'Что такое Заметки и зачем они нужны для игры', kg: 'test');
-  Name note = Name(
-      ru: 'Более трёх четвертей территории Киргизии занимают горы. Территория страны расположена в пределах двух горных систем. Северо-восточная её часть лежит в пределах Тянь-Шаня, юго-западная — в пределах Памиро-Алая. Вся территория республики лежит выше 394 м над уровнем моря, средняя высота над уровнем моря 2750 м.\n\n'
-          'Более половины её располагается на высотах от 1000 до 3000 м и примерно треть — на высотах от 3000 до 4000 м. Пик Победы является наивысшей точкой страны и самый северным семитысячником на Земле, его высота 7439 м. На востоке главные хребты Тянь-Шаня сближаются в районе Меридионального хребта, создавая мощный горный узел.\n\n'
-          'На границе с Китаем и Казахстаном поднимается пик Победы (7439 м) и Хан-Тенгри (7010 м или 6995 м без учёта ледяного покрова)[27]. Западная часть Киргизии расположена в пределах Западного Тянь-Шаня.\n\n'
-          'Более трёх четвертей территории Киргизии занимают горы. Территория страны расположена в пределах двух горных систем. ',
-      kg: 'test');
   final String bottomBG = 'assets/backgrounds/note_bottom_background.png';
   final String topBG = 'assets/backgrounds/note_top_background.jpg';
+
+  void navigateBack() {
+    widget.onTap();
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +44,7 @@ class _NotePageState extends State<NotePage> {
                     closeIcon,
                     height: 14.0,
                   ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  }),
+                  onPressed: navigateBack),
             ),
           ),
           Column(
@@ -52,14 +52,14 @@ class _NotePageState extends State<NotePage> {
               Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Text(
-                  title.toString(),
+                  widget.note.title.toString(),
                   style: titleTextStyle,
                 ),
               ),
               Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Html(
-                    data: note.toString(),
+                    data: widget.note.text.toString().replaceAll('\n', '<br>'),
                     style: {
                       "body": Style(color: textColor, fontSize: FontSize(17.0))
                     },
@@ -72,11 +72,7 @@ class _NotePageState extends State<NotePage> {
                 image: DecorationImage(
                     image: AssetImage(bottomBG), fit: BoxFit.cover)),
             child: Center(
-              child: LButton(
-                  text: understood.toString(),
-                  func: () {
-                    debugPrint('okay');
-                  }),
+              child: LButton(text: understood.toString(), func: navigateBack),
             ),
           )
         ],
