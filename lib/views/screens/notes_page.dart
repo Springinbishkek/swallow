@@ -8,23 +8,26 @@ import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_info_popup.dart';
 import 'package:lastochki/views/ui/l_note_card.dart';
 
+import '../translation.dart';
+
 class NotesPage extends StatefulWidget {
   @override
   _NotesPageState createState() => _NotesPageState();
 }
 
 class _NotesPageState extends State<NotesPage> {
-  //TODO: вставить переводы
-  Name notes = Name(ru: 'Блокнот', kg: 'test');
-  Name firstNote = Name(ru: 'Что такое Заметки и зачем они нужны для игры?', kg: 'test');
-  Name secondNote = Name(ru: 'Что делать, если идешь одна поздно ночью домой?', kg: 'test');
+  Name firstNote =
+      Name(ru: 'Что такое Заметки и зачем они нужны для игры?', kg: 'test');
+  Name secondNote =
+      Name(ru: 'Что делать, если идешь одна поздно ночью домой?', kg: 'test');
   Name thirdNote = Name(ru: 'Куда звонить, если что-то случилось?', kg: 'test');
-  Name bottom = Name(ru: 'Хочешь больше ласточек?', kg: 'test');
-  Name test = Name(ru: 'Пройти тест', kg: 'test');
-  Name title = Name(ru: 'Тест', kg: 'test');
-  Name content =
-      Name(ru: 'Ответь правильно на все вопросы и получи новую стаю ласточек!', kg: 'test');
-  Name startTest = Name(ru: 'Начать тест', kg: 'test');
+  Name bottom = Name(
+      ru: 'Хочешь больше ласточек?', kg: 'Көбүрөөк чабалекей алгың келеби?');
+  Name title = Name(ru: 'Тест', kg: 'Тест');
+  Name content = Name(
+      ru: 'Ответь правильно на все вопросы и получи новую стаю ласточек!',
+      kg: 'Бардык суроолорго туура жооп берип, чабалекейлердин үйүрүн толукта!');
+  Name startTest = Name(ru: 'Начать тест', kg: 'Тестти баштоо');
 
   final String bottomBanner = 'assets/backgrounds/note_bottom_banner.png';
   final String rocketImg = 'assets/icons/mw_rocket.png';
@@ -117,7 +120,7 @@ class _NotesPageState extends State<NotesPage> {
                   ),
                 ),
                 LButton(
-                    text: test.toString(),
+                    text: takeTest.toString(),
                     func: _openInfoPopup,
                     icon: forwardIcon)
               ],
