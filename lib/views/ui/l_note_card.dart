@@ -12,14 +12,9 @@ class LNoteCard extends StatelessWidget {
 
   final int index;
   final Note note;
-  final bool isRead;
-  final Function onTap;
+  final Function onRead;
 
-  LNoteCard(
-      {@required this.index,
-      @required this.note,
-      @required this.isRead,
-      @required this.onTap});
+  LNoteCard({@required this.index, @required this.note, @required this.onRead});
 
   Widget _buildReadIcon() {
     return Container(
@@ -62,6 +57,7 @@ class LNoteCard extends StatelessWidget {
   }
 
   Widget _buildIcon() {
+    bool isRead = note.isRead ?? false;
     if (note.swallow == 0 && !isRead) {
       return Container(
         margin: EdgeInsets.symmetric(horizontal: 24.0),
@@ -84,7 +80,7 @@ class LNoteCard extends StatelessWidget {
               MaterialPageRoute(
                   builder: (BuildContext context) => NotePage(
                         note: note,
-                        onTap: onTap,
+                        onRead: onRead,
                       )));
         },
         child: Container(
@@ -112,7 +108,7 @@ class LNoteCard extends StatelessWidget {
                       child: Text(
                         '${index + 1}. ${note.title}',
                         maxLines: 3,
-                        style: isRead
+                        style: note.isRead ?? false
                             ? TextStyle(
                                 color: textColor.withOpacity(0.6),
                                 fontSize: 17.0,

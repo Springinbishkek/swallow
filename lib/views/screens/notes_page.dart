@@ -108,8 +108,7 @@ class _NotesPageState extends State<NotesPage> {
           LNoteCard(
               index: 0,
               note: noteService.state.notes[0],
-              isRead: noteService.state.notes[0].isRead ?? false,
-              onTap: () =>
+              onRead: () =>
                   noteService.setState((s) => s.notes[0].isRead = true)),
           Expanded(
               child: Container(
@@ -135,8 +134,7 @@ class _NotesPageState extends State<NotesPage> {
                 itemBuilder: (context, index) => LNoteCard(
                     index: index,
                     note: noteService.state.notes[index],
-                    isRead: noteService.state.notes[index].isRead ?? false,
-                    onTap: () => noteService
+                    onRead: () => noteService
                         .setState((s) => s.notes[index].isRead = true)))));
   }
 

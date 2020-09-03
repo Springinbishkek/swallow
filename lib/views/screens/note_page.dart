@@ -8,9 +8,9 @@ import 'package:lastochki/views/ui/l_button.dart';
 
 class NotePage extends StatefulWidget {
   final Note note;
-  final Function onTap;
+  final Function onRead;
 
-  NotePage({@required this.note, @required this.onTap});
+  NotePage({@required this.note, @required this.onRead});
 
   @override
   _NotePageState createState() => _NotePageState();
@@ -21,7 +21,6 @@ class _NotePageState extends State<NotePage> {
   final String topBG = 'assets/backgrounds/note_top_background.jpg';
 
   void navigateBack() {
-    widget.onTap();
     Navigator.pop(context);
   }
 
@@ -72,7 +71,12 @@ class _NotePageState extends State<NotePage> {
                 image: DecorationImage(
                     image: AssetImage(bottomBG), fit: BoxFit.cover)),
             child: Center(
-              child: LButton(text: understood.toString(), func: navigateBack),
+              child: LButton(
+                  text: understood.toString(),
+                  func: () {
+                    widget.onRead();
+                    navigateBack();
+                  }),
             ),
           )
         ],
