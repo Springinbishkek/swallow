@@ -76,6 +76,7 @@ class _TestPageState extends State<TestPage> {
                       text: restartTest.toString(),
                       icon: refreshIcon,
                       func: () {
+                        widget.test.result = 0;
                         ///может добавить именованные маршруты?
                         Navigator.pop(context);
                         Navigator.pushReplacement(
