@@ -137,7 +137,7 @@ class _TestPageState extends State<TestPage> {
     }
     return LButton(
       text: next.toString(),
-      func: _isAnswerChosen ? () => _navigateToNextPage() : null,
+      func: _isAnswerChosen ? _navigateToNextPage : null,
       icon: forwardIcon,
     );
   }
