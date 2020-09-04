@@ -101,31 +101,6 @@ class _NotesPageState extends State<NotesPage> {
     );
   }
 
-  Widget _buildOneNoteBody(ReactiveModel<NoteService> noteService) {
-    return Container(
-      child: Column(
-        children: [
-          LNoteCard(
-              index: 0,
-              note: noteService.state.notes[0],
-              onRead: () =>
-                  noteService.setState((s) => s.notes[0].isRead = true)),
-          Expanded(
-              child: Container(
-            padding: EdgeInsets.only(bottom: 80.0),
-            child: Center(
-              child: Text(
-                noNotes.toString(),
-                style: TextStyle(
-                    color: textColor.withOpacity(0.6), fontSize: 17.0),
-              ),
-            ),
-          ))
-        ],
-      ),
-    );
-  }
-
   Widget _buildNotesBody(ReactiveModel<NoteService> noteService) {
     return Container(
         child: Scrollbar(
@@ -153,9 +128,19 @@ class _NotesPageState extends State<NotesPage> {
               func: () {
                 Navigator.pop(context);
               }),
-          body: noteService.state.notes.length > 1
-              ? _buildNotesBody(noteService)
-              : _buildOneNoteBody(noteService),
+          body: Stack(
+            children: [
+              noteService.state.notes.length == 1
+                  ? Center(
+                      child: Text(
+                      noNotes.toString(),
+                      style: TextStyle(
+                          color: textColor.withOpacity(0.6), fontSize: 17.0),
+                    ))
+                  : Container(),
+              _buildNotesBody(noteService)
+            ],
+          ),
           bottomNavigationBar:
               noteService.state.notes.length > 1 ? _buildBottom() : null,
         );
