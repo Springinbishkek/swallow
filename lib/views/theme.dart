@@ -26,4 +26,5 @@ final String backIcon = 'assets/icons/back_arrow.png';
 final String checkIcon = 'assets/icons/check_icon.png';
 final String closeIcon = 'assets/icons/close_icon.png';
 final String swallowIcon = 'assets/icons/swallow.png';
+final String refreshIcon = 'assets/icons/refresh_icon.png';
 final String testBG = 'assets/backgrounds/test_bottom_background.png';

@@ -9,6 +9,7 @@ import 'package:lastochki/services/api_client.dart';
 class NoteService {
   // TODO rewrite repo
   final ApiClient _repository;
+
   NoteService({
     ApiClient repository,
   }) : _repository = repository;
@@ -52,13 +53,35 @@ class NoteService {
                     isRight: false),
                 AnswerOption(
                     title: Name(
+                        ru: "Работала до 2017 года, сейчас нет.",
+                        kg: "2017-жылга чеийн иштеген, азыр иштебейт."),
+                    isRight: false),
+                AnswerOption(
+                    title: Name(
+                        ru: "Работает по номеру «112», все это знают!",
+                        kg: "«112» номери боюнча иштейт, аны баары эле билет!"),
+                    isRight: true),
+              ],
+            ),
+            Question(
+              question: Name(
+                  ru: 'Работает ли в Кыргызстане единая служба спасения?',
+                  kg: 'Кыргызстанда бирдиктүү куткаруу кызматы иштейби?'),
+              answers: [
+                AnswerOption(
+                    title: Name(
                         ru: "Может и работает, но всё равно не дозвонишься.",
                         kg: "Ал иштеши мүмкүн, бирок сен бары бир чалып, ала албайсың."),
                     isRight: false),
                 AnswerOption(
                     title: Name(
-                        ru: "Может и работает, но всё равно не дозвонишься.",
-                        kg: "Ал иштеши мүмкүн, бирок сен бары бир чалып, ала албайсың."),
+                        ru: "Работала до 2017 года, сейчас нет.",
+                        kg: "2017-жылга чеийн иштеген, азыр иштебейт."),
+                    isRight: false),
+                AnswerOption(
+                    title: Name(
+                        ru: "Работает по номеру «112», все это знают!",
+                        kg: "«112» номери боюнча иштейт, аны баары эле билет!"),
                     isRight: true),
               ],
             )

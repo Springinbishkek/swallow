@@ -1,12 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
-import 'package:lastochki/models/entities/Question.dart';
+import 'package:lastochki/models/entities/Note.dart';
+import 'package:lastochki/services/note_service.dart';
 import 'package:lastochki/views/screens/test_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_appbar.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_info_popup.dart';
 import 'package:lastochki/views/ui/l_note_card.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
 
 import '../translation.dart';
 
@@ -16,11 +19,6 @@ class NotesPage extends StatefulWidget {
 }
 
 class _NotesPageState extends State<NotesPage> {
-  Name firstNote =
-      Name(ru: 'Что такое Заметки и зачем они нужны для игры?', kg: 'test');
-  Name secondNote =
-      Name(ru: 'Что делать, если идешь одна поздно ночью домой?', kg: 'test');
-  Name thirdNote = Name(ru: 'Куда звонить, если что-то случилось?', kg: 'test');
   Name bottom = Name(
       ru: 'Хочешь больше ласточек?', kg: 'Көбүрөөк чабалекей алгың келеби?');
   Name title = Name(ru: 'Тест', kg: 'Тест');
@@ -28,29 +26,19 @@ class _NotesPageState extends State<NotesPage> {
       ru: 'Ответь правильно на все вопросы и получи новую стаю ласточек!',
       kg: 'Бардык суроолорго туура жооп берип, чабалекейлердин үйүрүн толукта!');
   Name startTest = Name(ru: 'Начать тест', kg: 'Тестти баштоо');
+  final Name noNotes =
+      Name(ru: 'Скоро будут ещё!', kg: 'Жакында дагы жаңысы болот!');
 
   final String bottomBanner = 'assets/backgrounds/note_bottom_banner.png';
-  final String rocketImg = 'assets/icons/mw_rocket.png';
+  final String testImg = 'assets/icons/mw_test.png';
 
-  List<Question> questions = [
-    Question(),
-    Question(),
-    Question(),
-    Question(),
-    Question(),
-    Question(),
-    Question(),
-    Question(),
-    Question(),
-    Question(),
-  ];
-
-  void _openInfoPopup() {
+  //TODO: получение теста
+  void _openInfoPopup(Note note) {
     showDialog(
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) => LInfoPopup(
-              image: rocketImg,
+              image: testImg,
               title: title.toString(),
               content: content.toString(),
               actions: LButton(
@@ -60,74 +48,92 @@ class _NotesPageState extends State<NotesPage> {
                         context,
                         MaterialPageRoute(
                             builder: (BuildContext context) => TestPage(
-                                  questions: questions,
+                                  test: note.test,
                                 )));
                   }),
             ));
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: scaffoldBgColor,
-      appBar: LAppbar(
-          title: notes.toString(),
-          func: () {
-            Navigator.pop(context);
-          }),
-      body: Container(
-          child: Scrollbar(
-              child: ListView(
-        children: <Widget>[
-          LNoteCard(index: 0, title: firstNote.toString(), isRead: true),
-          LNoteCard(
-            index: 1,
-            title: secondNote.toString(),
-            isRead: true,
-          ),
-          LNoteCard(
-            index: 2,
-            title: thirdNote.toString(),
-            isRead: false,
-          ),
-          LNoteCard(index: 3, title: firstNote.toString(), isRead: false),
-          LNoteCard(index: 4, title: firstNote.toString(), isRead: false),
-          LNoteCard(index: 5, title: firstNote.toString(), isRead: false),
-          LNoteCard(index: 6, title: firstNote.toString(), isRead: false),
-        ],
-      ))),
-      bottomNavigationBar: BottomAppBar(
-        color: scaffoldBgColor,
+  Widget _buildBottom(Note note) {
+    return BottomAppBar(
+      color: scaffoldBgColor,
+      child: Container(
+        height: 160,
+        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: Container(
-          height: 160,
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(bottomBanner), fit: BoxFit.cover),
-                borderRadius: boxBorderRadius),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text(
-                    bottom.toString(),
-                    style: TextStyle(
-                        color: whiteColor,
-                        fontSize: 17.0,
-                        fontWeight: FontWeight.bold),
-                  ),
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage(bottomBanner), fit: BoxFit.cover),
+              borderRadius: boxBorderRadius),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: Text(
+                  bottom.toString(),
+                  style: TextStyle(
+                      color: whiteColor,
+                      fontSize: 17.0,
+                      fontWeight: FontWeight.bold),
                 ),
-                LButton(
-                    text: takeTest.toString(),
-                    func: _openInfoPopup,
-                    icon: forwardIcon)
-              ],
-            ),
+              ),
+              LButton(
+                  text: takeTest.toString(),
+                  func: () => _openInfoPopup(note),
+                  icon: forwardIcon)
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildNotesBody(ReactiveModel<NoteService> noteService) {
+    return Container(
+        child: Scrollbar(
+            child: ListView.builder(
+                itemCount: noteService.state.notes.length,
+                itemBuilder: (context, index) => LNoteCard(
+                      index: index,
+                      title: noteService.state.notes[index].title.toString(),
+                      isRead: noteService.state.notes[index].isRead ?? false,
+                    ))));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StateBuilder<NoteService>(
+      observe: () => RM.get<NoteService>(),
+      initState: (context, noteServiceRM) {
+        noteServiceRM.setState((s) => s.loadNotes());
+      },
+      builder: (context, noteService) {
+        return Scaffold(
+          backgroundColor: scaffoldBgColor,
+          appBar: LAppbar(
+              title: notes.toString(),
+              func: () {
+                Navigator.pop(context);
+              }),
+          body: Stack(
+            children: [
+              noteService.state.notes.length == 1
+                  ? Center(
+                      child: Text(
+                      noNotes.toString(),
+                      style: TextStyle(
+                          color: textColor.withOpacity(0.6), fontSize: 17.0),
+                    ))
+                  : Container(),
+              _buildNotesBody(noteService)
+            ],
+          ),
+          bottomNavigationBar: noteService.state.notes.length > 1
+              ? _buildBottom(noteService.state.notes[1])
+              : null,
+        );
+      },
     );
   }
 }

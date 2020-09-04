@@ -1,27 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:lastochki/models/entities/AnswerOption.dart';
+import 'package:lastochki/models/entities/Question.dart';
 import 'package:lastochki/views/theme.dart';
 
 class LTestBox extends StatefulWidget {
+  final Question question;
+  final AnswerOption userAnswer;
+  final Function(AnswerOption) onChooseAnswer;
   final bool isResult;
 
-  LTestBox({this.isResult = false});
+  LTestBox(
+      {@required this.question,
+      this.userAnswer,
+      this.onChooseAnswer,
+      this.isResult = false});
 
   @override
   _LTestBoxState createState() => _LTestBoxState();
 }
 
 class _LTestBoxState extends State<LTestBox> {
-  final String question = '1. Работает ли в Кыргызтане единая служба спасения?';
-  final String answer1 = 'Может и работает, но все равно не дозвонишься';
-  final String answer2 = 'Работала до 2017 года, но сейчас нет';
-  final String answer3 = 'Работает по номеру 112';
-
   int _radioVal;
 
   void _onAnswerTap(int val) {
     setState(() {
       _radioVal = val;
     });
+    widget.onChooseAnswer(widget.question.answers[val]);
   }
 
   Widget _buildIcon({String icon}) {
@@ -53,14 +58,19 @@ class _LTestBoxState extends State<LTestBox> {
 
 //TODO: переписать логику
   Widget _buildAnswerIcon(int val) {
-    switch (val) {
-      case 0:
-        return _buildCheckIcon(color: errorColor, icon: closeIcon);
-      case 2:
+    if (widget.question.answers[val] == widget.userAnswer) {
+      debugPrint('here');
+      if (widget.question.answers[val].isRight) {
+        debugPrint('right here');
         return _buildCheckIcon(color: accentColor, icon: checkIcon);
-      default:
-        return _buildCheckIcon(color: Colors.transparent, icon: null);
+      } else {
+        debugPrint('not right here');
+        return _buildCheckIcon(color: errorColor, icon: closeIcon);
+      }
+    } else if (widget.question.answers[val].isRight) {
+      return _buildCheckIcon(color: accentColor, icon: checkIcon);
     }
+    return _buildCheckIcon(color: Colors.transparent, icon: null);
   }
 
   Widget _buildRadioButton(int val, Function func) {
@@ -108,14 +118,14 @@ class _LTestBoxState extends State<LTestBox> {
                 borderRadius: boxBorderRadius, color: scaffoldBgColor),
             child: Center(
               child: Text(
-                question,
+                widget.question.question.toString(),
                 style: appbarTextStyle,
               ),
             ),
           ),
-          _buildCheckBox(0, answer1),
-          _buildCheckBox(1, answer2),
-          _buildCheckBox(2, answer3)
+          _buildCheckBox(0, widget.question.answers[0].title.toString()),
+          _buildCheckBox(1, widget.question.answers[1].title.toString()),
+          _buildCheckBox(2, widget.question.answers[2].title.toString())
         ],
       ),
     );
