@@ -56,15 +56,11 @@ class _LTestBoxState extends State<LTestBox> {
     );
   }
 
-//TODO: переписать логику
   Widget _buildAnswerIcon(int val) {
     if (widget.question.answers[val] == widget.userAnswer) {
-      debugPrint('here');
       if (widget.question.answers[val].isRight) {
-        debugPrint('right here');
         return _buildCheckIcon(color: accentColor, icon: checkIcon);
       } else {
-        debugPrint('not right here');
         return _buildCheckIcon(color: errorColor, icon: closeIcon);
       }
     } else if (widget.question.answers[val].isRight) {

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/AnswerOption.dart';
-import 'package:lastochki/models/entities/Name.dart';
-import 'package:lastochki/models/entities/Question.dart';
 import 'package:lastochki/models/entities/Test.dart';
 import 'package:lastochki/views/screens/notes_page.dart';
 import 'package:lastochki/views/screens/test_result_page.dart';
@@ -31,6 +29,8 @@ class _TestPageState extends State<TestPage> {
   List<AnswerOption> _chosenAnswers = [];
   AnswerOption _currentAnswer;
 
+  static const int swallowForTest = 15;
+
   void _navigateToNextPage() {
     _checkCorrectness();
     setState(() {
@@ -52,8 +52,6 @@ class _TestPageState extends State<TestPage> {
 
   void _onTestEnd() {
     _checkCorrectness();
-    debugPrint(widget.test.result.toString());
-    debugPrint(widget.test.questions.length.toString());
     if (widget.test.result == widget.test.questions.length) {
       _openWellDonePopup();
     } else {
@@ -119,6 +117,7 @@ class _TestPageState extends State<TestPage> {
             actions: LButton(
                 text: hooray.toString(),
                 icon: swallowIcon,
+                swallow: swallowForTest,
                 func: () {
                   Navigator.pushReplacement(
                       context,
@@ -180,9 +179,7 @@ class _TestPageState extends State<TestPage> {
 
   void _onChooseAnswer(AnswerOption answer) {
     setState(() {
-      _currentAnswer =
-          AnswerOption(title: answer.title, isRight: answer.isRight);
-      debugPrint(_currentAnswer.toString());
+      _currentAnswer = answer;
       _isAnswerChosen = true;
     });
   }

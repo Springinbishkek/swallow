@@ -5,6 +5,7 @@ class LButton extends StatelessWidget {
   final String text;
   final String icon;
   final Function func;
+  final int swallow;
   final bool iconOnRightSide;
   final Color buttonColor;
   final Color borderColor;
@@ -13,6 +14,7 @@ class LButton extends StatelessWidget {
       {@required this.text,
       @required this.func,
       this.icon,
+      this.swallow,
       this.iconOnRightSide = true,
       this.buttonColor = accentColor,
       this.borderColor = accentColor});
@@ -70,10 +72,22 @@ class LButton extends StatelessWidget {
   Widget _buildIcon() {
     return Padding(
       padding: const EdgeInsets.only(right: 8.0, left: 8.0),
-      child: Image.asset(
-        icon,
-        height: 14,
-        color: _getChildColor(),
+      child: Row(
+        children: [
+          if (swallow != null)
+            Text(
+              '+$swallow',
+              style: TextStyle(
+                  color: _getChildColor(),
+                  fontSize: 17.0,
+                  fontWeight: FontWeight.bold),
+            ),
+          Image.asset(
+            icon,
+            height: 14,
+            color: _getChildColor(),
+          ),
+        ],
       ),
     );
   }
