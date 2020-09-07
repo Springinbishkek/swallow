@@ -12,10 +12,12 @@ final Name noInternet = Name(
     kg: 'Интернетке  байланыш табылган жок. Туташууну текшерип, дагы бир жолу аракет кылып көр!');
 final Name tryMsg = Name(ru: 'Попробовать', kg: 'Аракет кылуу');
 final Name aboutGame = Name(ru: 'Об игре', kg: 'Оюн жөнүндө');
+final Name titleChapter =
+    Name(ru: 'Глава @number "@title"', kg: '@number-бөлүм "@title"');
 final Name findingChapter =
     Name(ru: 'Ищем нужную главу', kg: 'Керек болгон бөлүмдү издеп жатабыз');
 final Name loadingChapter =
-    Name(ru: 'Загрузка главы: ', kg: 'Бөлүмдү жүктөө: ');
+    Name(ru: 'Загрузка главы: @percent%', kg: 'Бөлүмдү жүктөө: @percent%');
 final Name tapOnScreen = Name(
     ru: 'Чтобы продолжить, нажми на экран',
     kg: 'Оюнду улантуу үчүн, экранды бас');
@@ -35,7 +37,8 @@ final Name needMoreSwallowTitle = Name(
 final Name needMoreSwallowContent = Name(
     ru: 'Их можно поймать, если пройти тест по Заметкам. Попробуешь?',
     kg: 'Эгер сен Эскертмелер боюнча тесттен өтсөң, аларды кармай аласың. Өзүңдү сынап көрөсүңбү?');
-final Name chapterEnd = Name(ru: 'Конец главы ', kg: 'бөлүмдүн аягы.');
+final Name chapterEnd =
+    Name(ru: 'Конец главы @chapter', kg: '@chapter бөлүмдүн аягы.');
 final Name chapterContinue =
     Name(ru: 'Начнём новую?', kg: 'Кийинкисине өтөлүбү?');
 final Name chapterNoContinue = Name(
@@ -75,11 +78,9 @@ final Name newNoteContent = Name(
     ru: 'Прочтёшь?',
     kg: 'Оюн учурунда аларды чогултасың. Атайын бөлүмгө кирип, алардын качан керектелээрин билип ал!');
 final Name readNoteTitle = Name(ru: 'Отлично!', kg: 'Абдан жакшы!');
-
-///заменить Х на число
 final Name readNoteContent = Name(
-    ru: 'Ласточек стало больше на Х! Пройди тест и поймай ещё!',
-    kg: 'Чабалекейлер Х ке көбөйдү! Тесттен өтүп дагы көбүрөөк карма!');
+    ru: 'Ласточек стало больше на @swallow! Пройди тест и поймай ещё!',
+    kg: 'Чабалекейлер @swallow ке көбөйдү! Тесттен өтүп дагы көбүрөөк карма!');
 final Name toNotes = Name(ru: 'К Заметкам', kg: 'Эскертүүлөргө');
 final Name testPassedTitle = Name(ru: 'Супер!', kg: 'Супер!');
 final Name testPassedContent = Name(
@@ -88,11 +89,9 @@ final Name testPassedContent = Name(
 final Name hooray = Name(ru: 'Ура!', kg: 'Ура!');
 final Name testFailedTitle =
     Name(ru: 'Почти получилось!', kg: 'Азаматсың, туура жоопко жакындадың!');
-
-///заменить Х на число
 final Name testFailedContent = Name(
-    ru: 'Не все ответы верные, мы заметили Х ошибок в 10 ответах. \nТы можешь проверить свои ответы, или почитать Заметки и пройти тест ещё раз.',
-    kg: '10 суроодон Х жооп туура. \nКаерде ката кетиргениңди текшергенге мүмкүнчүлүгүң бар, Жазууларды дагы бир жолу окуп, тести кайрадан өтө аласың.');
+    ru: 'Не все ответы верные, мы заметили @mistakes ошибок в 10 ответах. \nТы можешь проверить свои ответы, или почитать Заметки и пройти тест ещё раз.',
+    kg: '10 суроодон @mistakes жооп туура. \nКаерде ката кетиргениңди текшергенге мүмкүнчүлүгүң бар, Жазууларды дагы бир жолу окуп, тести кайрадан өтө аласың.');
 final Name restartTest = Name(ru: 'Ещё один тест', kg: 'Дагы бир тест');
 final Name checkAnswers =
     Name(ru: 'Проверить ответы', kg: 'Жоопторду текшерүү');
