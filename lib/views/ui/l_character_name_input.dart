@@ -12,6 +12,7 @@ class LCharacterNameInput extends StatefulWidget {
 }
 
 class _LCharacterNameInputState extends State<LCharacterNameInput> {
+  final int nameMaxLength = 24;
   SharedPreferences prefs;
   String currentName;
 
@@ -27,7 +28,7 @@ class _LCharacterNameInputState extends State<LCharacterNameInput> {
             AsyncSnapshot<SharedPreferences> prefSnapshot) {
           prefs = prefSnapshot.data;
           currentName = prefs?.getString('mainCharacterName') ?? 'Бегайым';
-          return LTextField(widget.controller, currentName, 12, onChanged);
+          return LTextField(widget.controller, currentName, nameMaxLength, onChanged);
         });
   }
 }
