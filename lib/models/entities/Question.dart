@@ -7,10 +7,10 @@ import 'package:lastochki/models/entities/Name.dart';
 import 'AnswerOption.dart';
 
 class Question {
-  Name question;
+  Name title;
   List<AnswerOption> answers;
   Question({
-    this.question,
+    this.title,
     this.answers,
   });
 
@@ -19,14 +19,14 @@ class Question {
     List<AnswerOption> answers,
   }) {
     return Question(
-      question: question ?? this.question,
+      title: question ?? this.title,
       answers: answers ?? this.answers,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'question': question?.toMap(),
+      'question': title?.toMap(),
       'answers': answers?.map((x) => x?.toMap())?.toList(),
     };
   }
@@ -35,7 +35,7 @@ class Question {
     if (map == null) return null;
 
     return Question(
-      question: Name.fromMap(map['question']),
+      title: Name.fromMap(map['question']),
       answers: List<AnswerOption>.from(
           map['answers']?.map((x) => AnswerOption.fromMap(x))),
     );
@@ -47,17 +47,17 @@ class Question {
       Question.fromMap(json.decode(source));
 
   @override
-  String toString() => 'Question(question: $question, answers: $answers)';
+  String toString() => 'Question(question: $title, answers: $answers)';
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
 
     return o is Question &&
-        o.question == question &&
+        o.title == title &&
         listEquals(o.answers, answers);
   }
 
   @override
-  int get hashCode => question.hashCode ^ answers.hashCode;
+  int get hashCode => title.hashCode ^ answers.hashCode;
 }

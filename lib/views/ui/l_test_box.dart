@@ -57,14 +57,11 @@ class _LTestBoxState extends State<LTestBox> {
   }
 
   Widget _buildAnswerIcon(int val) {
-    if (widget.question.answers[val] == widget.userAnswer) {
-      if (widget.question.answers[val].isRight) {
-        return _buildCheckIcon(color: accentColor, icon: checkIcon);
-      } else {
-        return _buildCheckIcon(color: errorColor, icon: closeIcon);
-      }
-    } else if (widget.question.answers[val].isRight) {
+    if (widget.question.answers[val].isRight) {
       return _buildCheckIcon(color: accentColor, icon: checkIcon);
+    }
+    if (widget.question.answers[val] == widget.userAnswer) {
+      return _buildCheckIcon(color: errorColor, icon: closeIcon);
     }
     return _buildCheckIcon(color: Colors.transparent, icon: null);
   }
@@ -114,14 +111,17 @@ class _LTestBoxState extends State<LTestBox> {
                 borderRadius: boxBorderRadius, color: scaffoldBgColor),
             child: Center(
               child: Text(
-                widget.question.question.toString(),
+                widget.question.title.toString(),
                 style: appbarTextStyle,
               ),
             ),
           ),
-          _buildCheckBox(0, widget.question.answers[0].title.toString()),
-          _buildCheckBox(1, widget.question.answers[1].title.toString()),
-          _buildCheckBox(2, widget.question.answers[2].title.toString())
+          Column(
+            children: widget.question.answers
+                .map((answer) => _buildCheckBox(
+                    widget.question.answers.indexOf(answer), answer.toString()))
+                .toList(),
+          )
         ],
       ),
     );

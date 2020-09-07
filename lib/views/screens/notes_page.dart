@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
-import 'package:lastochki/models/entities/Question.dart';
 import 'package:lastochki/models/entities/Note.dart';
 import 'package:lastochki/services/note_service.dart';
 import 'package:lastochki/views/screens/test_page.dart';
@@ -96,10 +95,10 @@ class _NotesPageState extends State<NotesPage> {
             child: ListView.builder(
                 itemCount: noteService.state.notes.length,
                 itemBuilder: (context, index) => LNoteCard(
-                      index: index,
-                      title: noteService.state.notes[index].title.toString(),
-                      isRead: noteService.state.notes[index].isRead ?? false,
-                    ))));
+                    index: index,
+                    note: noteService.state.notes[index],
+                    onRead: () => noteService
+                        .setState((s) => s.notes[index].isRead = true)))));
   }
 
   @override
@@ -118,6 +117,7 @@ class _NotesPageState extends State<NotesPage> {
                 Navigator.pop(context);
               }),
           body: Stack(
+            //TODO: переписать логику в зависимости от количества вопросов в базе тестов
             children: [
               noteService.state.notes.length == 1
                   ? Center(
