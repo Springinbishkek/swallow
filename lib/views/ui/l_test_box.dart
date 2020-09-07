@@ -117,9 +117,11 @@ class _LTestBoxState extends State<LTestBox> {
             ),
           ),
           Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: widget.question.answers
                 .map((answer) => _buildCheckBox(
-                    widget.question.answers.indexOf(answer), answer.toString()))
+                    widget.question.answers.indexOf(answer), answer.title.toString()))
                 .toList(),
           )
         ],
