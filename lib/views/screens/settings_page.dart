@@ -4,8 +4,10 @@ import 'package:lastochki/views/screens/notes_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_appbar.dart';
 import 'package:lastochki/views/ui/l_button.dart';
+import 'package:lastochki/views/ui/l_character_name_input.dart';
 import 'package:lastochki/views/ui/l_language_checkbox.dart';
-import 'package:lastochki/views/ui/l_text_field.dart';
+
+import '../translation.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -13,18 +15,31 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  Name settings = Name(ru: 'Настройки');
-  Name changeLanguage = Name(ru: 'Сменить язык');
-  Name changeName = Name(ru: 'Сменить имя героини');
-  Name saveSettings = Name(ru: 'Сохранить настройки');
+  Name changeLanguage = Name(ru: 'Сменить язык', kg: 'Тилди өзгөртүү');
+  Name changeName =
+      Name(ru: 'Сменить имя героини', kg: 'Каармандын атын өзгөртүү');
+  Name saveSettings = Name(ru: 'Сохранить настройки', kg: 'Баптоолорду сактоо');
 
   TextEditingController _textNameController = TextEditingController();
+  String languageCode = Name.curLocale.toString();
 
   @override
   void dispose() {
     _textNameController.clear();
     _textNameController.dispose();
     super.dispose();
+  }
+
+  void onChangeLanguageCode(String code) {
+    setState(() {
+      languageCode = code;
+    });
+  }
+
+  void onSaveSettingsTap() {
+    setState(() {
+      Name.curLocale = Locale(languageCode);
+    });
   }
 
   @override
@@ -55,6 +70,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0, bottom: 36.0),
                   child: LLanguageCheckbox(
+                    onChanged: onChangeLanguageCode,
                     isColumn: false,
                   ),
                 ),
@@ -67,7 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0, bottom: 36.0),
-                  child: LTextField(_textNameController),
+                  child: LCharacterNameInput(_textNameController),
                 ),
               ],
             ),
@@ -80,8 +96,11 @@ class _SettingsPageState extends State<SettingsPage> {
               child: LButton(
                 text: saveSettings.toString(),
                 func: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>NotesPage()));
-                  debugPrint('button tapped');
+                  onSaveSettingsTap();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => NotesPage()));
                 },
                 icon: checkIcon,
               ),

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/views/theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LLanguageCheckbox extends StatefulWidget {
   final bool isColumn;
+  final Function(String) onChanged;
 
-  LLanguageCheckbox({this.isColumn = true});
+  LLanguageCheckbox({this.onChanged, this.isColumn = true});
 
   @override
   _LLanguageCheckboxState createState() => _LLanguageCheckboxState();
@@ -13,47 +16,50 @@ class LLanguageCheckbox extends StatefulWidget {
 class _LLanguageCheckboxState extends State<LLanguageCheckbox> {
   final String _kgIcon = 'assets/icons/kg_icon.png';
   final String _ruIcon = 'assets/icons/ru_icon.png';
+  String currentLanguageCode;
   int _radioVal = 0;
 
   @override
   void initState() {
-    //if(Name.curLocale==Locale('kg')) _radioVal=1;
+    if (Name.curLocale == Locale('kg')) _radioVal = 1;
     super.initState();
   }
 
-  void _onCheckboxTap(int val, String language) {
+  void _onCheckboxTap(int val, String language) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _radioVal = val;
-//      if (language == 'Русский' && Name.curLocale == Locale('kg')) {
-//        Name.setLocale(Locale('ru'));
-//      } else if (language == 'Кыргызча' && Name.curLocale == Locale('ru')) {
-//        Name.setLocale(Locale('kg'));
-//      }
+      currentLanguageCode = val == 0 ? 'ru' : 'kg';
+      prefs.setString('languageCode', currentLanguageCode);
+      widget.onChanged(currentLanguageCode);
     });
   }
 
   Widget _getCheckbox(int val, String flag, String language) {
-    return Row(
-      children: <Widget>[
-        Radio(
-            activeColor: textColor,
-            value: val,
-            groupValue: _radioVal,
-            onChanged: (int value) => _onCheckboxTap(value, language)),
-        Image.asset(
-          flag,
-          height: 22,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 8.0, left: 4.0),
-          child: Text(
-            language,
-            style: widget.isColumn
-                ? contentTextStyle
-                : TextStyle(color: textColor, fontSize: 17.0),
+    return GestureDetector(
+      onTap: () => _onCheckboxTap(val, language),
+      child: Row(
+        children: <Widget>[
+          Radio(
+              activeColor: textColor,
+              value: val,
+              groupValue: _radioVal,
+              onChanged: (int value) => _onCheckboxTap(value, language)),
+          Image.asset(
+            flag,
+            height: 22,
           ),
-        )
-      ],
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0, left: 4.0),
+            child: Text(
+              language,
+              style: widget.isColumn
+                  ? contentTextStyle
+                  : TextStyle(color: textColor, fontSize: 17.0),
+            ),
+          )
+        ],
+      ),
     );
   }
 

@@ -4,14 +4,16 @@ import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_test_box.dart';
 
+import '../translation.dart';
+
 class TestResultPage extends StatefulWidget {
   @override
   _TestResultPageState createState() => _TestResultPageState();
 }
 
 class _TestResultPageState extends State<TestResultPage> {
-  Name done = Name(ru: 'Готово');
-  Name checkRes = Name(ru: 'Проверь свои ответы');
+  Name checkRes =
+      Name(ru: 'Проверь свои ответы', kg: 'Өзүңдүн жоопторуңду текшерип көр');
 
   @override
   Widget build(BuildContext context) {

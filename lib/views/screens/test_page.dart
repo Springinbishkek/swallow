@@ -6,17 +6,18 @@ import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_test_box.dart';
 
+import '../translation.dart';
+
 class TestPage extends StatefulWidget {
   final List<Question> questions;
+
   TestPage({@required this.questions});
+
   @override
   _TestPageState createState() => _TestPageState();
 }
 
 class _TestPageState extends State<TestPage> {
-  Name done = Name(ru: 'Готово');
-  Name next = Name(ru: 'Далее');
-
   final PageController _testPageController = PageController(initialPage: 0);
 
   int _currentPage = 0;
