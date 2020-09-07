@@ -15,18 +15,18 @@ class Question {
   });
 
   Question copyWith({
-    Name question,
+    Name title,
     List<AnswerOption> answers,
   }) {
     return Question(
-      title: question ?? this.title,
+      title: title ?? this.title,
       answers: answers ?? this.answers,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'question': title?.toMap(),
+      'title': title?.toMap(),
       'answers': answers?.map((x) => x?.toMap())?.toList(),
     };
   }
@@ -35,7 +35,7 @@ class Question {
     if (map == null) return null;
 
     return Question(
-      title: Name.fromMap(map['question']),
+      title: Name.fromMap(map['title']),
       answers: List<AnswerOption>.from(
           map['answers']?.map((x) => AnswerOption.fromMap(x))),
     );
@@ -47,7 +47,7 @@ class Question {
       Question.fromMap(json.decode(source));
 
   @override
-  String toString() => 'Question(question: $title, answers: $answers)';
+  String toString() => 'Question(title: $title, answers: $answers)';
 
   @override
   bool operator ==(Object o) {

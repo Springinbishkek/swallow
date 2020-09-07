@@ -119,14 +119,13 @@ class _NotesPageState extends State<NotesPage> {
           body: Stack(
             //TODO: переписать логику в зависимости от количества вопросов в базе тестов
             children: [
-              noteService.state.notes.length == 1
-                  ? Center(
-                      child: Text(
-                      noNotes.toString(),
-                      style: TextStyle(
-                          color: textColor.withOpacity(0.6), fontSize: 17.0),
-                    ))
-                  : Container(),
+              if (noteService.state.notes.length == 1)
+                Center(
+                    child: Text(
+                  noNotes.toString(),
+                  style: TextStyle(
+                      color: textColor.withOpacity(0.6), fontSize: 17.0),
+                )),
               _buildNotesBody(noteService)
             ],
           ),
