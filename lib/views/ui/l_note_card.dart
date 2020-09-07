@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lastochki/models/entities/Note.dart';
 import 'package:lastochki/views/screens/note_page.dart';
 import 'package:lastochki/views/theme.dart';
 
@@ -10,11 +11,10 @@ class LNoteCard extends StatelessWidget {
   ];
 
   final int index;
-  final String title;
-  final bool isRead;
+  final Note note;
+  final Function onRead;
 
-  LNoteCard(
-      {@required this.index, @required this.title, @required this.isRead});
+  LNoteCard({@required this.index, @required this.note, @required this.onRead});
 
   Widget _buildReadIcon() {
     return Container(
@@ -56,9 +56,17 @@ class LNoteCard extends StatelessWidget {
     );
   }
 
-  //TODO: получение значения profit
-  Widget _buildIcon() =>
-      isRead ? _buildReadIcon() : _buildUnreadIcon(profit: 15);
+  Widget _buildIcon() {
+    bool isRead = note.isRead ?? false;
+    if (note.swallow == 0 && !isRead) {
+      return Container(
+        margin: EdgeInsets.symmetric(horizontal: 24.0),
+      );
+    } else if (isRead) {
+      return _buildReadIcon();
+    }
+    return _buildUnreadIcon(profit: note.swallow);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,9 +75,13 @@ class LNoteCard extends StatelessWidget {
           const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0, bottom: 4.0),
       child: GestureDetector(
         onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (BuildContext context) => NotePage()));
-          debugPrint('tap on ${index + 1} note');
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => NotePage(
+                        note: note,
+                        onRead: onRead,
+                      )));
         },
         child: Container(
             height: 85,
@@ -94,9 +106,9 @@ class LNoteCard extends StatelessWidget {
                     margin: EdgeInsets.only(left: 16.0, right: 8.0),
                     child: Center(
                       child: Text(
-                        '${index + 1}. $title',
+                        '${index + 1}. ${note.title}',
                         maxLines: 3,
-                        style: isRead
+                        style: note.isRead ?? false
                             ? TextStyle(
                                 color: textColor.withOpacity(0.6),
                                 fontSize: 17.0,

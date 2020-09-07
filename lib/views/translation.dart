@@ -74,8 +74,6 @@ final Name newNoteTitle =
 final Name newNoteContent = Name(
     ru: 'Прочтёшь?',
     kg: 'Оюн учурунда аларды чогултасың. Атайын бөлүмгө кирип, алардын качан керектелээрин билип ал!');
-final Name noNotes =
-    Name(ru: 'Скоро будут ещё!', kg: 'Жакында дагы жаңысы болот!');
 final Name readNoteTitle = Name(ru: 'Отлично!', kg: 'Абдан жакшы!');
 
 ///заменить Х на число
