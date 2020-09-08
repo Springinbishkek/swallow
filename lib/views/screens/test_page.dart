@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/models/entities/Question.dart';
-import 'package:lastochki/views/screens/test_result_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_test_box.dart';
@@ -35,10 +33,7 @@ class _TestPageState extends State<TestPage> {
       return LButton(
         text: done.toString(),
         func: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => TestResultPage()));
+          Navigator.pushNamed(context, '/test_result');
         },
         icon: checkIcon,
       );

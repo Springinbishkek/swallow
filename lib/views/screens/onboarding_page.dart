@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
-import 'package:lastochki/views/screens/settings_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_character_name_input.dart';
@@ -191,10 +190,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         ),
         Expanded(child: Container()),
         _getButton(letsPlay.toString(), () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => SettingsPage()));
+          Navigator.pushReplacementNamed(context, '/settings');
         })
       ],
     ));
