@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
-import 'package:lastochki/models/entities/Question.dart';
+import 'package:lastochki/models/entities/Note.dart';
 import 'package:lastochki/services/note_service.dart';
+import 'package:lastochki/views/screens/test_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_appbar.dart';
 import 'package:lastochki/views/ui/l_button.dart';
@@ -29,39 +30,31 @@ class _NotesPageState extends State<NotesPage> {
       Name(ru: 'Скоро будут ещё!', kg: 'Жакында дагы жаңысы болот!');
 
   final String bottomBanner = 'assets/backgrounds/note_bottom_banner.png';
-  final String rocketImg = 'assets/icons/mw_rocket.png';
+  final String testImg = 'assets/icons/mw_test.png';
 
-  List<Question> questions = [
-    Question(),
-    Question(),
-    Question(),
-    Question(),
-    Question(),
-    Question(),
-    Question(),
-    Question(),
-    Question(),
-    Question(),
-  ];
-
-  void _openInfoPopup() {
+  //TODO: получение теста
+  void _openInfoPopup(Note note) {
     showDialog(
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) => LInfoPopup(
-              image: rocketImg,
+              image: testImg,
               title: title.toString(),
               content: content.toString(),
               actions: LButton(
                   text: startTest.toString(),
                   func: () {
-                    Navigator.pushReplacementNamed(context, '/test',
-                        arguments: questions);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => TestPage(
+                                  test: note.test,
+                                )));
                   }),
             ));
   }
 
-  Widget _buildBottom() {
+  Widget _buildBottom(Note note) {
     return BottomAppBar(
       color: scaffoldBgColor,
       child: Container(
@@ -87,7 +80,7 @@ class _NotesPageState extends State<NotesPage> {
               ),
               LButton(
                   text: takeTest.toString(),
-                  func: _openInfoPopup,
+                  func: () => _openInfoPopup(note),
                   icon: forwardIcon)
             ],
           ),
@@ -124,20 +117,21 @@ class _NotesPageState extends State<NotesPage> {
                 Navigator.pop(context);
               }),
           body: Stack(
+            //TODO: переписать логику в зависимости от количества вопросов в базе тестов
             children: [
-              noteService.state.notes.length == 1
-                  ? Center(
-                      child: Text(
-                      noNotes.toString(),
-                      style: TextStyle(
-                          color: textColor.withOpacity(0.6), fontSize: 17.0),
-                    ))
-                  : Container(),
+              if (noteService.state.notes.length == 1)
+                Center(
+                    child: Text(
+                  noNotes.toString(),
+                  style: TextStyle(
+                      color: textColor.withOpacity(0.6), fontSize: 17.0),
+                )),
               _buildNotesBody(noteService)
             ],
           ),
-          bottomNavigationBar:
-              noteService.state.notes.length > 1 ? _buildBottom() : null,
+          bottomNavigationBar: noteService.state.notes.length > 1
+              ? _buildBottom(noteService.state.notes[1])
+              : null,
         );
       },
     );

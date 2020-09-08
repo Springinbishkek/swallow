@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:lastochki/models/entities/Question.dart';
 import 'package:lastochki/models/route_arguments.dart';
 import 'package:lastochki/services/api_client.dart';
@@ -15,9 +16,10 @@ import 'package:lastochki/views/screens/test_page.dart';
 import 'package:lastochki/views/screens/test_result_page.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIOverlays([]);
+  await FlutterConfig.loadEnvVariables();
   runApp(App());
 }
 
