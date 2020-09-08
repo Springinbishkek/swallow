@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/models/entities/Note.dart';
 import 'package:lastochki/services/note_service.dart';
-import 'package:lastochki/views/screens/test_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_appbar.dart';
 import 'package:lastochki/views/ui/l_button.dart';
@@ -44,12 +43,8 @@ class _NotesPageState extends State<NotesPage> {
               actions: LButton(
                   text: startTest.toString(),
                   func: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => TestPage(
-                                  test: note.test,
-                                )));
+                    Navigator.pushReplacementNamed(context, '/test',
+                        arguments: note.test);
                   }),
             ));
   }

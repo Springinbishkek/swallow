@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_config/flutter_config.dart';
-import 'package:lastochki/models/entities/Question.dart';
+import 'package:lastochki/models/entities/Test.dart';
 import 'package:lastochki/models/route_arguments.dart';
 import 'package:lastochki/services/api_client.dart';
 import 'package:lastochki/services/chapter_service.dart';
@@ -42,7 +42,7 @@ class App extends StatelessWidget {
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
               home: OpenlineLogoPage(),
-          onGenerateRoute: _routes,
+              onGenerateRoute: _routes,
             ));
   }
 }
@@ -77,15 +77,15 @@ Route _routes(RouteSettings settings) {
       }
     case '/test':
       {
-        final List<Question> questions = settings.arguments as List;
+        final Test test = settings.arguments as Test;
         return MaterialPageRoute(
-            builder: (BuildContext context) => TestPage(questions: questions));
+            builder: (BuildContext context) => TestPage(test: test));
       }
     case '/test_result':
       {
         final ArgumentsTestResultPage args = settings.arguments;
         return MaterialPageRoute(
-            builder: (BuildContext context) => TestResultPage());
+            builder: (BuildContext context) => TestResultPage(questions: args.questions, userAnswers: args.userAnswers,));
       }
   }
   throw Exception('invalid page');
