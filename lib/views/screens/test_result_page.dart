@@ -37,6 +37,7 @@ class _TestResultPageState extends State<TestResultPage> {
                   ),
                   onPressed: () {
                     Navigator.pop(context);
+                    Navigator.pop(context);
                   }),
             ),
             Padding(
@@ -71,6 +72,7 @@ class _TestResultPageState extends State<TestResultPage> {
                   child: LButton(
                     text: done.toString(),
                     func: () {
+                      Navigator.pop(context);
                       Navigator.pop(context);
                     },
                     icon: checkIcon,

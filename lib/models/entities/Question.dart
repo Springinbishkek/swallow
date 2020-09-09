@@ -9,6 +9,7 @@ import 'AnswerOption.dart';
 class Question {
   Name title;
   List<AnswerOption> answers;
+  bool isNew = true;
   Question({
     this.title,
     this.answers,
