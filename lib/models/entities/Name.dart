@@ -6,6 +6,7 @@ class Name {
   static Locale curLocale = Locale('ru');
   final String ru;
   final String kg;
+
   Name({
     this.ru,
     this.kg,
@@ -53,6 +54,14 @@ class Name {
       default:
         return ru;
     }
+  }
+
+  String toStringWithVar({Map<String, dynamic> variables}) {
+    String text = toString();
+    variables.forEach((key, value) {
+      text = text.replaceAll('@$key', value.toString());
+    });
+    return text;
   }
 
   @override

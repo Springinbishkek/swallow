@@ -7,17 +7,18 @@ import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_character_name_input.dart';
 import 'package:lastochki/views/ui/l_language_checkbox.dart';
 
+import '../translation.dart';
+
 class SettingsPage extends StatefulWidget {
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  //TODO: вставить переводы
-  Name settings = Name(ru: 'Настройки', kg: 'test');
-  Name changeLanguage = Name(ru: 'Сменить язык', kg: 'test');
-  Name changeName = Name(ru: 'Сменить имя героини', kg: 'test');
-  Name saveSettings = Name(ru: 'Сохранить настройки', kg: 'test');
+  Name changeLanguage = Name(ru: 'Сменить язык', kg: 'Тилди өзгөртүү');
+  Name changeName =
+      Name(ru: 'Сменить имя героини', kg: 'Каармандын атын өзгөртүү');
+  Name saveSettings = Name(ru: 'Сохранить настройки', kg: 'Баптоолорду сактоо');
 
   TextEditingController _textNameController = TextEditingController();
   String languageCode = Name.curLocale.toString();

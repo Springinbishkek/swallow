@@ -6,6 +6,8 @@ import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_character_name_input.dart';
 import 'package:lastochki/views/ui/l_language_checkbox.dart';
 
+import '../translation.dart';
+
 class OnboardingPage extends StatefulWidget {
   @override
   _OnboardingPageState createState() => _OnboardingPageState();
@@ -29,15 +31,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
       ru: 'Как тебя зовут?',
       kg: 'Сенин атың ким болсо, башкы каармандын да\nаты ошондой болот');
   Name aboutName = Name(ru: 'Также будут звать главную героиню игры', kg: '');
-  Name greetingName = Name(ru: 'Отлично, ', kg: 'Абдан жакшы, ');
+  Name greetingName = Name(ru: 'Отлично, @name!', kg: 'Абдан жакшы, @name!');
   Name aboutSettings = Name(
       ru: 'Поменять имя, язык или начать игру заново можно в разделе «Настройки» с таким значком: ',
       kg: 'Төмөнкү белги менен "Баптоолор" бөлүмүндө атын, тилин өзгөртүп жана оюнду кайрадан баштаса болот: ');
   Name letsStart =
       Name(ru: 'А теперь давай начнём игру!', kg: 'Эми оюнду баштайлы!');
-  Name next1 = Name(ru: 'Далее', kg: 'Андан ары');
-  Name next = Name(ru: 'Далее', kg: 'Кийинкиси');
-  Name letsPlay = Name(ru: 'Играть!', kg: 'Ойноо!');
+  Name nextFirstPage = Name(ru: 'Далее', kg: 'Андан ары');
 
   final PageController _pageStateController = PageController(initialPage: 0);
   final TextEditingController _textNameController = TextEditingController();
@@ -87,7 +87,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           ),
         ),
         Expanded(child: Container()),
-        _getButton(next1.toString(), () => _navigateToNextPage())
+        _getButton(nextFirstPage.toString(), () => _navigateToNextPage())
       ],
     ));
   }
@@ -162,7 +162,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         Padding(
           padding: const EdgeInsets.all(24.0),
           child: Text(
-            greetingName.toString() + name,
+            greetingName.toStringWithVar(variables: {'name': name}),
             style: titleTextStyle,
             textAlign: TextAlign.center,
           ),
