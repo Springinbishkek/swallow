@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
+import 'package:lastochki/services/chapter_service.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
 
 final Name loading = Name(
   ru: 'Загрузка',
@@ -17,40 +19,84 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    // loadingValue = 0.1;
+    RM.get<ChapterService>().state.loadGame();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/backgrounds/loading_background.jpg'),
-            fit: BoxFit.cover,
-          ),
+      body: StateBuilder(
+          observe: () => RM.get<ChapterService>(),
+          builder: (context, chapterRM) {
+            return (chapterRM.state.loadingPercent != null ||
+                    chapterRM.state.gameInfo == null)
+                ? buildLoading()
+                : buildChapter();
+          }),
+    );
+  }
+
+  Widget buildChapter() {
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/backgrounds/loading_background.jpg'),
+          fit: BoxFit.cover,
         ),
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                '$loading...',
-                style: Theme.of(context)
-                    .textTheme
-                    .headline6
-                    .copyWith(color: Colors.white),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '$loading...',
+              style: Theme.of(context)
+                  .textTheme
+                  .headline6
+                  .copyWith(color: Colors.white),
+            ),
+            SizedBox(height: 10),
+            SizedBox(
+              width: 200,
+              height: 10,
+              child: LinearProgressIndicator(
+                value: loadingValue,
               ),
-              SizedBox(height: 10),
-              SizedBox(
-                width: 200,
-                height: 10,
-                child: LinearProgressIndicator(
-                  value: loadingValue,
-                ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildLoading() {
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/backgrounds/loading_background.jpg'),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '$loading...',
+              style: Theme.of(context)
+                  .textTheme
+                  .headline6
+                  .copyWith(color: Colors.white),
+            ),
+            SizedBox(height: 10),
+            SizedBox(
+              width: 200,
+              height: 10,
+              child: LinearProgressIndicator(
+                value: loadingValue,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

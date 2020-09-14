@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:lastochki/models/entities/Chapter.dart';
 
 final String baseUrl = 'https://astories.info/public/';
 final int connectTimeout = 10000;
@@ -28,9 +29,13 @@ class ApiClient {
 
   // TODO
 
-  Future<Response> getChapters() async {
+  Future<Map> getChapters() async {
     Response response = await dio.get('/info.json');
-    return response;
+    Map data = response.data;
+    List<dynamic> chapters = data['chapters'];
+    print(chapters[0]);
+    return {'chapters': chapters.map((e) => Chapter.fromMap(e))};
+    // response;
   }
 
   // TODO
