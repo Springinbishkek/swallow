@@ -114,8 +114,7 @@ class _TestPageState extends State<TestPage> {
                 icon: swallowIcon,
                 swallow: swallowForTest,
                 func: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  Navigator.of(context).popUntil(ModalRoute.withName('/notes'));
                 })));
   }
 

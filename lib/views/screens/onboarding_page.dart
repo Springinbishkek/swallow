@@ -190,7 +190,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         ),
         Expanded(child: Container()),
         _getButton(letsPlay.toString(), () {
-          Navigator.pushReplacementNamed(context, '/settings');
+          Navigator.of(context).pushReplacementNamed('/settings');
         })
       ],
     ));

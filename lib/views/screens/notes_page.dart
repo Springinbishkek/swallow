@@ -43,7 +43,7 @@ class _NotesPageState extends State<NotesPage> {
               actions: LButton(
                   text: startTest.toString(),
                   func: () {
-                    Navigator.pushReplacementNamed(context, '/test',
+                    Navigator.of(context).popAndPushNamed('/test',
                         arguments: note.test);
                   }),
             ));

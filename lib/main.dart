@@ -45,48 +45,59 @@ class App extends StatelessWidget {
               onGenerateRoute: _routes,
             ));
   }
-}
 
-Route _routes(RouteSettings settings) {
-  switch (settings.name) {
-    case '/onboarding':
-      {
-        return MaterialPageRoute(
-            builder: (BuildContext context) => OnboardingPage());
-      }
-    case '/home':
-      {
-        return MaterialPageRoute(builder: (BuildContext context) => HomePage());
-      }
-    case '/notes':
-      {
-        return MaterialPageRoute(
-            builder: (BuildContext context) => NotesPage());
-      }
-    case '/note':
-      {
-        final ArgumentsNotePage args = settings.arguments;
-        return MaterialPageRoute(
-            builder: (BuildContext context) =>
-                NotePage(note: args.note, onRead: args.onRead));
-      }
-    case '/settings':
-      {
-        return MaterialPageRoute(
-            builder: (BuildContext context) => SettingsPage());
-      }
-    case '/test':
-      {
-        final Test test = settings.arguments as Test;
-        return MaterialPageRoute(
-            builder: (BuildContext context) => TestPage(test: test));
-      }
-    case '/test_result':
-      {
-        final ArgumentsTestResultPage args = settings.arguments;
-        return MaterialPageRoute(
-            builder: (BuildContext context) => TestResultPage(questions: args.questions, userAnswers: args.userAnswers,));
-      }
+  Route _routes(RouteSettings settings) {
+    switch (settings.name) {
+      case '/onboarding':
+        {
+          return MaterialPageRoute(
+              settings: settings,
+              builder: (BuildContext context) => OnboardingPage());
+        }
+      case '/home':
+        {
+          return MaterialPageRoute(
+              settings: settings,
+              builder: (BuildContext context) => HomePage());
+        }
+      case '/notes':
+        {
+          return MaterialPageRoute(
+              settings: settings,
+              builder: (BuildContext context) => NotesPage());
+        }
+      case '/note':
+        {
+          final ArgumentsNotePage args = settings.arguments;
+          return MaterialPageRoute(
+              settings: settings,
+              builder: (BuildContext context) =>
+                  NotePage(note: args.note, onRead: args.onRead));
+        }
+      case '/settings':
+        {
+          return MaterialPageRoute(
+              settings: settings,
+              builder: (BuildContext context) => SettingsPage());
+        }
+      case '/test':
+        {
+          final Test test = settings.arguments as Test;
+          return MaterialPageRoute(
+              settings: settings,
+              builder: (BuildContext context) => TestPage(test: test));
+        }
+      case '/test_result':
+        {
+          final ArgumentsTestResultPage args = settings.arguments;
+          return MaterialPageRoute(
+              settings: settings,
+              builder: (BuildContext context) => TestResultPage(
+                    questions: args.questions,
+                    userAnswers: args.userAnswers,
+                  ));
+        }
+    }
+    throw Exception('invalid page');
   }
-  throw Exception('invalid page');
 }
