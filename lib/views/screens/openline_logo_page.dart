@@ -23,7 +23,7 @@ class _OpenlineLogoPageState extends State<OpenlineLogoPage> {
         () => Navigator.of(context).pushReplacementNamed(_getRoute()));
   }
 
-  String _getRoute() =>  '/onboarding' ;
+  String _getRoute() => isFirstStart ? '/onboarding' : '/home';
 
   void _getPrefsData() async {
     prefs = await SharedPreferences.getInstance();
