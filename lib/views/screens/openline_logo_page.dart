@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
-import 'package:lastochki/views/screens/home_page.dart';
-import 'package:lastochki/views/screens/onboarding_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,16 +20,10 @@ class _OpenlineLogoPageState extends State<OpenlineLogoPage> {
     _getPrefsData();
     super.initState();
     Timer(Duration(seconds: 3),
-        () => Navigator.of(context).pushReplacement(_getRoute()));
+        () => Navigator.of(context).pushReplacementNamed(_getRoute()));
   }
 
-  MaterialPageRoute _getRoute() {
-    if (isFirstStart) {
-      return MaterialPageRoute(
-          builder: (BuildContext context) => OnboardingPage());
-    }
-    return MaterialPageRoute(builder: (BuildContext context) => HomePage());
-  }
+  String _getRoute() => isFirstStart ? '/onboarding' : '/home';
 
   void _getPrefsData() async {
     prefs = await SharedPreferences.getInstance();

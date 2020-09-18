@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/AnswerOption.dart';
 import 'package:lastochki/models/entities/Test.dart';
-import 'package:lastochki/views/screens/test_result_page.dart';
+import 'package:lastochki/models/route_arguments.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_info_popup.dart';
@@ -60,7 +60,7 @@ class _TestPageState extends State<TestPage> {
   }
 
   void _openFailedPopup() {
-    int mistakes = 10 - widget.test.result;
+    int mistakes = _chosenAnswers.length - widget.test.result;
     widget.test.result = 0;
     showDialog(
         barrierDismissible: false,
@@ -68,7 +68,8 @@ class _TestPageState extends State<TestPage> {
         builder: (BuildContext context) => LInfoPopup(
             image: cloverImg,
             title: testFailedTitle.toString(),
-            content: testFailedContent.toStringWithVar(variables: {'mistakes':mistakes}),
+            content: testFailedContent
+                .toStringWithVar(variables: {'mistakes': mistakes}),
             actions: IntrinsicWidth(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -78,11 +79,9 @@ class _TestPageState extends State<TestPage> {
                       icon: refreshIcon,
                       func: () {
                         Navigator.pop(context);
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    TestPage(test: widget.test, onTestPassed: widget.onTestPassed,)));
+                        //TODO: get new test
+                        Navigator.pushReplacementNamed(context, '/test',
+                            arguments: widget.test);
                       }),
                   SizedBox(
                     height: 8.0,
@@ -92,14 +91,11 @@ class _TestPageState extends State<TestPage> {
                       icon: forwardIcon,
                       buttonColor: whiteColor,
                       func: () {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    TestResultPage(
-                                      questions: widget.test.questions,
-                                      userAnswers: _chosenAnswers,
-                                    )));
+                        Navigator.pop(context);
+                        Navigator.pushReplacementNamed(context, '/test_result',
+                            arguments: ArgumentsTestResultPage(
+                                questions: widget.test.questions,
+                                userAnswers: _chosenAnswers));
                       }),
                 ],
               ),
@@ -119,9 +115,7 @@ class _TestPageState extends State<TestPage> {
                 icon: swallowIcon,
                 swallow: swallowForTest,
                 func: () {
-                  widget.onTestPassed();
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  Navigator.of(context).popUntil(ModalRoute.withName('/notes'));
                 })));
   }
 
