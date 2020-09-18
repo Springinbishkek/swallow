@@ -6,7 +6,6 @@ import 'Question.dart';
 
 class Test {
   final List<Question> questions;
-  int result = 0; // number of right answers
   Test({
     this.questions,
   });
