@@ -79,9 +79,10 @@ class _TestPageState extends State<TestPage> {
                       icon: refreshIcon,
                       func: () {
                         Navigator.pop(context);
-                        //TODO: get new test
                         Navigator.pushReplacementNamed(context, '/test',
-                            arguments: widget.test);
+                            arguments: ArgumentsTestPage(
+                                test: widget.test,
+                                onTestPassed: widget.onTestPassed));
                       }),
                   SizedBox(
                     height: 8.0,

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/models/entities/Test.dart';
+import 'package:lastochki/models/route_arguments.dart';
 import 'package:lastochki/services/note_service.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_appbar.dart';
@@ -55,7 +56,8 @@ class _NotesPageState extends State<NotesPage> {
                   text: startTest.toString(),
                   func: () {
                     Navigator.of(context).popAndPushNamed('/test',
-                        arguments: note.test);
+                        arguments: ArgumentsTestPage(
+                            test: test, onTestPassed: onPassed));
                   }),
             ));
   }
@@ -161,13 +163,13 @@ class _NotesPageState extends State<NotesPage> {
                     index: index,
                     note: noteService.state.notes[index],
                     onRead: () {
-                          noteService.setState((s) {
-                            if (s.notes[index].isRead==null) {
-                              s.onNewNoteRead(s.notes[index].questions);
-                              s.notes[index].isRead = true;
-                            }
-                          });
-                        }))));
+                      noteService.setState((s) {
+                        if (s.notes[index].isRead == null) {
+                          s.onNewNoteRead(s.notes[index].questions);
+                          s.notes[index].isRead = true;
+                        }
+                      });
+                    }))));
   }
 
   @override

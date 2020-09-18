@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_config/flutter_config.dart';
-import 'package:lastochki/models/entities/Test.dart';
 import 'package:lastochki/models/route_arguments.dart';
 import 'package:lastochki/services/api_client.dart';
 import 'package:lastochki/services/chapter_service.dart';
@@ -82,10 +81,13 @@ class App extends StatelessWidget {
         }
       case '/test':
         {
-          final Test test = settings.arguments as Test;
+          final ArgumentsTestPage args = settings.arguments;
           return MaterialPageRoute(
               settings: settings,
-              builder: (BuildContext context) => TestPage(test: test));
+              builder: (BuildContext context) => TestPage(
+                    test: args.test,
+                    onTestPassed: args.onTestPassed,
+                  ));
         }
       case '/test_result':
         {
