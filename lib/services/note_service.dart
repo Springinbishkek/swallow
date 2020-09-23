@@ -1,9 +1,11 @@
 import 'package:lastochki/models/entities/AnswerOption.dart';
 import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/models/entities/Note.dart';
+import 'package:lastochki/models/entities/PopupText.dart';
 import 'package:lastochki/models/entities/Question.dart';
 import 'package:lastochki/models/entities/Test.dart';
 import 'package:lastochki/services/api_client.dart';
+import 'package:lastochki/views/translation.dart';
 
 // note example : https://astories.info/public/notes1.json
 class NoteService {
@@ -381,22 +383,23 @@ class NoteService {
     return notes;
   }
 
-  bool isAllRead() {
-    for (Note n in notes){
-      if(n.isRead==null) return false;
+  bool _isAllRead() {
+    for (Note n in notes) {
+      if (n.isRead == null) return false;
     }
     return true;
   }
 
-  bool isTestAvailable() => _questionBase.length >= 15;
+  bool _isTestAvailable() => _questionBase.length >= 15;
 
-  bool isAttemptLeft() => _numberOfAttempt < 3;
+  bool _isAttemptLeft() => _numberOfAttempt < 3;
 
-  void onNewNoteRead(List<Question> newQuestions) {
+  void onNewNoteRead(int noteIndex) {
     _numberOfAttempt = 0;
-    if (newQuestions!=null) {
-      _numberOfNewQuestions += newQuestions.length;
-      _questionBase.addAll(newQuestions);
+    notes[noteIndex].isRead = true;
+    if (notes[noteIndex].questions != null) {
+      _numberOfNewQuestions += notes[noteIndex].questions.length;
+      _questionBase.addAll(notes[noteIndex].questions);
     }
   }
 
@@ -404,7 +407,21 @@ class NoteService {
     _numberOfAttempt++;
   }
 
+  PopupText getPopupText() {
+    if (!_isTestAvailable()) {
+      return PopupText(
+          title: noTestTitle.toString(), content: noTestContent.toString());
+    }
+    if (!_isAllRead()) {
+      return PopupText(title: '', content: haveUnreadNote.toString());
+    }
+    if (!_isAttemptLeft()) {
+      return PopupText(title: '', content: haveToReadNewNote.toString());
+    }
+  }
+
   Test getTest() {
+    if (!_isAllRead() || !_isTestAvailable() || !_isAttemptLeft()) return null;
     List<Question> testQuestion = [];
     int _numberOfOldQuestions =
         _numberOfNewQuestions >= 10 ? 0 : 10 - _numberOfNewQuestions;

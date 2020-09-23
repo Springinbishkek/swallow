@@ -116,6 +116,7 @@ class _TestPageState extends State<TestPage> {
                 icon: swallowIcon,
                 swallow: swallowForTest,
                 func: () {
+                  widget.onTestPassed();
                   Navigator.of(context).popUntil(ModalRoute.withName('/notes'));
                 })));
   }

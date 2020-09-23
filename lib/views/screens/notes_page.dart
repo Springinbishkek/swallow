@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
+import 'package:lastochki/models/entities/PopupText.dart';
 import 'package:lastochki/models/entities/Test.dart';
 import 'package:lastochki/models/route_arguments.dart';
 import 'package:lastochki/services/note_service.dart';
@@ -28,21 +29,25 @@ class _NotesPageState extends State<NotesPage> {
   Name startTest = Name(ru: 'Начать тест', kg: 'Тестти баштоо');
   final Name noNotes =
       Name(ru: 'Скоро будут ещё!', kg: 'Жакында дагы жаңысы болот!');
-  final Name noTestTitle =
-      Name(ru: 'Тест появится чуть позже', kg: 'Тест кийинчерээк пайда болот');
-  final Name noTestContent = Name(
-      ru: 'Чтобы открыть тест, нужно собрать больше Заметок. Продолжай играть!',
-      kg: 'Тестти ачуу үчүн, көбүрөөк Эскертүүлөрдү чогултуу керек. Оюнду улант!');
-  final Name haveUnreadNote = Name(
-      ru: 'Прочитай все свои заметки, прежде чем проходить тест!',
-      kg: 'Тесттен өтөөрдөн мурун, өзүңдүн бардык эскертүүлөрүңдү окуп чык!');
-  final Name haveToReadNewNote = Name(
-      ru: 'Ты уже эксперт! Найди и прочитай новые заметки, прежде чем проходить тест снова.',
-      kg: 'Сен эми экспертсиң! Кайрадан тесттен өтөөрдүн алдында, жаңы эскертүүлөрдү таап, оку.');
 
   final String bottomBanner = 'assets/backgrounds/note_bottom_banner.png';
   final String testImg = 'assets/icons/mw_test.png';
   final String noteImg = 'assets/icons/mw_note.png';
+
+  void _openNoTestPopup(PopupText popupText) {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) => LInfoPopup(
+            image: noteImg,
+            title: popupText.title,
+            content: popupText.content,
+            actions: LButton(
+                text: toNotes.toString(),
+                func: () {
+                  Navigator.pop(context);
+                })));
+  }
 
   void _openTestPopup(Test test, Function onPassed) {
     showDialog(
@@ -62,49 +67,14 @@ class _NotesPageState extends State<NotesPage> {
             ));
   }
 
-  void _openNoTestPopup() {
-    showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) => LInfoPopup(
-            image: noteImg,
-            title: noTestTitle.toString(),
-            content: noTestContent.toString(),
-            actions: LButton(
-                text: toNotes.toString(),
-                func: () {
-                  Navigator.pop(context);
-                })));
-  }
-
-  void _openUnreadNotesPopup() {
-    showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) => LInfoPopup(
-            image: noteImg,
-            title: '',
-            content: haveUnreadNote.toString(),
-            actions: LButton(
-                text: toNotes.toString(),
-                func: () {
-                  Navigator.pop(context);
-                })));
-  }
-
-  void _openNoAttemptsPopup() {
-    showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) => LInfoPopup(
-            image: noteImg,
-            title: '',
-            content: haveToReadNewNote.toString(),
-            actions: LButton(
-                text: toNotes.toString(),
-                func: () {
-                  Navigator.pop(context);
-                })));
+  Function _getPopup(ReactiveModel<NoteService> service) {
+    Test test = service.state.getTest();
+    if (test == null) {
+      return () => _openNoTestPopup(service.state.getPopupText());
+    }
+    return () => _openTestPopup(test, () {
+          service.setState((s) => s.onTestPassed());
+        });
   }
 
   Widget _buildBottom(ReactiveModel<NoteService> noteService) {
@@ -133,19 +103,7 @@ class _NotesPageState extends State<NotesPage> {
               ),
               LButton(
                   text: takeTest.toString(),
-                  func: () {
-                    if (!noteService.state.isTestAvailable()) {
-                      _openNoTestPopup();
-                    } else if (!noteService.state.isAllRead()) {
-                      _openUnreadNotesPopup();
-                    } else if (!noteService.state.isAttemptLeft()) {
-                      _openNoAttemptsPopup();
-                    } else {
-                      _openTestPopup(noteService.state.getTest(), () {
-                        noteService.setState((s) => s.onTestPassed());
-                      });
-                    }
-                  },
+                  func: _getPopup(noteService),
                   icon: forwardIcon)
             ],
           ),
@@ -165,8 +123,7 @@ class _NotesPageState extends State<NotesPage> {
                     onRead: () {
                       noteService.setState((s) {
                         if (s.notes[index].isRead == null) {
-                          s.onNewNoteRead(s.notes[index].questions);
-                          s.notes[index].isRead = true;
+                          s.onNewNoteRead(index);
                         }
                       });
                     }))));
