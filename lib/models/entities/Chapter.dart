@@ -63,26 +63,44 @@ class Chapter {
     };
   }
 
-  factory Chapter.fromMap(Map<String, dynamic> map) {
+  static Map<String, dynamic> getPrepared(Map m) {
+    Map<String, dynamic> map = Map.from(m);
+    if (map['title_kg'].runtimeType == String) {
+      map['title'] = {
+        'ru': m['title'],
+        'kg': m['title_kg'],
+      };
+    }
+    if (map['description_kg'].runtimeType == String) {
+      map['description'] = {
+        'ru': m['description'],
+        'kg': m['description_kg'],
+      };
+    }
+    return map;
+  }
+
+  static Chapter fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
+
+    map = getPrepared(map);
 
     return Chapter(
       number: map['number'],
       version: map['version'],
       title: Name.fromMap(map['title']),
       description: Name.fromMap(map['description']),
-      mBytes: map['mBytes'],
-      mediaUri: map['mediaUri'],
-      noteUri: map['noteUri'],
-      storyUri: map['storyUri'],
+      mBytes: double.parse(map['mBytes'].toString()),
+      mediaUri: map['uri'],
+      noteUri: map['note_uri'],
+      storyUri: map['story_uri'],
       story: Story.fromMap(map['story']),
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory Chapter.fromJson(String source) =>
-      Chapter.fromMap(json.decode(source));
+  Chapter fromJson(String source) => fromMap(json.decode(source));
 
   @override
   String toString() {
