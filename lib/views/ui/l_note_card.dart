@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Note.dart';
-import 'package:lastochki/views/screens/note_page.dart';
+import 'package:lastochki/models/route_arguments.dart';
 import 'package:lastochki/views/theme.dart';
 
 class LNoteCard extends StatelessWidget {
@@ -75,13 +75,8 @@ class LNoteCard extends StatelessWidget {
           const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0, bottom: 4.0),
       child: GestureDetector(
         onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => NotePage(
-                        note: note,
-                        onRead: onRead,
-                      )));
+          Navigator.pushNamed(context, '/note',
+              arguments: ArgumentsNotePage(note: note, onRead: onRead));
         },
         child: Container(
             height: 85,
