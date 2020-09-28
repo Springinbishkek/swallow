@@ -31,7 +31,7 @@ dependencies:
   dio: ^3.0.10
   states_rebuilder: ^2.3.1
   flutter_html: ^1.0.2
-  flutter_config: ^1.0.7
+  flutter_dotenv: 2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -54,3 +54,5 @@ flutter:
   assets:
     - assets/icons/
     - assets/backgrounds/
+    - .env.production
+    - .env.development

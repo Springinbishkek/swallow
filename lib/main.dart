@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_config/flutter_config.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lastochki/services/api_client.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/services/note_service.dart';
@@ -10,7 +10,7 @@ import 'package:states_rebuilder/states_rebuilder.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIOverlays([]);
-  await FlutterConfig.loadEnvVariables();
+  await DotEnv().load('.env.development'); // TODO
   runApp(App());
 }
 
