@@ -16,6 +16,10 @@ class NoteService {
     ApiClient repository,
   }) : _repository = repository;
 
+  static const int minQuestionBaseLength = 15;
+  static const int maxNumberOfAttempt = 3;
+  static const int numberOfTestQuestion = 10;
+
   List<Note> notes;
   List<Question> _questionBase = [];
   int _numberOfNewQuestions = 0;
@@ -384,15 +388,12 @@ class NoteService {
   }
 
   bool _isAllRead() {
-    for (Note n in notes) {
-      if (n.isRead == null) return false;
-    }
-    return true;
+    return !notes.any((element) => element.isRead == null);
   }
 
-  bool _isTestAvailable() => _questionBase.length >= 15;
+  bool _isTestAvailable() => _questionBase.length >= minQuestionBaseLength;
 
-  bool _isAttemptLeft() => _numberOfAttempt < 3;
+  bool _isAttemptLeft() => _numberOfAttempt < maxNumberOfAttempt;
 
   void onNewNoteRead(int noteIndex) {
     _numberOfAttempt = 0;
@@ -408,23 +409,27 @@ class NoteService {
   }
 
   PopupText getPopupText() {
+    String title = '';
+    String content = '';
     if (!_isTestAvailable()) {
-      return PopupText(
-          title: noTestTitle.toString(), content: noTestContent.toString());
+      title = noTestTitle.toString();
+      content = noTestContent.toString();
     }
     if (!_isAllRead()) {
-      return PopupText(title: '', content: haveUnreadNote.toString());
+      content = haveUnreadNote.toString();
     }
     if (!_isAttemptLeft()) {
-      return PopupText(title: '', content: haveToReadNewNote.toString());
+      content = haveToReadNewNote.toString();
     }
+    return PopupText(title: title, content: content);
   }
 
   Test getTest() {
     if (!_isAllRead() || !_isTestAvailable() || !_isAttemptLeft()) return null;
     List<Question> testQuestion = [];
-    int _numberOfOldQuestions =
-        _numberOfNewQuestions >= 10 ? 0 : 10 - _numberOfNewQuestions;
+    int _numberOfOldQuestions = _numberOfNewQuestions >= numberOfTestQuestion
+        ? 0
+        : numberOfTestQuestion - _numberOfNewQuestions;
     _questionBase.shuffle();
     for (Question q in _questionBase) {
       if (q.isNew && _numberOfNewQuestions != 0) {
@@ -436,7 +441,7 @@ class NoteService {
         testQuestion.add(q);
         _numberOfOldQuestions--;
       }
-      if (testQuestion.length == 10) break;
+      if (testQuestion.length == numberOfTestQuestion) break;
     }
     return Test(questions: testQuestion);
   }

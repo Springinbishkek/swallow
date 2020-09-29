@@ -34,6 +34,15 @@ class _NotesPageState extends State<NotesPage> {
   final String testImg = 'assets/icons/mw_test.png';
   final String noteImg = 'assets/icons/mw_note.png';
 
+  void _navigateBack() {
+    Navigator.pop(context);
+  }
+
+  void _navigateToNewTest(Test test, Function onPassed) {
+    Navigator.of(context).popAndPushNamed('/test',
+        arguments: ArgumentsTestPage(test: test, onTestPassed: onPassed));
+  }
+
   void _openNoTestPopup(PopupText popupText) {
     showDialog(
         barrierDismissible: false,
@@ -42,11 +51,7 @@ class _NotesPageState extends State<NotesPage> {
             image: noteImg,
             title: popupText.title,
             content: popupText.content,
-            actions: LButton(
-                text: toNotes.toString(),
-                func: () {
-                  Navigator.pop(context);
-                })));
+            actions: LButton(text: toNotes.toString(), func: _navigateBack)));
   }
 
   void _openTestPopup(Test test, Function onPassed) {
@@ -59,15 +64,11 @@ class _NotesPageState extends State<NotesPage> {
               content: content.toString(),
               actions: LButton(
                   text: startTest.toString(),
-                  func: () {
-                    Navigator.of(context).popAndPushNamed('/test',
-                        arguments: ArgumentsTestPage(
-                            test: test, onTestPassed: onPassed));
-                  }),
+                  func: () => _navigateToNewTest(test, onPassed)),
             ));
   }
 
-  Function _getPopup(ReactiveModel<NoteService> service) {
+  Function _getPopupToOpen(ReactiveModel<NoteService> service) {
     Test test = service.state.getTest();
     if (test == null) {
       return () => _openNoTestPopup(service.state.getPopupText());
@@ -77,7 +78,7 @@ class _NotesPageState extends State<NotesPage> {
         });
   }
 
-  Widget _buildBottom(ReactiveModel<NoteService> noteService) {
+  Widget _buildBottom() {
     return BottomAppBar(
       color: scaffoldBgColor,
       child: Container(
@@ -103,7 +104,7 @@ class _NotesPageState extends State<NotesPage> {
               ),
               LButton(
                   text: takeTest.toString(),
-                  func: _getPopup(noteService),
+                  func: _getPopupToOpen(RM.get<NoteService>()),
                   icon: forwardIcon)
             ],
           ),
@@ -112,16 +113,17 @@ class _NotesPageState extends State<NotesPage> {
     );
   }
 
-  Widget _buildNotesBody(ReactiveModel<NoteService> noteService) {
+  Widget _buildNotesBody() {
+    final ReactiveModel<NoteService> service = RM.get<NoteService>();
     return Container(
         child: Scrollbar(
             child: ListView.builder(
-                itemCount: noteService.state.notes.length,
+                itemCount: service.state.notes.length,
                 itemBuilder: (context, index) => LNoteCard(
                     index: index,
-                    note: noteService.state.notes[index],
+                    note: service.state.notes[index],
                     onRead: () {
-                      noteService.setState((s) {
+                      service.setState((s) {
                         if (s.notes[index].isRead == null) {
                           s.onNewNoteRead(index);
                         }
@@ -140,11 +142,7 @@ class _NotesPageState extends State<NotesPage> {
         bool isOneNote = noteService.state.notes.length == 1;
         return Scaffold(
           backgroundColor: scaffoldBgColor,
-          appBar: LAppbar(
-              title: notes.toString(),
-              func: () {
-                Navigator.pop(context);
-              }),
+          appBar: LAppbar(title: notes.toString(), func: _navigateBack),
           body: Stack(
             children: [
               if (isOneNote)
@@ -154,10 +152,10 @@ class _NotesPageState extends State<NotesPage> {
                   style: TextStyle(
                       color: textColor.withOpacity(0.6), fontSize: 17.0),
                 )),
-              _buildNotesBody(noteService)
+              _buildNotesBody()
             ],
           ),
-          bottomNavigationBar: !isOneNote ? _buildBottom(noteService) : null,
+          bottomNavigationBar: !isOneNote ? _buildBottom() : null,
         );
       },
     );
