@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
-import 'package:lastochki/models/entities/Note.dart';
+import 'package:lastochki/models/entities/PopupText.dart';
+import 'package:lastochki/models/entities/Test.dart';
+import 'package:lastochki/models/route_arguments.dart';
 import 'package:lastochki/services/note_service.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_appbar.dart';
@@ -30,9 +32,29 @@ class _NotesPageState extends State<NotesPage> {
 
   final String bottomBanner = 'assets/backgrounds/note_bottom_banner.png';
   final String testImg = 'assets/icons/mw_test.png';
+  final String noteImg = 'assets/icons/mw_note.png';
 
-  //TODO: получение теста
-  void _openInfoPopup(Note note) {
+  void _navigateBack() {
+    Navigator.pop(context);
+  }
+
+  void _navigateToNewTest(Test test, Function onPassed) {
+    Navigator.of(context).popAndPushNamed('/test',
+        arguments: ArgumentsTestPage(test: test, onTestPassed: onPassed));
+  }
+
+  void _openNoTestPopup(PopupText popupText) {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) => LInfoPopup(
+            image: noteImg,
+            title: popupText.title,
+            content: popupText.content,
+            actions: LButton(text: toNotes.toString(), func: _navigateBack)));
+  }
+
+  void _openTestPopup(Test test, Function onPassed) {
     showDialog(
         barrierDismissible: false,
         context: context,
@@ -42,14 +64,21 @@ class _NotesPageState extends State<NotesPage> {
               content: content.toString(),
               actions: LButton(
                   text: startTest.toString(),
-                  func: () {
-                    Navigator.of(context).popAndPushNamed('/test',
-                        arguments: note.test);
-                  }),
+                  func: () => _navigateToNewTest(test, onPassed)),
             ));
   }
 
-  Widget _buildBottom(Note note) {
+  Function _getPopupToOpen(ReactiveModel<NoteService> service) {
+    Test test = service.state.getTest();
+    if (test == null) {
+      return () => _openNoTestPopup(service.state.getPopupText());
+    }
+    return () => _openTestPopup(test, () {
+          service.setState((s) => s.onTestPassed());
+        });
+  }
+
+  Widget _buildBottom() {
     return BottomAppBar(
       color: scaffoldBgColor,
       child: Container(
@@ -75,7 +104,7 @@ class _NotesPageState extends State<NotesPage> {
               ),
               LButton(
                   text: takeTest.toString(),
-                  func: () => _openInfoPopup(note),
+                  func: _getPopupToOpen(RM.get<NoteService>()),
                   icon: forwardIcon)
             ],
           ),
@@ -84,16 +113,22 @@ class _NotesPageState extends State<NotesPage> {
     );
   }
 
-  Widget _buildNotesBody(ReactiveModel<NoteService> noteService) {
+  Widget _buildNotesBody() {
+    final ReactiveModel<NoteService> service = RM.get<NoteService>();
     return Container(
         child: Scrollbar(
             child: ListView.builder(
-                itemCount: noteService.state.notes.length,
+                itemCount: service.state.notes.length,
                 itemBuilder: (context, index) => LNoteCard(
                     index: index,
-                    note: noteService.state.notes[index],
-                    onRead: () => noteService
-                        .setState((s) => s.notes[index].isRead = true)))));
+                    note: service.state.notes[index],
+                    onRead: () {
+                      service.setState((s) {
+                        if (s.notes[index].isRead == null) {
+                          s.onNewNoteRead(index);
+                        }
+                      });
+                    }))));
   }
 
   @override
@@ -104,29 +139,23 @@ class _NotesPageState extends State<NotesPage> {
         noteServiceRM.setState((s) => s.loadNotes());
       },
       builder: (context, noteService) {
+        bool isOneNote = noteService.state.notes.length == 1;
         return Scaffold(
           backgroundColor: scaffoldBgColor,
-          appBar: LAppbar(
-              title: notes.toString(),
-              func: () {
-                Navigator.pop(context);
-              }),
+          appBar: LAppbar(title: notes.toString(), func: _navigateBack),
           body: Stack(
-            //TODO: переписать логику в зависимости от количества вопросов в базе тестов
             children: [
-              if (noteService.state.notes.length == 1)
+              if (isOneNote)
                 Center(
                     child: Text(
                   noNotes.toString(),
                   style: TextStyle(
                       color: textColor.withOpacity(0.6), fontSize: 17.0),
                 )),
-              _buildNotesBody(noteService)
+              _buildNotesBody()
             ],
           ),
-          bottomNavigationBar: noteService.state.notes.length > 1
-              ? _buildBottom(noteService.state.notes[1])
-              : null,
+          bottomNavigationBar: !isOneNote ? _buildBottom() : null,
         );
       },
     );

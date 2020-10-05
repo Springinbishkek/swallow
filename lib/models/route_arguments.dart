@@ -2,12 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/AnswerOption.dart';
 import 'package:lastochki/models/entities/Note.dart';
 import 'package:lastochki/models/entities/Question.dart';
+import 'package:lastochki/models/entities/Test.dart';
 
 class ArgumentsNotePage {
   final Note note;
   final Function onRead;
 
   ArgumentsNotePage({@required this.note, @required this.onRead});
+}
+
+class ArgumentsTestPage {
+  final Test test;
+  final Function onTestPassed;
+
+  ArgumentsTestPage({@required this.test, @required this.onTestPassed});
 }
 
 class ArgumentsTestResultPage {
