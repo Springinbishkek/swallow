@@ -9,9 +9,9 @@ class GameInfo {
   String languageCode;
   Map<String, dynamic> gameVariables;
   GameInfo({
-    this.currentChapterId,
-    this.currentStep,
-    this.swallowCount,
+    this.currentChapterId = 0,
+    this.currentStep = '',
+    this.swallowCount = 0,
     this.languageCode,
     this.gameVariables,
   });

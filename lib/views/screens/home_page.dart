@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
+import 'package:lastochki/models/entities/Story.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
@@ -14,8 +15,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  double loadingValue;
-
   @override
   void initState() {
     super.initState();
@@ -31,12 +30,12 @@ class _HomePageState extends State<HomePage> {
             return (chapterRM.state.loadingPercent != null ||
                     chapterRM.state.gameInfo == null)
                 ? buildLoading()
-                : buildChapter();
+                : buildChapter(chapterRM.state.currentStory);
           }),
     );
   }
 
-  Widget buildChapter() {
+  Widget buildChapter(Story s) {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -49,19 +48,11 @@ class _HomePageState extends State<HomePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              '$loading...',
+              s.title.toString(),
               style: Theme.of(context)
                   .textTheme
                   .headline6
                   .copyWith(color: Colors.white),
-            ),
-            SizedBox(height: 10),
-            SizedBox(
-              width: 200,
-              height: 10,
-              child: LinearProgressIndicator(
-                value: loadingValue,
-              ),
             ),
           ],
         ),
@@ -70,6 +61,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildLoading() {
+    ReactiveModel<ChapterService> chapterRM = RM.get<ChapterService>();
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -93,7 +85,7 @@ class _HomePageState extends State<HomePage> {
               width: 200,
               height: 10,
               child: LinearProgressIndicator(
-                value: loadingValue,
+                value: chapterRM.state.loadingPercent,
               ),
             ),
           ],

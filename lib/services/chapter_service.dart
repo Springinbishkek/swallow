@@ -1,19 +1,26 @@
 import 'package:lastochki/models/entities/Chapter.dart';
 import 'package:lastochki/models/entities/GameInfo.dart';
-import 'package:lastochki/services/api_client.dart';
+import 'package:lastochki/models/entities/Story.dart';
+import 'package:lastochki/services/chapter_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChapterService {
-  // TODO rewrite repo
-  final ApiClient _repository;
+  final ChapterRepository _repository;
 
   ChapterService({
-    ApiClient repository,
+    ChapterRepository repository,
   }) : _repository = repository;
 
   List<Chapter> chapters;
+  Story currentStory;
   GameInfo gameInfo;
   double loadingPercent;
+
+  void onReceive(int loaded, int info, {double total}) {
+    loadingPercent = loaded / (total ?? loaded);
+    // print(loadingPercent);
+    print('$loaded  $info $total $loadingPercent');
+  }
 
   loadGame() async {
     List values = await Future.wait([
@@ -23,10 +30,10 @@ class ChapterService {
     ]);
     print(values);
 
-    // chapters =
+    chapters = values[1];
 
     if (values[0] == null) {
-      // gameInfo = GameInfo(currentChapterId: );
+      gameInfo = GameInfo();
     } else {
       gameInfo = GameInfo.fromJson(values[0]);
     }
@@ -34,5 +41,15 @@ class ChapterService {
     await loadChapter();
   }
 
-  loadChapter() async {}
+  loadChapter() async {
+    // TODO check free space
+    int currentChapterId = gameInfo.currentStep == ''
+        ? gameInfo.currentChapterId + 1
+        : gameInfo.currentChapterId;
+    Chapter ch =
+        chapters.firstWhere((element) => element.number == currentChapterId);
+    currentStory = await _repository.getStory(
+        ch, (i, j) => onReceive(i, j, total: ch.mBytes * 1024 * 1024));
+    loadingPercent = null;
+  }
 }

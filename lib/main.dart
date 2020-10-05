@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lastochki/models/route_arguments.dart';
 import 'package:lastochki/services/api_client.dart';
+import 'package:lastochki/services/chapter_repository.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/services/note_service.dart';
 import 'package:lastochki/views/screens/home_page.dart';
@@ -31,7 +32,7 @@ class App extends StatelessWidget {
         //Inject Model instance into the widget tree.
         inject: [
           Inject(() => NoteService(repository: apiClient)),
-          Inject(() => ChapterService(repository: apiClient)),
+          Inject(() => ChapterService(repository: ChapterRepository())),
         ],
         builder: (context) => MaterialApp(
               title: 'Ласточки. Весна в Бишкеке',

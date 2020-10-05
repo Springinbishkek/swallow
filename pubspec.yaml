@@ -32,6 +32,8 @@ dependencies:
   states_rebuilder: ^2.3.1
   flutter_html: ^1.0.2
   flutter_dotenv: 2.1.0
+  flutter_cache_manager: 1.4.2
+  path_provider: 1.6.18
 
 dev_dependencies:
   flutter_test:

@@ -12,6 +12,7 @@ class Chapter {
   final String mediaUri;
   final String noteUri;
   final String storyUri;
+  // TODO cut
   Story story;
   Chapter({
     this.number,
@@ -19,11 +20,14 @@ class Chapter {
     this.title,
     this.description,
     this.mBytes,
-    this.mediaUri,
+    // this.mediaUri,
+    mediaUri,
     this.noteUri,
     this.storyUri,
     this.story,
-  });
+  })
+  // TODO cut hardcode
+  : this.mediaUri = 'https://astories.info/public/ios/chapter1';
 
   Chapter copyWith({
     int number,
@@ -42,7 +46,9 @@ class Chapter {
       title: title ?? this.title,
       description: description ?? this.description,
       mBytes: mBytes ?? this.mBytes,
-      mediaUri: mediaUri ?? this.mediaUri,
+      // TODO cut hardcode
+      // mediaUri: mediaUri ?? this.mediaUri,
+      mediaUri: 'https://astories.info/public/ios/chapter1',
       noteUri: noteUri ?? this.noteUri,
       storyUri: storyUri ?? this.storyUri,
       story: story ?? this.story,

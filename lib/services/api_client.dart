@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:lastochki/models/entities/Chapter.dart';
+import 'package:path_provider/path_provider.dart';
 
 final String baseUrl = 'https://astories.info/public/';
 final int connectTimeout = 10000;
@@ -29,18 +32,30 @@ class ApiClient {
 
   // TODO
 
-  Future<Map> getChapters() async {
+  Future<Response> getChapters() async {
     Response response = await dio.get('/info.json');
-    Map data = response.data;
-    List<dynamic> chapters = data['chapters'];
-    print(chapters[0]);
-    return {'chapters': chapters.map((e) => Chapter.fromMap(e))};
+    return response;
     // response;
   }
 
-  // TODO
-  Future<Response> loadChapter(String path) async {
-    Response response = await dio.get(path);
+  Future<Response> loadSource(String path, Function onReceiveProgress) async {
+    Response response = await dio.get(
+      path,
+      onReceiveProgress: onReceiveProgress,
+    );
+    return response;
+  }
+
+  Future<Response> downloadFiles(
+      String path, Function onReceiveProgress) async {
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+
+    Response response = await dio.download(
+      path,
+      '$tempPath/images.zip',
+      onReceiveProgress: onReceiveProgress,
+    );
     return response;
   }
 
