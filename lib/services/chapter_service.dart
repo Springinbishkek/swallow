@@ -12,14 +12,22 @@ class ChapterService {
   }) : _repository = repository;
 
   List<Chapter> chapters;
-  Story currentStory;
+  Chapter currentChapter;
   GameInfo gameInfo;
   double loadingPercent;
 
   void onReceive(int loaded, int info, {double total}) {
     loadingPercent = loaded / (total ?? loaded);
-    // print(loadingPercent);
-    print('$loaded  $info $total $loadingPercent');
+    print(loadingPercent);
+    // print('$loaded  $info $total $loadingPercent');
+  }
+
+  Chapter getCurrentChapter() {
+    return currentChapter;
+  }
+
+  double getLoadingPercent() {
+    return loadingPercent;
   }
 
   loadGame() async {
@@ -46,10 +54,13 @@ class ChapterService {
     int currentChapterId = gameInfo.currentStep == ''
         ? gameInfo.currentChapterId + 1
         : gameInfo.currentChapterId;
-    Chapter ch =
+    currentChapter =
         chapters.firstWhere((element) => element.number == currentChapterId);
-    currentStory = await _repository.getStory(
-        ch, (i, j) => onReceive(i, j, total: ch.mBytes * 1024 * 1024));
+    Story s = await _repository.getStory(
+        currentChapter,
+        (i, j) =>
+            this.onReceive(i, j, total: currentChapter.mBytes * 1024 * 1024));
+    currentChapter.story = s;
     loadingPercent = null;
   }
 }

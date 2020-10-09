@@ -96,7 +96,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 text: saveSettings.toString(),
                 func: () {
                   onSaveSettingsTap();
-                  Navigator.of(context).pushNamed('/notes');
                 },
                 icon: checkIcon,
               ),
