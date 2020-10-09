@@ -81,14 +81,13 @@ class _NotesPageState extends State<NotesPage> {
   Widget _buildBottom() {
     return BottomAppBar(
       color: scaffoldBgColor,
-      child: Container(
+      child: SizedBox(
         height: 160,
-        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: Container(
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: AssetImage(bottomBanner), fit: BoxFit.cover),
-              borderRadius: boxBorderRadius),
+                  image: AssetImage(bottomBanner), fit: BoxFit.contain),
+              borderRadius: BorderRadius.circular(20)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
