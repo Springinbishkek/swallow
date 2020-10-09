@@ -14,6 +14,7 @@ final Name tryMsg = Name(ru: 'Попробовать', kg: 'Аракет кыл�
 final Name aboutGame = Name(ru: 'Об игре', kg: 'Оюн жөнүндө');
 final Name titleChapter =
     Name(ru: 'Глава @number "@title"', kg: '@number-бөлүм "@title"');
+final Name numberChapter = Name(ru: 'Глава @number', kg: '@number-бөлүм');
 final Name findingChapter =
     Name(ru: 'Ищем нужную главу', kg: 'Керек болгон бөлүмдү издеп жатабыз');
 final Name loadingChapter =

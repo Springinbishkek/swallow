@@ -118,7 +118,9 @@ class _HomePageState extends State<HomePage> {
                         padding: EdgeInsets.fromLTRB(48, 90, 48, 20),
                         child: Column(
                           children: [
-                            Text('Глава ${ch.number}', // TODO
+                            Text(
+                                numberChapter.toStringWithVar(
+                                    variables: {'number': ch.number}),
                                 style: subtitleTextStyle),
                             SizedBox(height: 10),
                             Text(ch.title.toString(),
@@ -140,8 +142,12 @@ class _HomePageState extends State<HomePage> {
                             buildItem(aboutGame.toString(), () {
                               // TODO
                             }, Image.asset(aboutIcon)),
-                            buildItem(settings.toString(), () {
-                              Navigator.of(context).pushNamed('/settings');
+                            buildItem(settings.toString(), () async {
+                              await Navigator.of(context)
+                                  .pushNamed('/settings');
+                              setState(() {
+                                // TODO fix language update
+                              });
                             }, Image.asset(settingsIcon)),
                             buildItem(notes.toString(), () {
                               Navigator.of(context).pushNamed('/notes');
