@@ -22,7 +22,6 @@ class LChoiceBox extends StatelessWidget {
 
   Widget _buildOptionButton(Choice option, double width) {
     return Container(
-      // height: 50.0,
       width: width,
       margin: EdgeInsets.only(bottom: 5),
       // margin: EdgeInsets.only(bottom: 8.0),
@@ -32,7 +31,12 @@ class LChoiceBox extends StatelessWidget {
           color: Color(0xFFE7F2F7),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.6),
+              color: Colors.black.withOpacity(0.6),
+              offset: const Offset(4, 4),
+              blurRadius: 16,
+            ),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
               offset: const Offset(4, 4),
               blurRadius: 8,
             )
@@ -42,9 +46,18 @@ class LChoiceBox extends StatelessWidget {
         child: InkWell(
           borderRadius: boxBorderRadius,
           highlightColor: Color(0xFFA3D5EC),
-          onTap: () => Function.apply(onChoose, [option]),
+          onTap: () {
+            print('simple');
+            print(option);
+            onChoose(option);
+          },
           child: Padding(
-            padding: const EdgeInsets.only(left: 16.0, top: 10.0, bottom: 10),
+            padding: const EdgeInsets.only(
+              left: 16,
+              top: 10,
+              bottom: 10,
+              right: 10,
+            ),
             child: Text(
               option.name.toString(),
               style: contentTextStyle,
@@ -56,19 +69,25 @@ class LChoiceBox extends StatelessWidget {
   }
 
   Widget _buildPremiumOptionButton(Choice option, double width) {
-    return Column(
+    return Stack(
+      overflow: Overflow.visible,
       children: [
         Container(
-          // height: 50.0,
           width: width,
+          margin: EdgeInsets.only(bottom: 5),
           decoration: BoxDecoration(
               borderRadius: boxBorderRadius,
               border: Border.all(color: Color(0xFFFFBA06), width: 2.0),
               color: Color(0xFFFFF4E0),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.6),
-                  offset: const Offset(4, 4),
+                  color: Colors.black.withOpacity(0.4),
+                  offset: const Offset(8, 8),
+                  blurRadius: 16,
+                ),
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  offset: const Offset(2, 2),
                   blurRadius: 8,
                 )
               ]),
@@ -76,15 +95,26 @@ class LChoiceBox extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               highlightColor: Color(0xFFFAD289),
-              onTap: () => Function.apply(onChoose, [option]),
+              onTap: () {
+                print('option $option');
+                onChoose(option);
+              },
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.only(
+                  left: 16,
+                  top: 10,
+                  bottom: 10,
+                  right: 10,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      option.name.toString(),
-                      style: contentTextStyle,
+                    Expanded(
+                      child: Text(
+                        option.name.toString(),
+                        style: contentTextStyle,
+                      ),
                     ),
                     Container(
                       height: 25.0,
@@ -116,13 +146,16 @@ class LChoiceBox extends StatelessWidget {
             ),
           ),
         ),
-        Container(
-          transform: Matrix4.translationValues(width / 2 - 20, -70, 0),
-          height: 70,
-          width: 70,
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage(premiumStar), fit: BoxFit.contain)),
+        Positioned(
+          top: -13,
+          right: -25,
+          child: IgnorePointer(
+            child: Image.asset(
+              premiumStar,
+              fit: BoxFit.contain,
+              width: 60,
+            ),
+          ),
         ),
       ],
     );

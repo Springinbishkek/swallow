@@ -36,6 +36,7 @@ class App extends StatelessWidget {
           Inject(() => ChapterService(repository: ChapterRepository())),
         ],
         builder: (context) => MaterialApp(
+              navigatorKey: RM.navigate.navigatorKey,
               title: 'Ласточки. Весна в Бишкеке',
               theme: ThemeData(
                 fontFamily: 'SourceSansPro',

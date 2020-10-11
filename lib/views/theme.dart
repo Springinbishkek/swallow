@@ -23,6 +23,7 @@ const TextStyle noteTextStyle = TextStyle(color: textColor, fontSize: 17.0);
 const boxBorderRadius = BorderRadius.all(Radius.circular(12.0));
 
 final String alertImg = 'assets/icons/mw_alert.png';
+final String endImg = 'assets/icons/mw_end_book.png';
 
 final String homeIcon = 'assets/icons/home.png';
 final String notesIcon = 'assets/icons/notes.png';

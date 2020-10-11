@@ -28,7 +28,7 @@ class ChapterRepository {
       final response = await Future.wait([
         _apiClient.loadSource(chapter.storyUri, null),
         // watch only for images loading cause it biggest
-        _apiClient.downloadFiles(chapter.mediaUri, onReceiveProgress),
+        // _apiClient.downloadFiles(chapter.mediaUri, onReceiveProgress),
         // TODO
         _apiClient.loadSource(chapter.noteUri, null),
       ]);

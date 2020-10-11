@@ -11,7 +11,7 @@ import 'package:lastochki/views/ui/l_action.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_choice_box.dart';
 import 'package:lastochki/views/ui/l_info_popup.dart';
-import 'package:lastochki/views/ui/l_speech_panel.dart';
+import 'package:lastochki/views/ui/l_loading.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
 import '../theme.dart';
@@ -33,6 +33,25 @@ class _GamePageState extends State<GamePage> {
   Widget build(BuildContext context) {
     return StateBuilder(
         observe: () => RM.get<ChapterService>(),
+        onRebuildState: (context, model) async {
+          print('onrebuild');
+          var popup = model.state.gameInfo.currentPassage?.popup;
+          if (popup != null) {
+            Future.delayed(
+              Duration(milliseconds: 500),
+              () => showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (BuildContext context) => LInfoPopup(
+                      image: alertImg,
+                      title: popup.title.toString(),
+                      content: popup.content.toString(),
+                      actions: LButton(
+                          text: understood.toString(),
+                          func: () => Navigator.pop(context)))),
+            );
+          }
+        },
         builder: (context, chapterRM) {
           print('rebuild');
           return buildChapter(chapterRM.state.gameInfo);
@@ -43,9 +62,17 @@ class _GamePageState extends State<GamePage> {
     RM.get<ChapterService>().setState((s) => s.goNext(step));
   }
 
+  Function getTapHandler(Passage p) {
+    return p.links.length <= 1 ? (details) => goNext(null) : null;
+  }
+
   Widget buildChapter(GameInfo g) {
+    if (g.currentPassage == null) {
+      return LLoading(percent: null);
+    }
+
     return GestureDetector(
-      onTapUp: (details) => goNext(null),
+      onTapUp: getTapHandler(g.currentPassage),
       child: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -143,7 +170,8 @@ class _GamePageState extends State<GamePage> {
           }
         case 'CharacterName':
           {
-            if (t[1] != '\$Main') {
+            // vars contain name
+            if (!(t[1].contains('\$'))) {
               String nameStr = t[1];
 
               characterName = nameStr.toName().toString();
@@ -169,25 +197,6 @@ class _GamePageState extends State<GamePage> {
             // TODO
             break;
           }
-        case 'ShowModalWindow':
-          {
-            Future.delayed(
-              Duration(seconds: 1),
-              () => showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  builder: (BuildContext context) => LInfoPopup(
-                      image: alertImg,
-                      title: p.popup.title.toString(),
-                      content: p.popup.content.toString(),
-                      actions: LButton(
-                          text: understood.toString(),
-                          func: () => Navigator.pop(context)))),
-            );
-
-            // TODO
-            break;
-          }
         default:
       }
     });
@@ -205,6 +214,11 @@ class _GamePageState extends State<GamePage> {
         ));
   }
 
+  void chooseOption(Choice o) {
+    print(o.pid);
+    goNext(o.pid);
+  }
+
   Widget buildScene({
     bool isThinking,
     bool isMain,
@@ -216,63 +230,64 @@ class _GamePageState extends State<GamePage> {
   }) {
     return Stack(
       children: [
-        Opacity(
-          opacity: characterName == null ? 1 : 0,
-          child: Center(
-            child: LChoiceBox(
-              name: characterName,
-              speech: speech,
-              options: options,
-              onChoose: (Choice o) {
-                print(o.pid);
-                goNext(o.pid);
-              },
+        IgnorePointer(
+          ignoring: characterName != null,
+          child: Opacity(
+            opacity: characterName == null ? 1 : 0,
+            child: Center(
+              child: LChoiceBox(
+                name: characterName,
+                speech: speech,
+                options: options,
+                onChoose: chooseOption,
+              ),
             ),
           ),
         ),
-        Opacity(
-          opacity: characterName == null ? 0 : 1,
-          child: Column(mainAxisSize: MainAxisSize.max, children: [
-            Flexible(
-              flex: 1,
-              child: Center(),
-            ),
-            Flexible(
-                flex: 3,
-                child: Column(children: [
-                  if (characterImages != null && characterImages.length > 0)
-                    Align(
-                      alignment:
-                          isMain ? Alignment.topLeft : Alignment.topRight,
-                      child: Image.asset(
-                        characterImages[0],
-                        key: Key(characterImages[0]),
-                        width: 220,
-                        height: 205,
-                        errorBuilder: (context, error, stackTrace) => SizedBox(
+        IgnorePointer(
+          ignoring: characterName == null,
+          child: Opacity(
+            opacity: characterName == null ? 0 : 1,
+            child: Column(mainAxisSize: MainAxisSize.max, children: [
+              Flexible(
+                flex: 1,
+                child: Center(),
+              ),
+              Flexible(
+                  flex: 3,
+                  child: Column(children: [
+                    if (characterImages != null && characterImages.length > 0)
+                      Align(
+                        alignment:
+                            isMain ? Alignment.topLeft : Alignment.topRight,
+                        child: Image.asset(
+                          characterImages[0],
+                          key: Key(characterImages[0]),
                           width: 220,
                           height: 205,
-                          child: Placeholder(),
+                          errorBuilder: (context, error, stackTrace) =>
+                              SizedBox(
+                            width: 220,
+                            height: 205,
+                            child: Placeholder(),
+                          ),
                         ),
                       ),
+                    Container(
+                      width: double.infinity,
+                      transform: Matrix4.translationValues(0, -40, 0),
+                      child: LChoiceBox(
+                        name: characterName,
+                        speech: speech,
+                        isMain: isMain,
+                        isThinking: isThinking,
+                        options: options,
+                        onChoose: chooseOption,
+                      ),
                     ),
-                  Container(
-                    width: double.infinity,
-                    transform: Matrix4.translationValues(0, -40, 0),
-                    child: LChoiceBox(
-                      name: characterName,
-                      speech: speech,
-                      isMain: isMain,
-                      isThinking: isThinking,
-                      options: options,
-                      onChoose: (Choice o) {
-                        print(o.pid);
-                        goNext(o.pid);
-                      },
-                    ),
-                  ),
-                ]))
-          ]),
+                  ]))
+            ]),
+          ),
         ),
       ],
     );

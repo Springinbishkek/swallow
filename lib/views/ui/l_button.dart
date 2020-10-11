@@ -9,6 +9,8 @@ class LButton extends StatelessWidget {
   final bool iconOnRightSide;
   final Color buttonColor;
   final Color borderColor;
+  final double fontSize;
+  final double height;
 
   LButton(
       {@required this.text,
@@ -16,6 +18,8 @@ class LButton extends StatelessWidget {
       this.icon,
       this.swallow,
       this.iconOnRightSide = true,
+      this.fontSize = 17,
+      this.height = 45.0,
       this.buttonColor = accentColor,
       this.borderColor = accentColor});
 
@@ -53,7 +57,7 @@ class LButton extends StatelessWidget {
         style: TextStyle(
           color: _getChildColor(),
           fontWeight: FontWeight.bold,
-          fontSize: 17.0,
+          fontSize: fontSize,
         ),
       ),
     );
@@ -79,7 +83,7 @@ class LButton extends StatelessWidget {
               '+$swallow',
               style: TextStyle(
                   color: _getChildColor(),
-                  fontSize: 17.0,
+                  fontSize: fontSize,
                   fontWeight: FontWeight.bold),
             ),
           Image.asset(
@@ -95,7 +99,7 @@ class LButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ButtonTheme(
-      height: 45.0,
+      height: height,
       minWidth: 127.0,
       buttonColor: buttonColor,
       disabledColor: buttonColor.withOpacity(0.6),

@@ -41,16 +41,13 @@ class Choice {
 
   factory Choice.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
-    var parsed = map['name'].split('|swallow:');
-    // TODO
-    String nameString = parsed[0];
-    int swallow = parsed.length == 2 ? int.parse(parsed[1]) : 0;
+    String nameString = map['name'];
 
     return Choice(
       name: nameString.toName(),
       link: map['link'],
       pid: map['pid'],
-      swallow: swallow,
+      swallow: map['swallow'],
     );
   }
 

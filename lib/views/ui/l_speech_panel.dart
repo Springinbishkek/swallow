@@ -12,7 +12,6 @@ class PanelPainter extends CustomPainter {
 
   PanelPainter(
       {@required this.radius, @required this.side, this.isThinking = false});
-  // TODO realize thinking
   @override
   void paint(Canvas canvas, Size size) {
     const height = 25.0;
@@ -97,7 +96,7 @@ class PanelPainter extends CustomPainter {
         }
     }
 
-    canvas.drawShadow(currentPath, Colors.grey.withOpacity(0.6), 10.0, true);
+    canvas.drawShadow(currentPath, Colors.black.withOpacity(0.6), 10.0, true);
     canvas.drawPath(currentPath, fillPaint);
     canvas.drawPath(currentPath, borderPaint);
   }
@@ -130,8 +129,9 @@ class LSpeechPanel extends StatelessWidget {
             : EdgeInsets.only(right: 32.0),
         padding: EdgeInsets.symmetric(horizontal: 10.0),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(15.0)),
-            color: Color(0xFF48BFF5)),
+          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+          color: Color(0xFF48BFF5),
+        ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -155,7 +155,7 @@ class LSpeechPanel extends StatelessWidget {
     Side side = Side.CENTER;
     TextStyle style = contentTextStyle;
     String text = speech;
-    if (name != null) {
+    if (name != null && !isThinking) {
       side = isLeftSide ? Side.LEFT : Side.RIGHT;
     }
     if (speech.startsWith('i:')) {
@@ -170,10 +170,18 @@ class LSpeechPanel extends StatelessWidget {
           side: side,
         ),
         child: Stack(
+          overflow: Overflow.visible,
           children: [
+            if (isThinking)
+              Positioned(
+                top: -24,
+                left: 24,
+                child: Image.asset('assets/icons/think.png'),
+                width: 36,
+              ),
             Padding(
               padding: const EdgeInsets.only(
-                  left: 24.0, top: 40.0, right: 24.0, bottom: 16.0),
+                  left: 24.0, top: 40.0, right: 24.0, bottom: 20),
               child: Text(
                 text,
                 style: style,

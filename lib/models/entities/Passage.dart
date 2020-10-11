@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:html/parser.dart' show parse;
 
 import 'package:flutter/foundation.dart';
 import 'package:lastochki/models/entities/PopupText.dart';
@@ -59,24 +60,33 @@ class Passage {
     for (var item in (map['links'] ?? {})) {
       if (choiceLinks[item['pid']] == null) {
         choiceLinks[item['pid']] = item;
+        var parsed = item['name'].split('|swallow:');
+        choiceLinks[item['pid']]['name'] = parsed[0];
+        choiceLinks[item['pid']]['swallow'] =
+            (parsed.length > 1) ? int.parse(parsed[1]) : 0;
       } else {
-        choiceLinks[item['pid']]['name'] += item['name'];
+        var parsed = item['name'].split('|swallow:');
+        choiceLinks[item['pid']]['name'] += parsed[0];
       }
     }
     var params = map['text'].split('____');
     PopupText popup;
     String nameStr = params[0];
-    if (map['popup'] == null && params.length > 1) {
-      // TODO
-      // var popupParams = params[]
+    if (map['popup'] == null && params.length > 1 && params[1] != '') {
+      var document = parse(params[1]);
+      var ruTitle = document.getElementsByTagName('TitleRu')[0].innerHtml;
+      var ruText = document.getElementsByTagName('TextRu')[0].innerHtml;
+      var kgTitle = document.getElementsByTagName('TitleKg')[0].innerHtml;
+      var kgText = document.getElementsByTagName('TextKg')[0].innerHtml;
+
       popup = PopupText.fromMap({
         'title': {
-          'ru': 'ihygnuh',
-          'kg': 'ihygnuh',
+          'ru': ruTitle,
+          'kg': kgTitle,
         },
-        'context': {
-          'ru': ';;,[',
-          'kg': 'ihygnuh',
+        'content': {
+          'ru': ruText,
+          'kg': kgText,
         },
       });
     }
