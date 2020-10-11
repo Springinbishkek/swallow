@@ -56,5 +56,6 @@ flutter:
   assets:
     - assets/icons/
     - assets/backgrounds/
+    - assets/Base/
     - .env.production
     - .env.development

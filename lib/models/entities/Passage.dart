@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:lastochki/utils/extentions.dart';
 
 import 'package:lastochki/models/entities/Choice.dart';
 
@@ -60,17 +61,10 @@ class Passage {
       }
     }
 
-    Map<String, dynamic> nameMap = {};
     String nameStr = map['text'];
-    List langs = nameStr.split("(");
-    langs.removeAt(0);
-    langs.forEach((element) {
-      List value = element.split(")");
-      nameMap[value[0]] = value[1];
-    });
 
     return Passage(
-      text: Name.fromMap(nameMap),
+      text: nameStr.toName(),
       pid: map['pid'],
       name: map['name'],
       links: List<Choice>.from(

@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:lastochki/utils/extentions.dart';
 import 'Name.dart';
 
 class Choice {
@@ -34,17 +34,9 @@ class Choice {
 
   factory Choice.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
-    // TODO use common translation
-    Map<String, dynamic> name = {};
-    String nameStr = map['name'];
-    List langs = nameStr.split("(");
-    langs.removeAt(0);
-    langs.forEach((element) {
-      List value = element.split(")");
-      name[value[0]] = value[1];
-    });
+    String nameString = map['name'];
     return Choice(
-      name: Name.fromMap(name),
+      name: nameString.toName(),
       link: map['link'],
       pid: map['pid'],
     );

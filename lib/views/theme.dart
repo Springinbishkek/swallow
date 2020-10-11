@@ -22,6 +22,7 @@ const TextStyle noteTextStyle = TextStyle(color: textColor, fontSize: 17.0);
 
 const boxBorderRadius = BorderRadius.all(Radius.circular(12.0));
 
+final String homeIcon = 'assets/icons/home.png';
 final String notesIcon = 'assets/icons/notes.png';
 final String aboutIcon = 'assets/icons/about.png';
 final String settingsIcon = 'assets/icons/settings_home_icon.png';

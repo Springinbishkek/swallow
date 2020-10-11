@@ -8,21 +8,25 @@ import 'Passage.dart';
 class Story {
   final Name title;
   final int chapterId;
-  final List<Passage> script;
+  final String firstPid;
+  final Map<String, Passage> script;
   Story({
     this.title,
     this.chapterId,
+    this.firstPid,
     this.script,
   });
 
   Story copyWith({
     Name title,
     int chapterId,
-    List<Passage> script,
+    String firstPid,
+    Map<String, Passage> script,
   }) {
     return Story(
       title: title ?? this.title,
       chapterId: chapterId ?? this.chapterId,
+      firstPid: firstPid ?? this.firstPid,
       script: script ?? this.script,
     );
   }
@@ -31,24 +35,23 @@ class Story {
     return {
       'title': title?.toMap(),
       'chapterId': chapterId,
-      'script': script?.map((x) => x?.toMap())?.toList(),
+      'firstPid': firstPid,
+      'script': script,
     };
   }
 
   factory Story.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
-    // TODO
-    var title = {
-      'ru': map['name'] ?? map['title'],
-      'kg': map['name'] ?? map['title'],
-    };
+    Map<String, Passage> m = {};
+    map['script'].forEach((k, v) {
+      m[k] = Passage.fromMap(v);
+    });
 
     return Story(
-      title: Name.fromMap(title),
+      title: Name.fromMap(map['title']),
       chapterId: map['chapterId'],
-      script: map['passages']?.map<Passage>((x) {
-        return Passage.fromMap(x);
-      })?.toList(),
+      firstPid: map['firstPid'],
+      script: m,
     );
   }
 
@@ -57,8 +60,9 @@ class Story {
   factory Story.fromJson(String source) => Story.fromMap(json.decode(source));
 
   @override
-  String toString() =>
-      'Story(title: $title, chapterId: $chapterId, script: $script)';
+  String toString() {
+    return 'Story(title: $title, chapterId: $chapterId, firstPid: $firstPid, script: $script)';
+  }
 
   @override
   bool operator ==(Object o) {
@@ -67,9 +71,15 @@ class Story {
     return o is Story &&
         o.title == title &&
         o.chapterId == chapterId &&
-        listEquals(o.script, script);
+        o.firstPid == firstPid &&
+        mapEquals(o.script, script);
   }
 
   @override
-  int get hashCode => title.hashCode ^ chapterId.hashCode ^ script.hashCode;
+  int get hashCode {
+    return title.hashCode ^
+        chapterId.hashCode ^
+        firstPid.hashCode ^
+        script.hashCode;
+  }
 }

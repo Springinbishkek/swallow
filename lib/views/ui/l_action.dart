@@ -9,41 +9,30 @@ class LAction extends StatelessWidget {
   final Color borderColor;
 
   final double h = 38;
+  final double minWidth;
 
   LAction(
       {this.child,
       this.onTap,
+      this.minWidth = 60,
       this.buttonColor = accentColor,
       this.borderColor = accentColor});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      splashColor: buttonColor,
-      highlightColor: buttonColor.withOpacity(0.6),
+      borderRadius: BorderRadius.circular(h / 2),
       onTap: onTap,
       child: Container(
-        constraints: BoxConstraints(maxHeight: h, minWidth: 60),
+        constraints: BoxConstraints(maxHeight: h, minWidth: minWidth),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(h / 2),
           color: buttonColor,
         ),
-        // width: 70,
         height: h,
         padding: EdgeInsets.all(10),
         child: child,
       ),
     );
-    // ButtonTheme(
-    //   height: 40,
-    //   minWidth: 50,
-    //   buttonColor: buttonColor,
-    //   disabledColor: buttonColor.withOpacity(0.6),
-    //   shape: RoundedRectangleBorder(
-    //     borderRadius: BorderRadius.all(Radius.circular(22.5)),
-    //     side: BorderSide(color: borderColor, width: 2.0),
-    //   ),
-    //   child:
-    // );
   }
 }

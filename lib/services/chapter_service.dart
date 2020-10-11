@@ -1,5 +1,6 @@
 import 'package:lastochki/models/entities/Chapter.dart';
 import 'package:lastochki/models/entities/GameInfo.dart';
+import 'package:lastochki/models/entities/Passage.dart';
 import 'package:lastochki/models/entities/Story.dart';
 import 'package:lastochki/services/chapter_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,6 +32,7 @@ class ChapterService {
   }
 
   loadGame() async {
+    // TODO
     List values = await Future.wait([
       SharedPreferences.getInstance()
           .then((value) => value.getString('gameInfo')),
@@ -39,11 +41,13 @@ class ChapterService {
     print(values);
 
     chapters = values[1];
-
-    if (values[0] == null) {
-      gameInfo = GameInfo();
-    } else {
-      gameInfo = GameInfo.fromJson(values[0]);
+    if (gameInfo == null) {
+      // TODO
+      if (values[0] == null) {
+        gameInfo = GameInfo();
+      } else {
+        gameInfo = GameInfo.fromJson(values[0]);
+      }
     }
 
     await loadChapter();
@@ -51,7 +55,7 @@ class ChapterService {
 
   loadChapter() async {
     // TODO check free space
-    int currentChapterId = gameInfo.currentStep == ''
+    int currentChapterId = gameInfo.currentPassage == null
         ? gameInfo.currentChapterId + 1
         : gameInfo.currentChapterId;
     currentChapter =
@@ -62,5 +66,17 @@ class ChapterService {
             this.onReceive(i, j, total: currentChapter.mBytes * 1024 * 1024));
     currentChapter.story = s;
     loadingPercent = null;
+  }
+
+  void goNext(String step) {
+    String nextPid = step ?? gameInfo.currentPassage.links[0].pid;
+    gameInfo.currentPassage = currentChapter.story.script[nextPid];
+  }
+
+  void initGame() {
+    if (gameInfo.currentPassage == null) {
+      gameInfo.currentPassage =
+          currentChapter.story.script[currentChapter.story.firstPid];
+    }
   }
 }

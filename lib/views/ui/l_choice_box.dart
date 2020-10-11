@@ -7,14 +7,18 @@ class LChoiceBox extends StatelessWidget {
   final String premiumStar = 'assets/icons/premium_star.png';
   final String name;
   final String speech;
+  final bool isMain;
+  final bool isThinking;
   final List<ChoiceOption> options;
   final Function onChoose;
 
   LChoiceBox(
-      {@required this.name,
+      {this.name,
       @required this.speech,
       @required this.options,
-      @required this.onChoose});
+      @required this.onChoose,
+      this.isMain = false,
+      this.isThinking = false});
 
   Widget _buildOptionButton(ChoiceOption option, double width) {
     return Container(
@@ -122,38 +126,35 @@ class LChoiceBox extends StatelessWidget {
     );
   }
 
-  Widget _buildButtons(double width) {
-    if (options.length == 3) {
-      return Column(
-        children: [
-          _buildOptionButton(options[0], width),
-          _buildOptionButton(options[1], width),
-          _buildPremiumOptionButton(options[2], width)
-        ],
-      );
+  Widget buildOption(ChoiceOption option, double width) {
+    if (option.price != 0 && option.price > 0) {
+      return _buildPremiumOptionButton(option, width);
     }
+    return _buildOptionButton(options[0], width);
+  }
+
+  Widget _buildButtons(double width) {
     return Column(
-      children: [
-        _buildOptionButton(options[0], width),
-        _buildOptionButton(options[1], width),
-      ],
+      children: options.map((o) => buildOption(o, width)).toList(),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width * 0.8;
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        children: [
-          LSpeechPanel(name: name, speech: speech),
+    return Column(
+      children: [
+        LSpeechPanel(
+            name: name,
+            speech: speech,
+            isLeftSide: isMain,
+            isThinking: isThinking),
+        if (options != null)
           Container(
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               transform: Matrix4.translationValues(0.0, -15.0, 0.0),
               child: _buildButtons(width))
-        ],
-      ),
+      ],
     );
   }
 }

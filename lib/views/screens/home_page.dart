@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Chapter.dart';
+import 'package:lastochki/models/entities/GameInfo.dart';
 import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/models/entities/Story.dart';
 import 'package:lastochki/services/chapter_service.dart';
@@ -32,27 +33,26 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: StateBuilder(
-          observe: () => RM.get<ChapterService>(),
-          onSetState: (context, model) {
-            print('reset');
-          },
-          builder: (context, chapterRM) {
-            print('rebuild');
-            return (chapterRM.state.loadingPercent != null ||
-                    chapterRM.state.gameInfo == null)
-                ? buildLoading(chapterRM.state.getLoadingPercent())
-                : buildChapter(chapterRM.state.currentChapter);
-          }),
-    );
+    return StateBuilder(
+        observe: () => RM.get<ChapterService>(),
+        onSetState: (context, model) {
+          print('reset');
+        },
+        builder: (context, chapterRM) {
+          print('rebuild');
+          return (chapterRM.state.loadingPercent != null ||
+                  chapterRM.state.gameInfo == null)
+              ? buildLoading(chapterRM.state.getLoadingPercent())
+              : buildChapter(
+                  chapterRM.state.currentChapter, chapterRM.state.gameInfo);
+        });
   }
 
   void startGame() {
-    // TODO
+    Navigator.of(context).pushReplacementNamed('/game');
   }
 
-  Widget buildChapter(Chapter ch) {
+  Widget buildChapter(Chapter ch, GameInfo g) {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -88,7 +88,9 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ],
                     ),
-                    onTap: () {}),
+                    onTap: () {
+                      // TODO
+                    }),
               ),
             ]),
         body: Center(
@@ -127,7 +129,9 @@ class _HomePageState extends State<HomePage> {
                                 style: titleLightTextStyle),
                             SizedBox(height: 34),
                             LButton(
-                              text: 'начать игру',
+                              text: g.currentPassage == null
+                                  ? letsPlay.toString()
+                                  : continueGame.toString(),
                               func: startGame,
                             )
                           ],

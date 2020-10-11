@@ -2,56 +2,64 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
+import 'package:lastochki/models/entities/Passage.dart';
+
 class GameInfo {
   int currentChapterId;
-  String currentStep;
+  Passage currentPassage;
   int swallowCount;
   String languageCode;
   Map<String, dynamic> gameVariables;
+
+  String currentBg;
   GameInfo({
     this.currentChapterId = 0,
-    this.currentStep = '',
+    this.currentPassage,
     this.swallowCount = 0,
     this.languageCode,
     this.gameVariables,
+    this.currentBg,
   });
 
   GameInfo copyWith({
     int currentChapterId,
-    String currentStep,
+    Passage currentPassage,
     int swallowCount,
     String languageCode,
     Map<String, dynamic> gameVariables,
+    String currentBg,
   }) {
     return GameInfo(
       currentChapterId: currentChapterId ?? this.currentChapterId,
-      currentStep: currentStep ?? this.currentStep,
+      currentPassage: currentPassage ?? this.currentPassage,
       swallowCount: swallowCount ?? this.swallowCount,
       languageCode: languageCode ?? this.languageCode,
       gameVariables: gameVariables ?? this.gameVariables,
+      currentBg: currentBg ?? this.currentBg,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'currentChapterId': currentChapterId,
-      'currentStep': currentStep,
+      'currentPassage': currentPassage?.toMap(),
       'swallowCount': swallowCount,
       'languageCode': languageCode,
       'gameVariables': gameVariables,
+      'currentBg': currentBg,
     };
   }
 
   factory GameInfo.fromMap(Map<String, dynamic> map) {
-    // default info
     if (map == null) return null;
 
     return GameInfo(
       currentChapterId: map['currentChapterId'],
-      currentStep: map['currentStep'],
+      currentPassage: Passage.fromMap(map['currentPassage']),
       swallowCount: map['swallowCount'],
       languageCode: map['languageCode'],
       gameVariables: Map<String, dynamic>.from(map['gameVariables']),
+      currentBg: map['currentBg'],
     );
   }
 
@@ -62,7 +70,7 @@ class GameInfo {
 
   @override
   String toString() {
-    return 'GameInfo(currentChapterId: $currentChapterId, currentStep: $currentStep, swallowCount: $swallowCount, languageCode: $languageCode, gameVariables: $gameVariables)';
+    return 'GameInfo(currentChapterId: $currentChapterId, currentPassage: $currentPassage, swallowCount: $swallowCount, languageCode: $languageCode, gameVariables: $gameVariables, currentBg: $currentBg)';
   }
 
   @override
@@ -71,18 +79,20 @@ class GameInfo {
 
     return o is GameInfo &&
         o.currentChapterId == currentChapterId &&
-        o.currentStep == currentStep &&
+        o.currentPassage == currentPassage &&
         o.swallowCount == swallowCount &&
         o.languageCode == languageCode &&
-        mapEquals(o.gameVariables, gameVariables);
+        mapEquals(o.gameVariables, gameVariables) &&
+        o.currentBg == currentBg;
   }
 
   @override
   int get hashCode {
     return currentChapterId.hashCode ^
-        currentStep.hashCode ^
+        currentPassage.hashCode ^
         swallowCount.hashCode ^
         languageCode.hashCode ^
-        gameVariables.hashCode;
+        gameVariables.hashCode ^
+        currentBg.hashCode;
   }
 }
