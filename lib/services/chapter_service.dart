@@ -69,8 +69,10 @@ class ChapterService {
   }
 
   void goNext(String step) {
-    String nextPid = step ?? gameInfo.currentPassage.links[0].pid;
-    gameInfo.currentPassage = currentChapter.story.script[nextPid];
+    if (step != null || gameInfo.currentPassage.links.length == 1) {
+      String nextPid = step ?? gameInfo.currentPassage.links[0].pid;
+      gameInfo.currentPassage = currentChapter.story.script[nextPid];
+    }
   }
 
   void initGame() {

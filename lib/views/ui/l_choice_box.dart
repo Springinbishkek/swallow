@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lastochki/models/entities/ChoiceOption.dart';
+import 'package:lastochki/models/entities/Choice.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_speech_panel.dart';
 
@@ -9,7 +9,7 @@ class LChoiceBox extends StatelessWidget {
   final String speech;
   final bool isMain;
   final bool isThinking;
-  final List<ChoiceOption> options;
+  final List<Choice> options;
   final Function onChoose;
 
   LChoiceBox(
@@ -20,11 +20,12 @@ class LChoiceBox extends StatelessWidget {
       this.isMain = false,
       this.isThinking = false});
 
-  Widget _buildOptionButton(ChoiceOption option, double width) {
+  Widget _buildOptionButton(Choice option, double width) {
     return Container(
-      height: 50.0,
+      // height: 50.0,
       width: width,
-      margin: EdgeInsets.only(bottom: 8.0),
+      margin: EdgeInsets.only(bottom: 5),
+      // margin: EdgeInsets.only(bottom: 8.0),
       decoration: BoxDecoration(
           borderRadius: boxBorderRadius,
           border: Border.all(color: boxBorderColor, width: 2.0),
@@ -39,12 +40,13 @@ class LChoiceBox extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
+          borderRadius: boxBorderRadius,
           highlightColor: Color(0xFFA3D5EC),
           onTap: () => Function.apply(onChoose, [option]),
           child: Padding(
-            padding: const EdgeInsets.only(left: 16.0, top: 10.0),
+            padding: const EdgeInsets.only(left: 16.0, top: 10.0, bottom: 10),
             child: Text(
-              option.title,
+              option.name.toString(),
               style: contentTextStyle,
             ),
           ),
@@ -53,11 +55,11 @@ class LChoiceBox extends StatelessWidget {
     );
   }
 
-  Widget _buildPremiumOptionButton(ChoiceOption option, double width) {
+  Widget _buildPremiumOptionButton(Choice option, double width) {
     return Column(
       children: [
         Container(
-          height: 50.0,
+          // height: 50.0,
           width: width,
           decoration: BoxDecoration(
               borderRadius: boxBorderRadius,
@@ -81,7 +83,7 @@ class LChoiceBox extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      option.title,
+                      option.name.toString(),
                       style: contentTextStyle,
                     ),
                     Container(
@@ -94,7 +96,7 @@ class LChoiceBox extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            '-${option.price}',
+                            '-${option.swallow}',
                             style: TextStyle(
                                 color: whiteColor,
                                 fontWeight: FontWeight.bold,
@@ -126,11 +128,11 @@ class LChoiceBox extends StatelessWidget {
     );
   }
 
-  Widget buildOption(ChoiceOption option, double width) {
-    if (option.price != 0 && option.price > 0) {
+  Widget buildOption(Choice option, double width) {
+    if (option.swallow != null && option.swallow > 0) {
       return _buildPremiumOptionButton(option, width);
     }
-    return _buildOptionButton(options[0], width);
+    return _buildOptionButton(option, width);
   }
 
   Widget _buildButtons(double width) {
@@ -141,8 +143,9 @@ class LChoiceBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width * 0.8;
+    double width = MediaQuery.of(context).size.width * 0.95;
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         LSpeechPanel(
             name: name,
@@ -152,7 +155,7 @@ class LChoiceBox extends StatelessWidget {
         if (options != null)
           Container(
               padding: EdgeInsets.symmetric(horizontal: 16.0),
-              transform: Matrix4.translationValues(0.0, -15.0, 0.0),
+              transform: Matrix4.translationValues(0.0, -7, 0.0),
               child: _buildButtons(width))
       ],
     );

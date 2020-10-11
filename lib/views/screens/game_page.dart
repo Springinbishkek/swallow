@@ -1,24 +1,21 @@
 import 'dart:ui';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:lastochki/models/entities/Chapter.dart';
+import 'package:lastochki/models/entities/Choice.dart';
 import 'package:lastochki/models/entities/GameInfo.dart';
-import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/utils/extentions.dart';
 
 import 'package:lastochki/models/entities/Passage.dart';
-import 'package:lastochki/models/entities/Story.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/ui/l_action.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_choice_box.dart';
+import 'package:lastochki/views/ui/l_info_popup.dart';
 import 'package:lastochki/views/ui/l_speech_panel.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
 import '../theme.dart';
 import '../translation.dart';
-import 'home_page.dart';
 
 class GamePage extends StatefulWidget {
   @override
@@ -172,6 +169,25 @@ class _GamePageState extends State<GamePage> {
             // TODO
             break;
           }
+        case 'ShowModalWindow':
+          {
+            Future.delayed(
+              Duration(seconds: 1),
+              () => showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (BuildContext context) => LInfoPopup(
+                      image: alertImg,
+                      title: p.popup.title.toString(),
+                      content: p.popup.content.toString(),
+                      actions: LButton(
+                          text: understood.toString(),
+                          func: () => Navigator.pop(context)))),
+            );
+
+            // TODO
+            break;
+          }
         default:
       }
     });
@@ -185,6 +201,7 @@ class _GamePageState extends State<GamePage> {
           characterName: characterName,
           bgImage: bgImage,
           speech: p.text.toStringWithVar(variables: variables),
+          options: p.links.length > 1 ? p.links : null,
         ));
   }
 
@@ -195,43 +212,70 @@ class _GamePageState extends State<GamePage> {
     String speech,
     String bgImage,
     String characterName,
+    List<Choice> options,
   }) {
-    if (characterName == null) {
-      return Center(
-        child: LSpeechPanel(name: null, speech: speech),
-      );
-    }
-
-    return Column(children: [
-      Flexible(
-        flex: 1,
-        child: Center(),
-      ),
-      Flexible(
-          flex: 3,
-          child: Column(children: [
-            if (characterImages != null && characterImages.length > 0)
-              Align(
-                alignment: isMain ? Alignment.topLeft : Alignment.topRight,
-                child: Image.asset(
-                  characterImages[0],
-                  width: 220,
-                ),
-              ),
-            Container(
-              width: double.infinity,
-              transform: Matrix4.translationValues(0, -40, 0),
-              child: LChoiceBox(
-                name: characterName,
-                speech: speech,
-                isMain: isMain,
-                isThinking: isThinking,
-                options: null,
-                onChoose: null,
-              ),
+    return Stack(
+      children: [
+        Opacity(
+          opacity: characterName == null ? 1 : 0,
+          child: Center(
+            child: LChoiceBox(
+              name: characterName,
+              speech: speech,
+              options: options,
+              onChoose: (Choice o) {
+                print(o.pid);
+                goNext(o.pid);
+              },
             ),
-          ]))
-    ]);
+          ),
+        ),
+        Opacity(
+          opacity: characterName == null ? 0 : 1,
+          child: Column(mainAxisSize: MainAxisSize.max, children: [
+            Flexible(
+              flex: 1,
+              child: Center(),
+            ),
+            Flexible(
+                flex: 3,
+                child: Column(children: [
+                  if (characterImages != null && characterImages.length > 0)
+                    Align(
+                      alignment:
+                          isMain ? Alignment.topLeft : Alignment.topRight,
+                      child: Image.asset(
+                        characterImages[0],
+                        key: Key(characterImages[0]),
+                        width: 220,
+                        height: 205,
+                        errorBuilder: (context, error, stackTrace) => SizedBox(
+                          width: 220,
+                          height: 205,
+                          child: Placeholder(),
+                        ),
+                      ),
+                    ),
+                  Container(
+                    width: double.infinity,
+                    transform: Matrix4.translationValues(0, -40, 0),
+                    child: LChoiceBox(
+                      name: characterName,
+                      speech: speech,
+                      isMain: isMain,
+                      isThinking: isThinking,
+                      options: options,
+                      onChoose: (Choice o) {
+                        print(o.pid);
+                        goNext(o.pid);
+                      },
+                    ),
+                  ),
+                ]))
+          ]),
+        ),
+      ],
+    );
   }
 
   Widget buildNotes() {

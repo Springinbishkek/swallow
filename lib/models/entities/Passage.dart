@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:lastochki/models/entities/PopupText.dart';
 import 'package:lastochki/utils/extentions.dart';
 
 import 'package:lastochki/models/entities/Choice.dart';
@@ -11,15 +12,16 @@ class Passage {
   final Name text;
   final String pid;
   final String name;
-  // TODO
   final List<Choice> links;
   final List<String> tags;
+  final PopupText popup;
   Passage({
     this.text,
     this.pid,
     this.name,
     this.links,
     this.tags,
+    this.popup,
   });
 
   Passage copyWith({
@@ -35,6 +37,7 @@ class Passage {
       name: name ?? this.name,
       links: links ?? this.links,
       tags: tags ?? this.tags,
+      popup: popup ?? this.popup,
     );
   }
 
@@ -45,13 +48,13 @@ class Passage {
       'name': name,
       'links': links?.map((x) => x?.toMap())?.toList(),
       'tags': tags,
+      'popup': popup.toMap(),
     };
   }
 
   factory Passage.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
 
-    // TODO use common translation
     Map choiceLinks = {};
     for (var item in (map['links'] ?? {})) {
       if (choiceLinks[item['pid']] == null) {
@@ -60,8 +63,23 @@ class Passage {
         choiceLinks[item['pid']]['name'] += item['name'];
       }
     }
-
-    String nameStr = map['text'];
+    var params = map['text'].split('____');
+    PopupText popup;
+    String nameStr = params[0];
+    if (map['popup'] == null && params.length > 1) {
+      // TODO
+      // var popupParams = params[]
+      popup = PopupText.fromMap({
+        'title': {
+          'ru': 'ihygnuh',
+          'kg': 'ihygnuh',
+        },
+        'context': {
+          'ru': ';;,[',
+          'kg': 'ihygnuh',
+        },
+      });
+    }
 
     return Passage(
       text: nameStr.toName(),
@@ -70,6 +88,7 @@ class Passage {
       links: List<Choice>.from(
           choiceLinks.values.map<Choice>((x) => Choice.fromMap(x))),
       tags: List<String>.from(map['tags']),
+      popup: popup,
     );
   }
 
@@ -80,7 +99,7 @@ class Passage {
 
   @override
   String toString() {
-    return 'Passage(text: $text, pid: $pid, name: $name, links: $links, tags: $tags)';
+    return 'Passage(text: $text, pid: $pid, name: $name, links: $links, tags: $tags, popup: $popup)';
   }
 
   @override

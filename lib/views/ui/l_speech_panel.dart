@@ -153,8 +153,14 @@ class LSpeechPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Side side = Side.CENTER;
+    TextStyle style = contentTextStyle;
+    String text = speech;
     if (name != null) {
       side = isLeftSide ? Side.LEFT : Side.RIGHT;
+    }
+    if (speech.startsWith('i:')) {
+      style = contentTextStyle.copyWith(fontStyle: FontStyle.italic);
+      text = speech.substring(2);
     }
     return Container(
       width: double.infinity,
@@ -169,8 +175,8 @@ class LSpeechPanel extends StatelessWidget {
               padding: const EdgeInsets.only(
                   left: 24.0, top: 40.0, right: 24.0, bottom: 16.0),
               child: Text(
-                speech,
-                style: contentTextStyle,
+                text,
+                style: style,
               ),
             ),
             if (name != null) _buildNamePanel(),

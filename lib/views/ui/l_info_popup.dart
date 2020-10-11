@@ -41,7 +41,7 @@ class LInfoPopup extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  title,
+                  title ?? '',
                   style: titleTextStyle,
                   textAlign: TextAlign.center,
                 ),
@@ -50,7 +50,7 @@ class LInfoPopup extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(
                     vertical: 16.0, horizontal: 24.0),
                 child: Text(
-                  content,
+                  content ?? '',
                   style: noteTextStyle,
                   textAlign: TextAlign.center,
                 ),

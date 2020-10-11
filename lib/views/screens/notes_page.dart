@@ -49,8 +49,8 @@ class _NotesPageState extends State<NotesPage> {
         context: context,
         builder: (BuildContext context) => LInfoPopup(
             image: noteImg,
-            title: popupText.title,
-            content: popupText.content,
+            title: popupText.title?.toString(),
+            content: popupText.content?.toString(),
             actions: LButton(text: toNotes.toString(), func: _navigateBack)));
   }
 
