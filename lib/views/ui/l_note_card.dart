@@ -19,7 +19,7 @@ class LNoteCard extends StatelessWidget {
   Widget _buildReadIcon() {
     return Container(
         height: 24.0,
-        margin: EdgeInsets.only(top: 8.0, right: 8.0),
+        margin: EdgeInsets.only(top: 10, right: 0),
         padding: EdgeInsets.all(2.0),
         decoration: BoxDecoration(color: accentColor, shape: BoxShape.circle),
         child: CircleAvatar(
@@ -36,7 +36,7 @@ class LNoteCard extends StatelessWidget {
     return Container(
       height: 30.0,
       width: 60.0,
-      margin: EdgeInsets.only(top: 8.0, right: 16.0, left: 16.0),
+      margin: EdgeInsets.only(top: 10, right: 8.0, left: 16.0),
       padding: EdgeInsets.all(4.0),
       decoration: BoxDecoration(
         border: Border.all(color: blueColor, width: 2.0),

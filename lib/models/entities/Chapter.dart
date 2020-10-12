@@ -12,6 +12,7 @@ class Chapter {
   final String mediaUri;
   final String noteUri;
   final String storyUri;
+  // TODO cut
   Story story;
   Chapter({
     this.number,
@@ -19,11 +20,14 @@ class Chapter {
     this.title,
     this.description,
     this.mBytes,
-    this.mediaUri,
+    // this.mediaUri,
+    mediaUri,
     this.noteUri,
     this.storyUri,
     this.story,
-  });
+  })
+  // TODO cut hardcode
+  : this.mediaUri = 'https://astories.info/public/ios/chapter1';
 
   Chapter copyWith({
     int number,
@@ -42,7 +46,9 @@ class Chapter {
       title: title ?? this.title,
       description: description ?? this.description,
       mBytes: mBytes ?? this.mBytes,
-      mediaUri: mediaUri ?? this.mediaUri,
+      // TODO cut hardcode
+      // mediaUri: mediaUri ?? this.mediaUri,
+      mediaUri: 'https://astories.info/public/ios/chapter1',
       noteUri: noteUri ?? this.noteUri,
       storyUri: storyUri ?? this.storyUri,
       story: story ?? this.story,
@@ -63,26 +69,44 @@ class Chapter {
     };
   }
 
-  factory Chapter.fromMap(Map<String, dynamic> map) {
+  static Map<String, dynamic> getPrepared(Map m) {
+    Map<String, dynamic> map = Map.from(m);
+    if (map['title_kg'].runtimeType == String) {
+      map['title'] = {
+        'ru': m['title'],
+        'kg': m['title_kg'],
+      };
+    }
+    if (map['description_kg'].runtimeType == String) {
+      map['description'] = {
+        'ru': m['description'],
+        'kg': m['description_kg'],
+      };
+    }
+    return map;
+  }
+
+  static Chapter fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
+
+    map = getPrepared(map);
 
     return Chapter(
       number: map['number'],
       version: map['version'],
       title: Name.fromMap(map['title']),
       description: Name.fromMap(map['description']),
-      mBytes: map['mBytes'],
-      mediaUri: map['mediaUri'],
-      noteUri: map['noteUri'],
-      storyUri: map['storyUri'],
+      mBytes: double.parse(map['mBytes'].toString()),
+      mediaUri: map['uri'],
+      noteUri: map['note_uri'],
+      storyUri: map['story_uri'],
       story: Story.fromMap(map['story']),
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory Chapter.fromJson(String source) =>
-      Chapter.fromMap(json.decode(source));
+  Chapter fromJson(String source) => fromMap(json.decode(source));
 
   @override
   String toString() {

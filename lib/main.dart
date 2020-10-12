@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_config/flutter_config.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lastochki/models/route_arguments.dart';
 import 'package:lastochki/services/api_client.dart';
+import 'package:lastochki/services/chapter_repository.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/services/note_service.dart';
+import 'package:lastochki/views/screens/game_page.dart';
 import 'package:lastochki/views/screens/home_page.dart';
 import 'package:lastochki/views/screens/note_page.dart';
 import 'package:lastochki/views/screens/notes_page.dart';
@@ -18,7 +20,7 @@ import 'package:states_rebuilder/states_rebuilder.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIOverlays([]);
-  await FlutterConfig.loadEnvVariables();
+  await DotEnv().load('.env.development'); // TODO
   runApp(App());
 }
 
@@ -31,9 +33,10 @@ class App extends StatelessWidget {
         //Inject Model instance into the widget tree.
         inject: [
           Inject(() => NoteService(repository: apiClient)),
-          Inject(() => ChapterService(repository: apiClient)),
+          Inject(() => ChapterService(repository: ChapterRepository())),
         ],
         builder: (context) => MaterialApp(
+              navigatorKey: RM.navigate.navigatorKey,
               title: 'Ласточки. Весна в Бишкеке',
               theme: ThemeData(
                 fontFamily: 'SourceSansPro',
@@ -58,6 +61,12 @@ class App extends StatelessWidget {
           return MaterialPageRoute(
               settings: settings,
               builder: (BuildContext context) => HomePage());
+        }
+      case '/game':
+        {
+          return MaterialPageRoute(
+              settings: settings,
+              builder: (BuildContext context) => GamePage());
         }
       case '/notes':
         {
