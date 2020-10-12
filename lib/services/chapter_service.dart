@@ -157,7 +157,7 @@ class ChapterService {
     if (gameInfo.currentPassage == null) {
       String pid = currentChapter.story.firstPid;
       //
-      pid = '1106';
+      // pid = '1106';
       gameInfo.currentPassage = currentChapter.story.script[pid];
     }
   }
