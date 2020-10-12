@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'Name.dart';
-import 'Test.dart';
+import 'Question.dart';
 
 class Note {
   final int id;
@@ -9,7 +9,7 @@ class Note {
   final Name title;
   final Name text;
   final int swallow;
-  final Test test;
+  final List<Question> questions;
   bool isRead;
   Note({
     this.id,
@@ -17,7 +17,7 @@ class Note {
     this.title,
     this.text,
     this.swallow,
-    this.test,
+    this.questions,
     this.isRead,
   });
 
@@ -27,7 +27,7 @@ class Note {
     Name title,
     Name text,
     int swallow,
-    Test test,
+    List<Question> questions,
     bool isRead,
   }) {
     return Note(
@@ -36,7 +36,7 @@ class Note {
       title: title ?? this.title,
       text: text ?? this.text,
       swallow: swallow ?? this.swallow,
-      test: test ?? this.test,
+      questions: questions ?? this.questions,
       isRead: isRead ?? this.isRead,
     );
   }
@@ -48,7 +48,7 @@ class Note {
       'title': title?.toMap(),
       'text': text?.toMap(),
       'swallow': swallow,
-      'test': test?.toMap(),
+      'questions': questions?.map((x) => x?.toMap())?.toList(),
       'isRead': isRead,
     };
   }
@@ -62,7 +62,8 @@ class Note {
       title: Name.fromMap(map['title']),
       text: Name.fromMap(map['text']),
       swallow: map['swallow'],
-      test: Test.fromMap(map['test']),
+      questions: List<Question>.from(
+          map['questions']?.map((x) => Question.fromMap(x))),
       isRead: map['isRead'],
     );
   }
@@ -73,7 +74,7 @@ class Note {
 
   @override
   String toString() {
-    return 'Note(id: $id, chapterNumber: $chapterNumber, title: $title, text: $text, swallow: $swallow, test: $test, isRead: $isRead)';
+    return 'Note(id: $id, chapterNumber: $chapterNumber, title: $title, text: $text, swallow: $swallow, questions: $questions, isRead: $isRead)';
   }
 
   @override
@@ -86,7 +87,7 @@ class Note {
         o.title == title &&
         o.text == text &&
         o.swallow == swallow &&
-        o.test == test &&
+        o.questions == questions &&
         o.isRead == isRead;
   }
 
@@ -97,7 +98,7 @@ class Note {
         title.hashCode ^
         text.hashCode ^
         swallow.hashCode ^
-        test.hashCode ^
+        questions.hashCode ^
         isRead.hashCode;
   }
 }

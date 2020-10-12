@@ -11,6 +11,8 @@ const Color errorColor = Color(0xFFD83E58);
 
 const TextStyle titleTextStyle =
     TextStyle(color: textColor, fontSize: 24.0, fontWeight: FontWeight.bold);
+const TextStyle titleLightTextStyle =
+    TextStyle(color: textColor, fontSize: 24.0);
 const TextStyle subtitleTextStyle =
     TextStyle(color: textColor, fontSize: 17.0, fontWeight: FontWeight.bold);
 const TextStyle contentTextStyle = TextStyle(color: textColor, fontSize: 21.0);
@@ -20,6 +22,12 @@ const TextStyle noteTextStyle = TextStyle(color: textColor, fontSize: 17.0);
 
 const boxBorderRadius = BorderRadius.all(Radius.circular(12.0));
 
+final String alertImg = 'assets/icons/mw_alert.png';
+final String endImg = 'assets/icons/mw_end_book.png';
+
+final String homeIcon = 'assets/icons/home.png';
+final String notesIcon = 'assets/icons/notes.png';
+final String aboutIcon = 'assets/icons/about.png';
 final String settingsIcon = 'assets/icons/settings_home_icon.png';
 final String forwardIcon = 'assets/icons/forward_arrow.png';
 final String backIcon = 'assets/icons/back_arrow.png';

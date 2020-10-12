@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/AnswerOption.dart';
 import 'package:lastochki/models/entities/Test.dart';
-import 'package:lastochki/views/screens/notes_page.dart';
-import 'package:lastochki/views/screens/test_result_page.dart';
+import 'package:lastochki/models/route_arguments.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_info_popup.dart';
@@ -12,8 +11,9 @@ import '../translation.dart';
 
 class TestPage extends StatefulWidget {
   final Test test;
+  final Function onTestPassed;
 
-  TestPage({@required this.test});
+  TestPage({@required this.test, @required this.onTestPassed});
 
   @override
   _TestPageState createState() => _TestPageState();
@@ -27,6 +27,7 @@ class _TestPageState extends State<TestPage> {
   int _currentPage = 0;
   bool _isAnswerChosen = false;
   List<AnswerOption> _chosenAnswers = [];
+  int _result = 0;
   AnswerOption _currentAnswer;
 
   static const int swallowForTest = 15;
@@ -45,14 +46,14 @@ class _TestPageState extends State<TestPage> {
     setState(() {
       _chosenAnswers.add(_currentAnswer);
       if (_currentAnswer.isRight) {
-        widget.test.result++;
+        _result++;
       }
     });
   }
 
   void _onTestEnd() {
     _checkCorrectness();
-    if (widget.test.result == widget.test.questions.length) {
+    if (_result == widget.test.questions.length) {
       _openWellDonePopup();
     } else {
       _openFailedPopup();
@@ -60,14 +61,15 @@ class _TestPageState extends State<TestPage> {
   }
 
   void _openFailedPopup() {
+    int mistakes = _chosenAnswers.length - _result;
     showDialog(
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) => LInfoPopup(
             image: cloverImg,
             title: testFailedTitle.toString(),
-            //TODO вставить цифры
-            content: testFailedContent.toString(),
+            content: testFailedContent
+                .toStringWithVar(variables: {'mistakes': mistakes}),
             actions: IntrinsicWidth(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -76,14 +78,11 @@ class _TestPageState extends State<TestPage> {
                       text: restartTest.toString(),
                       icon: refreshIcon,
                       func: () {
-                        widget.test.result = 0;
-                        ///может добавить именованные маршруты?
                         Navigator.pop(context);
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    TestPage(test: widget.test)));
+                        Navigator.pushReplacementNamed(context, '/test',
+                            arguments: ArgumentsTestPage(
+                                test: widget.test,
+                                onTestPassed: widget.onTestPassed));
                       }),
                   SizedBox(
                     height: 8.0,
@@ -93,14 +92,11 @@ class _TestPageState extends State<TestPage> {
                       icon: forwardIcon,
                       buttonColor: whiteColor,
                       func: () {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    TestResultPage(
-                                      questions: widget.test.questions,
-                                      userAnswers: _chosenAnswers,
-                                    )));
+                        Navigator.pop(context);
+                        Navigator.pushReplacementNamed(context, '/test_result',
+                            arguments: ArgumentsTestResultPage(
+                                questions: widget.test.questions,
+                                userAnswers: _chosenAnswers));
                       }),
                 ],
               ),
@@ -120,10 +116,8 @@ class _TestPageState extends State<TestPage> {
                 icon: swallowIcon,
                 swallow: swallowForTest,
                 func: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => NotesPage()));
+                  widget.onTestPassed();
+                  Navigator.of(context).popUntil(ModalRoute.withName('/notes'));
                 })));
   }
 

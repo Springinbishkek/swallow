@@ -4,12 +4,14 @@ import 'package:lastochki/views/theme.dart';
 class LInfoPopup extends StatelessWidget {
   final String image;
   final String title;
+  final bool isCloseEnable;
   final String content;
   final Widget actions;
 
   LInfoPopup(
       {@required this.image,
       @required this.title,
+      this.isCloseEnable = true,
       @required this.content,
       @required this.actions});
 
@@ -41,7 +43,7 @@ class LInfoPopup extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  title,
+                  title ?? '',
                   style: titleTextStyle,
                   textAlign: TextAlign.center,
                 ),
@@ -50,7 +52,7 @@ class LInfoPopup extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(
                     vertical: 16.0, horizontal: 24.0),
                 child: Text(
-                  content,
+                  content ?? '',
                   style: noteTextStyle,
                   textAlign: TextAlign.center,
                 ),
@@ -62,16 +64,17 @@ class LInfoPopup extends StatelessWidget {
               )
             ],
           ),
-          Positioned(
-              right: 0.0,
-              child: IconButton(
-                  icon: Image.asset(
-                    closeIcon,
-                    height: 14,
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  }))
+          if (isCloseEnable)
+            Positioned(
+                right: 0.0,
+                child: IconButton(
+                    icon: Image.asset(
+                      closeIcon,
+                      height: 14,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }))
         ],
       ),
     );

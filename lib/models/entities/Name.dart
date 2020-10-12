@@ -33,8 +33,8 @@ class Name {
     if (map == null) return null;
 
     return Name(
-      ru: map['ru'],
-      kg: map['kg'],
+      ru: map['ru'] ?? '',
+      kg: map['kg'] ?? '',
     );
   }
 
@@ -59,7 +59,7 @@ class Name {
   String toStringWithVar({Map<String, dynamic> variables}) {
     String text = toString();
     variables.forEach((key, value) {
-      text = text.replaceAll('@$key', value.toString());
+      text = text.replaceAll('\$$key', value.toString());
     });
     return text;
   }
