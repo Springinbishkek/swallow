@@ -24,6 +24,8 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> {
+  bool isStepDisabled = false;
+
   @override
   void initState() {
     super.initState();
@@ -61,9 +63,18 @@ class _GamePageState extends State<GamePage> {
 
   void goNext(String step) {
     RM.get<ChapterService>().setState((s) => s.goNext(step));
+    setState(() {
+      isStepDisabled = true;
+    });
+    Future.delayed(Duration(milliseconds: 800), () {
+      setState(() {
+        isStepDisabled = false;
+      });
+    }); //TODO bring deeper
   }
 
   Function getTapHandler(Passage p) {
+    if (isStepDisabled) return null;
     return p.links.length <= 1 ? (details) => goNext(null) : null;
   }
 
@@ -269,13 +280,17 @@ class _GamePageState extends State<GamePage> {
                       width: double.infinity,
                       transform: Matrix4.translationValues(0, -40, 0),
                       child: LChoiceBox(
-                        name: characterName,
-                        speech: speech,
-                        isMain: isMain,
-                        isThinking: isThinking,
-                        options: options,
-                        onChoose: chooseOption,
-                      ),
+                          name: characterName,
+                          speech: speech,
+                          isMain: isMain,
+                          isThinking: isThinking,
+                          options: options,
+                          onChoose: chooseOption,
+                          onEndAnimation: () {
+                            setState(() {
+                              isStepDisabled = false;
+                            });
+                          }),
                     ),
                   ]))
             ]),
