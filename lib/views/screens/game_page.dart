@@ -9,6 +9,7 @@ import 'package:lastochki/models/entities/Passage.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/ui/l_action.dart';
 import 'package:lastochki/views/ui/l_button.dart';
+import 'package:lastochki/views/ui/l_character_image.dart';
 import 'package:lastochki/views/ui/l_choice_box.dart';
 import 'package:lastochki/views/ui/l_info_popup.dart';
 import 'package:lastochki/views/ui/l_loading.dart';
@@ -206,6 +207,7 @@ class _GamePageState extends State<GamePage> {
         child: buildScene(
           isThinking: isThinking,
           isMain: isMain,
+          pid: p.pid,
           characterImages: characterImages,
           characterName: characterName,
           bgImage: bgImage,
@@ -224,6 +226,7 @@ class _GamePageState extends State<GamePage> {
     bool isMain,
     List<String> characterImages,
     String speech,
+    String pid,
     String bgImage,
     String characterName,
     List<Choice> options,
@@ -257,21 +260,10 @@ class _GamePageState extends State<GamePage> {
                   flex: 3,
                   child: Column(children: [
                     if (characterImages != null && characterImages.length > 0)
-                      Align(
-                        alignment:
-                            isMain ? Alignment.topLeft : Alignment.topRight,
-                        child: Image.asset(
-                          characterImages[0],
-                          key: Key(characterImages[0]),
-                          width: 220,
-                          height: 205,
-                          errorBuilder: (context, error, stackTrace) =>
-                              SizedBox(
-                            width: 220,
-                            height: 205,
-                            child: Placeholder(),
-                          ),
-                        ),
+                      LCharacterImage(
+                        images: characterImages,
+                        key: Key(pid.toString()),
+                        isMain: isMain,
                       ),
                     Container(
                       width: double.infinity,
