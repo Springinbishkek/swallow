@@ -15,11 +15,11 @@ class GameInfo {
   GameInfo({
     this.currentChapterId = 0,
     this.currentPassage,
-    this.swallowCount = 0,
+    this.swallowCount = 30,
     this.languageCode,
-    this.gameVariables,
+    gameVariables,
     this.currentBg,
-  });
+  }) : this.gameVariables = gameVariables ?? {'Main': 'Бегайым'};
 
   GameInfo copyWith({
     int currentChapterId,

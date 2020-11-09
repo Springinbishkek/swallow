@@ -11,12 +11,14 @@ class LChoiceBox extends StatelessWidget {
   final bool isThinking;
   final List<Choice> options;
   final Function onChoose;
+  final Function onEndAnimation; //TODO
 
   LChoiceBox(
       {this.name,
       @required this.speech,
       @required this.options,
       @required this.onChoose,
+      this.onEndAnimation,
       this.isMain = false,
       this.isThinking = false});
 
@@ -47,8 +49,8 @@ class LChoiceBox extends StatelessWidget {
           borderRadius: boxBorderRadius,
           highlightColor: Color(0xFFA3D5EC),
           onTap: () {
-            print('simple');
-            print(option);
+            debugPrint('simple');
+            debugPrint(option.toString());
             onChoose(option);
           },
           child: Padding(
@@ -169,14 +171,28 @@ class LChoiceBox extends StatelessWidget {
   }
 
   Widget _buildButtons(double width) {
-    return Column(
-      children: options.map((o) => buildOption(o, width)).toList(),
-    );
+    return TweenAnimationBuilder(
+        tween: Tween<double>(begin: 0, end: 1),
+        duration: Duration(milliseconds: 300),
+        builder: (BuildContext context, double size, Widget child) {
+          List<Widget> children = [];
+          options.forEach((o) {
+            children.add(Transform.scale(
+              scale: size,
+              origin: Offset(0, 0),
+              child: buildOption(o, width),
+            ));
+          });
+          return Column(
+            children: children,
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width * 0.95;
+    double widgetWidth = MediaQuery.of(context).size.width;
+    double width = widgetWidth * 0.95;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [

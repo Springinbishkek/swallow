@@ -2,12 +2,12 @@ import 'package:lastochki/models/entities/Chapter.dart';
 import 'package:lastochki/services/api_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ChapterService {
+class GameService {
   // TODO rewrite repo
   final SharedPreferences _repository;
   int currentChapter;
   int currentPid;
-  ChapterService({
+  GameService({
     SharedPreferences repository,
     this.currentChapter = 0,
     this.currentPid,

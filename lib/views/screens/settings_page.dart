@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
+import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_appbar.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_character_name_input.dart';
 import 'package:lastochki/views/ui/l_language_checkbox.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
 
 import '../translation.dart';
 
@@ -35,10 +37,19 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
-  void onSaveSettingsTap() {
+  void onSaveSettingsTap() async {
     setState(() {
       Name.curLocale = Locale(languageCode);
     });
+    String name = _textNameController.text;
+    if (name.startsWith('#')) {
+      ReactiveModel chapterService = RM.get<ChapterService>();
+      var cheat = name.substring(1).split(' ');
+      if (cheat.length == 2) {
+        await chapterService.state.loadChapter(id: int.parse(cheat[1]));
+      }
+      chapterService.state.goNext(cheat[0]);
+    }
   }
 
   @override
@@ -94,9 +105,7 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Center(
               child: LButton(
                 text: saveSettings.toString(),
-                func: () {
-                  onSaveSettingsTap();
-                },
+                func: onSaveSettingsTap,
                 icon: checkIcon,
               ),
             ),

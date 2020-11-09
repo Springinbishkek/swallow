@@ -67,6 +67,20 @@ class Note {
       isRead: map['isRead'],
     );
   }
+  factory Note.fromBackendMap(Map<String, dynamic> map, chapterId) {
+    if (map == null) return null;
+
+    return Note(
+      id: map['id'],
+      chapterNumber: int.parse(chapterId),
+      title: Name(ru: map['title'], kg: map['title_kg']),
+      text: Name(ru: map['text'], kg: map['text_kg']),
+      swallow: map['swallow'],
+      questions: List<Question>.from(
+          map['questions']?.map((x) => Question.fromBackendMap(x))),
+      isRead: map['isRead'],
+    );
+  }
 
   String toJson() => json.encode(toMap());
 
@@ -81,24 +95,11 @@ class Note {
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
 
-    return o is Note &&
-        o.id == id &&
-        o.chapterNumber == chapterNumber &&
-        o.title == title &&
-        o.text == text &&
-        o.swallow == swallow &&
-        o.questions == questions &&
-        o.isRead == isRead;
+    return o is Note && o.id == id;
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^
-        chapterNumber.hashCode ^
-        title.hashCode ^
-        text.hashCode ^
-        swallow.hashCode ^
-        questions.hashCode ^
-        isRead.hashCode;
+    return id.hashCode;
   }
 }
