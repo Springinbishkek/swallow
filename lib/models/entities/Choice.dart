@@ -41,6 +41,17 @@ class Choice {
 
   factory Choice.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
+
+    return Choice(
+      name: Name.fromMap(map['name']),
+      link: map['link'],
+      pid: map['pid'],
+      swallow: map['swallow'],
+    );
+  }
+
+  factory Choice.fromBackendMap(Map<String, dynamic> map) {
+    if (map == null) return null;
     String nameString = map['name'];
 
     return Choice(

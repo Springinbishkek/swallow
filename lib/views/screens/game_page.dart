@@ -132,7 +132,7 @@ class _GamePageState extends State<GamePage> {
                           ),
                           SizedBox(width: 5),
                           Text(
-                            '30', // TODO
+                            g.swallowCount.toString(), // TODO
                             style: TextStyle(
                                 color: whiteColor,
                                 fontSize: 18,

@@ -37,13 +37,13 @@ class _LCharacterImageState extends State<LCharacterImage>
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(widget.images.toString());
+    // debugPrint(widget.images.toString());
     return TweenAnimationBuilder(
         tween: Tween<double>(begin: widget.sign * 2, end: widget.sign * 1),
         duration: Duration(milliseconds: 300),
         onEnd: () => controller.forward(),
         builder: (BuildContext context, double size, Widget child) {
-          debugPrint('$size');
+          // debugPrint('$size');
           return Align(
             alignment: Alignment(-size, 0),
             child: child,
@@ -67,7 +67,7 @@ class AnimatedLogo extends AnimatedWidget {
   Widget build(BuildContext context) {
     final animation = listenable as Animation<double>;
     var opacity = _opacityTween.evaluate(animation);
-    debugPrint('$opacity');
+    // debugPrint('$opacity');
 
     return Stack(
       children: [

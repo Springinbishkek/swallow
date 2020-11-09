@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
+import 'package:lastochki/models/entities/Note.dart';
 import 'package:lastochki/models/entities/PopupText.dart';
 import 'package:lastochki/models/entities/Test.dart';
 import 'package:lastochki/models/route_arguments.dart';
-import 'package:lastochki/services/note_service.dart';
+import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_appbar.dart';
 import 'package:lastochki/views/ui/l_button.dart';
@@ -68,7 +69,7 @@ class _NotesPageState extends State<NotesPage> {
             ));
   }
 
-  Function _getPopupToOpen(ReactiveModel<NoteService> service) {
+  Function _getPopupToOpen(ReactiveModel<ChapterService> service) {
     Test test = service.state.getTest();
     if (test == null) {
       return () => _openNoTestPopup(service.state.getPopupText());
@@ -103,7 +104,7 @@ class _NotesPageState extends State<NotesPage> {
               ),
               LButton(
                   text: takeTest.toString(),
-                  func: _getPopupToOpen(RM.get<NoteService>()),
+                  func: _getPopupToOpen(RM.get<ChapterService>()),
                   icon: forwardIcon)
             ],
           ),
@@ -113,18 +114,19 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   Widget _buildNotesBody() {
-    final ReactiveModel<NoteService> service = RM.get<NoteService>();
+    final ReactiveModel<ChapterService> service = RM.get<ChapterService>();
+    List<Note> notes = service.state.getNotes();
     return Container(
         child: Scrollbar(
             child: ListView.builder(
-                itemCount: service.state.notes.length,
+                itemCount: notes.length,
                 itemBuilder: (context, index) => LNoteCard(
                     index: index,
-                    note: service.state.notes[index],
+                    note: notes[index],
                     onRead: () {
                       service.setState((s) {
-                        if (s.notes[index].isRead == null) {
-                          s.onNewNoteRead(index);
+                        if (notes[index].isRead == null) {
+                          s.onNewNoteRead(notes[index].id);
                         }
                       });
                     }))));
@@ -132,13 +134,13 @@ class _NotesPageState extends State<NotesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return StateBuilder<NoteService>(
-      observe: () => RM.get<NoteService>(),
-      initState: (context, noteServiceRM) {
-        noteServiceRM.setState((s) => s.loadNotes());
+    return StateBuilder<ChapterService>(
+      observe: () => RM.get<ChapterService>(),
+      initState: (context, ChapterServiceRM) {
+        ChapterServiceRM.setState((s) => s.loadNotes());
       },
-      builder: (context, noteService) {
-        bool isOneNote = noteService.state.notes.length == 1;
+      builder: (context, chapterService) {
+        bool isOneNote = chapterService.state.getNotes().length == 1;
         return Scaffold(
           backgroundColor: scaffoldBgColor,
           appBar: LAppbar(title: notes.toString(), func: _navigateBack),

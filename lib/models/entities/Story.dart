@@ -55,6 +55,21 @@ class Story {
     );
   }
 
+  factory Story.fromBackendMap(Map<String, dynamic> map) {
+    if (map == null) return null;
+    Map<String, Passage> m = {};
+    map['script'].forEach((k, v) {
+      m[k] = Passage.fromBackendMap(v);
+    });
+
+    return Story(
+      title: Name.fromMap(map['title']),
+      chapterId: map['chapterId'],
+      firstPid: map['firstPid'],
+      script: m,
+    );
+  }
+
   String toJson() => json.encode(toMap());
 
   factory Story.fromJson(String source) => Story.fromMap(json.decode(source));

@@ -9,7 +9,7 @@ class LAnimatedText extends StatelessWidget {
     @required this.text,
     duration,
     this.style,
-  })  : this.duration = duration ?? 15 * text.length,
+  })  : this.duration = duration ?? 10 * text.length,
         super(key: key);
 
   @override

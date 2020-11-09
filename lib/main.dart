@@ -32,7 +32,7 @@ class App extends StatelessWidget {
     return Injector(
         //Inject Model instance into the widget tree.
         inject: [
-          Inject(() => NoteService(repository: apiClient)),
+          // Inject(() => NoteService(repository: apiClient)),
           Inject(() => ChapterService(repository: ChapterRepository())),
         ],
         builder: (context) => MaterialApp(

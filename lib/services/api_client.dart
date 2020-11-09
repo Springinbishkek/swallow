@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:lastochki/models/entities/Chapter.dart';
 import 'package:path_provider/path_provider.dart';
 
 final String baseUrl = 'https://astories.info/public/';

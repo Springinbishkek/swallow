@@ -20,13 +20,13 @@ class NoteService {
   static const int maxNumberOfAttempt = 3;
   static const int numberOfTestQuestion = 10;
 
-  List<Note> notes;
+  List<Note> notes = [];
   List<Question> _questionBase = [];
   int _numberOfNewQuestions = 0;
   int _numberOfAttempt = 0;
 
   loadNotes() {
-    // TODO realize
+    // TODO realize load from db
     notes = [
       Note(
           chapterNumber: 1,

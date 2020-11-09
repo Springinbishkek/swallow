@@ -42,6 +42,16 @@ class Question {
     );
   }
 
+  factory Question.fromBackendMap(Map<String, dynamic> map) {
+    if (map == null) return null;
+
+    return Question(
+      title: Name(ru: map['title'], kg: map['title_kg']),
+      answers: List<AnswerOption>.from(
+          map['items']?.map((x) => AnswerOption.fromBackendMap(x))),
+    );
+  }
+
   String toJson() => json.encode(toMap());
 
   factory Question.fromJson(String source) =>
@@ -54,9 +64,7 @@ class Question {
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
 
-    return o is Question &&
-        o.title == title &&
-        listEquals(o.answers, answers);
+    return o is Question && o.title == title && listEquals(o.answers, answers);
   }
 
   @override
