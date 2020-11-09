@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/ui/l_text_field.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
 
 class LCharacterNameInput extends StatefulWidget {
   final TextEditingController controller;
@@ -13,22 +14,26 @@ class LCharacterNameInput extends StatefulWidget {
 
 class _LCharacterNameInputState extends State<LCharacterNameInput> {
   final int nameMaxLength = 24;
-  SharedPreferences prefs;
   String currentName;
 
   void onChanged(String name) {
-    prefs.setString('mainCharacterName', name.isEmpty ? currentName : name);
+    RM.get<ChapterService>().setState((s) =>
+        s.setGameParam(name: 'Main', value: name.isEmpty ? currentName : name));
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<SharedPreferences>(
-        future: SharedPreferences.getInstance(),
-        builder: (BuildContext context,
-            AsyncSnapshot<SharedPreferences> prefSnapshot) {
-          prefs = prefSnapshot.data;
-          currentName = prefs?.getString('mainCharacterName') ?? 'Бегайым';
-          return LTextField(widget.controller, currentName, nameMaxLength, onChanged);
+    return StateBuilder(
+        observe: () => RM.get<ChapterService>(),
+        initState: (context, model) async {
+          var name = await model.state.getGameVariable('Main');
+          setState(() {
+            currentName = name ?? 'Бегайым';
+          });
+        },
+        builder: (context, ReactiveModel<ChapterService> chapterRM) {
+          return LTextField(
+              widget.controller, currentName, nameMaxLength, onChanged);
         });
   }
 }

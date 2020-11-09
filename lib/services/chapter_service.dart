@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Chapter.dart';
 import 'package:lastochki/models/entities/GameInfo.dart';
+import 'package:lastochki/models/entities/Name.dart';
+import 'package:lastochki/models/entities/Note.dart';
 import 'package:lastochki/models/entities/Passage.dart';
+import 'package:lastochki/models/entities/PopupText.dart';
+import 'package:lastochki/models/entities/Question.dart';
 import 'package:lastochki/models/entities/Story.dart';
+import 'package:lastochki/models/entities/Test.dart';
 import 'package:lastochki/services/chapter_repository.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/translation.dart';
@@ -11,8 +16,13 @@ import 'package:lastochki/views/ui/l_info_popup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
+const gameInfoName = 'gameInfo';
+
 class ChapterService {
   final ChapterRepository _repository;
+  static const int minQuestionBaseLength = 15;
+  static const int maxNumberOfAttempt = 3;
+  static const int numberOfTestQuestion = 10;
 
   ChapterService({
     ChapterRepository repository,
@@ -23,6 +33,11 @@ class ChapterService {
   GameInfo gameInfo;
   double loadingPercent;
   int lastChapterVersion = 0;
+  List<Note> notes = [];
+  List<Question> _questionBase = [];
+  int _numberOfNewQuestions = 0;
+  int _numberOfAttempt = 0;
+  int _accessNoteId = 0;
 
   void onReceive(int loaded, int info, {double total}) {
     loadingPercent = loaded / (total ?? loaded);
@@ -38,11 +53,14 @@ class ChapterService {
     return loadingPercent;
   }
 
+  loadNotes() async {
+    // TODO load if need
+  }
+
   loadGame() async {
-    // TODO
+    if (chapters != null) return;
     List values = await Future.wait([
-      SharedPreferences.getInstance()
-          .then((value) => value.getString('gameInfo')),
+      SharedPreferences.getInstance(),
       _repository.getChapters(),
     ]);
     print(values);
@@ -50,32 +68,49 @@ class ChapterService {
     chapters = values[1];
     // TODO calc last
     lastChapterVersion = chapters.length;
+    final SharedPreferences prefs = values[0];
+
+    final gameString = prefs.getString(gameInfoName);
     if (gameInfo == null) {
       // TODO
-      if (values[0] == null) {
+      if (gameString == null) {
         gameInfo = GameInfo();
       } else {
-        gameInfo = GameInfo.fromJson(values[0]);
+        gameInfo = GameInfo.fromJson(gameString);
       }
+    }
+    // TODO rewrite to bd
+    final List<String> notesStrings = prefs.getStringList('notes');
+    if (notesStrings != null && notesStrings.length > 0) {
+      notes = notesStrings.map<Note>((e) => Note.fromJson(e)).toList();
     }
 
     await loadChapter();
   }
 
-  loadChapter() async {
+  loadChapter({int id}) async {
     // TODO check free space
-    int currentChapterId = gameInfo.currentPassage == null
-        ? gameInfo.currentChapterId + 1
-        : gameInfo.currentChapterId;
+    int currentChapterId = id ??
+        (gameInfo.currentPassage == null
+            ? gameInfo.currentChapterId + 1
+            : gameInfo.currentChapterId);
     currentChapter =
         chapters.firstWhere((element) => element.number == currentChapterId);
-    Story s = await _repository.getStory(
+    Map data = await _repository.getStory(
         currentChapter,
         (i, j) =>
             this.onReceive(i, j, total: currentChapter.mBytes * 1024 * 1024));
+    Story s = data['story'];
     currentChapter.story = s;
     gameInfo.currentChapterId = currentChapterId;
     loadingPercent = null;
+    var uniqNotes = notes.toSet();
+    uniqNotes.addAll(data['notes']);
+    notes = uniqNotes.toList();
+    notes.sort((Note a, Note b) => a.id.compareTo(b.id));
+    // TODO rewrite
+    SharedPreferences.getInstance().then((value) =>
+        value.setStringList('notes', notes.map((e) => e.toJson()).toList()));
     // TODO clean logic
     initGame();
   }
@@ -151,14 +186,111 @@ class ChapterService {
             )),
       );
     }
+    if (gameInfo.currentPassage.tags.length > 0) {
+      gameInfo.currentPassage.tags.forEach((element) {
+        var setting = element.split(':');
+        switch (setting[0]) {
+          case 'SetAccessToNote':
+            _accessNoteId = int.parse(setting[1]);
+
+            break;
+          case 'SetIntVar':
+            gameInfo.gameVariables[setting[1]] = int.parse(setting[2]);
+            break;
+          case 'SetTextVar':
+            gameInfo.gameVariables[setting[1]] = setting[2];
+            break;
+          default:
+        }
+      });
+    }
+    SharedPreferences.getInstance()
+        .then((value) => value.setString(gameInfoName, gameInfo.toJson()));
   }
 
   void initGame() {
     if (gameInfo.currentPassage == null) {
       String pid = currentChapter.story.firstPid;
-      //
-      pid = '1106';
       gameInfo.currentPassage = currentChapter.story.script[pid];
     }
+    SharedPreferences.getInstance()
+        .then((value) => value.setString(gameInfoName, gameInfo.toJson()));
+  }
+
+  getNotes() {
+    return notes.takeWhile((value) => value.id <= _accessNoteId).toList();
+  }
+
+  bool _isAllRead() {
+    return !notes.any((element) => element.isRead == null);
+  }
+
+  bool _isTestAvailable() => _questionBase.length >= minQuestionBaseLength;
+
+  bool _isAttemptLeft() => _numberOfAttempt < maxNumberOfAttempt;
+
+  void onNewNoteRead(int noteId) {
+    _numberOfAttempt = 0;
+    Note note = notes.firstWhere((element) => element.id == noteId);
+    note.isRead = true;
+    if (note.questions != null) {
+      _numberOfNewQuestions += note.questions.length;
+      _questionBase.addAll(note.questions);
+    }
+  }
+
+  void onTestPassed() {
+    _numberOfAttempt++;
+  }
+
+  PopupText getPopupText() {
+    Name title;
+    Name content;
+    if (!_isTestAvailable()) {
+      title = noTestTitle;
+      content = noTestContent;
+    }
+    if (!_isAllRead()) {
+      content = haveUnreadNote;
+    }
+    if (!_isAttemptLeft()) {
+      content = haveToReadNewNote;
+    }
+    return PopupText(title: title, content: content);
+  }
+
+  Test getTest() {
+    if (!_isAllRead() || !_isTestAvailable() || !_isAttemptLeft()) return null;
+    List<Question> testQuestion = [];
+    int _numberOfOldQuestions = _numberOfNewQuestions >= numberOfTestQuestion
+        ? 0
+        : numberOfTestQuestion - _numberOfNewQuestions;
+    _questionBase.shuffle();
+    for (Question q in _questionBase) {
+      if (q.isNew && _numberOfNewQuestions != 0) {
+        testQuestion.add(q);
+        q.isNew = false;
+        _numberOfNewQuestions--;
+      }
+      if (!q.isNew && _numberOfOldQuestions != 0) {
+        testQuestion.add(q);
+        _numberOfOldQuestions--;
+      }
+      if (testQuestion.length == numberOfTestQuestion) break;
+    }
+    return Test(questions: testQuestion);
+  }
+
+  getGameVariable(String name) async {
+    if (chapters == null) {
+      await loadGame();
+    }
+    return gameInfo.gameVariables[name];
+  }
+
+  setGameParam({String name, dynamic value}) {
+    gameInfo.gameVariables[name] = value;
+    SharedPreferences.getInstance()
+        .then((value) => value.setString(gameInfoName, gameInfo.toJson()));
   }
 }

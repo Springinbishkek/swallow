@@ -36,6 +36,15 @@ class AnswerOption {
     );
   }
 
+  factory AnswerOption.fromBackendMap(Map<String, dynamic> map) {
+    if (map == null) return null;
+
+    return AnswerOption(
+      title: Name(ru: map['title'], kg: map['title_kg']),
+      isRight: map['right'],
+    );
+  }
+
   String toJson() => json.encode(toMap());
 
   factory AnswerOption.fromJson(String source) =>

@@ -9,6 +9,7 @@ import 'package:lastochki/models/entities/Passage.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/ui/l_action.dart';
 import 'package:lastochki/views/ui/l_button.dart';
+import 'package:lastochki/views/ui/l_character_image.dart';
 import 'package:lastochki/views/ui/l_choice_box.dart';
 import 'package:lastochki/views/ui/l_info_popup.dart';
 import 'package:lastochki/views/ui/l_loading.dart';
@@ -23,6 +24,8 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> {
+  bool isStepDisabled = false;
+
   @override
   void initState() {
     super.initState();
@@ -34,7 +37,7 @@ class _GamePageState extends State<GamePage> {
     return StateBuilder(
         observe: () => RM.get<ChapterService>(),
         onRebuildState: (context, model) async {
-          print('onrebuild');
+          debugPrint('onrebuild');
           var popup = model.state.gameInfo.currentPassage?.popup;
           if (popup != null) {
             Future.delayed(
@@ -53,16 +56,25 @@ class _GamePageState extends State<GamePage> {
           }
         },
         builder: (context, chapterRM) {
-          print('rebuild');
+          debugPrint('rebuild');
           return buildChapter(chapterRM.state.gameInfo);
         });
   }
 
   void goNext(String step) {
     RM.get<ChapterService>().setState((s) => s.goNext(step));
+    setState(() {
+      isStepDisabled = true;
+    });
+    Future.delayed(Duration(milliseconds: 800), () {
+      setState(() {
+        isStepDisabled = false;
+      });
+    }); //TODO bring deeper
   }
 
   Function getTapHandler(Passage p) {
+    if (isStepDisabled) return null;
     return p.links.length <= 1 ? (details) => goNext(null) : null;
   }
 
@@ -120,7 +132,7 @@ class _GamePageState extends State<GamePage> {
                           ),
                           SizedBox(width: 5),
                           Text(
-                            '30', // TODO
+                            g.swallowCount.toString(), // TODO
                             style: TextStyle(
                                 color: whiteColor,
                                 fontSize: 18,
@@ -176,7 +188,7 @@ class _GamePageState extends State<GamePage> {
 
               characterName = nameStr.toName().toString();
             } else {
-              characterName = 'Бегайым'; // TODO
+              characterName = variables['Main']; // TODO
 
             }
             break;
@@ -206,6 +218,7 @@ class _GamePageState extends State<GamePage> {
         child: buildScene(
           isThinking: isThinking,
           isMain: isMain,
+          pid: p.pid,
           characterImages: characterImages,
           characterName: characterName,
           bgImage: bgImage,
@@ -224,6 +237,7 @@ class _GamePageState extends State<GamePage> {
     bool isMain,
     List<String> characterImages,
     String speech,
+    String pid,
     String bgImage,
     String characterName,
     List<Choice> options,
@@ -257,33 +271,26 @@ class _GamePageState extends State<GamePage> {
                   flex: 3,
                   child: Column(children: [
                     if (characterImages != null && characterImages.length > 0)
-                      Align(
-                        alignment:
-                            isMain ? Alignment.topLeft : Alignment.topRight,
-                        child: Image.asset(
-                          characterImages[0],
-                          key: Key(characterImages[0]),
-                          width: 220,
-                          height: 205,
-                          errorBuilder: (context, error, stackTrace) =>
-                              SizedBox(
-                            width: 220,
-                            height: 205,
-                            child: Placeholder(),
-                          ),
-                        ),
+                      LCharacterImage(
+                        images: characterImages,
+                        key: Key(pid.toString()),
+                        isMain: isMain,
                       ),
                     Container(
                       width: double.infinity,
                       transform: Matrix4.translationValues(0, -40, 0),
                       child: LChoiceBox(
-                        name: characterName,
-                        speech: speech,
-                        isMain: isMain,
-                        isThinking: isThinking,
-                        options: options,
-                        onChoose: chooseOption,
-                      ),
+                          name: characterName,
+                          speech: speech,
+                          isMain: isMain,
+                          isThinking: isThinking,
+                          options: options,
+                          onChoose: chooseOption,
+                          onEndAnimation: () {
+                            setState(() {
+                              isStepDisabled = false;
+                            });
+                          }),
                     ),
                   ]))
             ]),

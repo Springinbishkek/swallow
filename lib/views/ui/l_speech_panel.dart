@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:lastochki/views/theme.dart';
+import 'package:lastochki/views/ui/l_animated_text.dart';
 
 enum Side { LEFT, RIGHT, CENTER }
 
@@ -162,6 +163,22 @@ class LSpeechPanel extends StatelessWidget {
       style = contentTextStyle.copyWith(fontStyle: FontStyle.italic);
       text = speech.substring(2);
     }
+    // double widgetWidth =
+    //     MediaQuery.of(context).size.width; // TODO
+    // int symbolsPerLine = (widgetWidth / (style.fontSize / 1.5)).floor();
+    String preparedText = text;
+    // TODO
+    // debugPrint(symbolsPerLine.toString());
+    // for (int i = symbolsPerLine; i < text.length; i += symbolsPerLine) {
+    //   while (text[i] != ' ' && i > 0) {
+    //     i--;
+    //   }
+    //   preparedText = text.replaceRange(i, i + 1, '\n');
+    // }
+
+    // print(preparedText);
+    // print(text);
+
     return Container(
       width: double.infinity,
       child: CustomPaint(
@@ -182,9 +199,18 @@ class LSpeechPanel extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(
                   left: 24.0, top: 40.0, right: 24.0, bottom: 20),
-              child: Text(
-                text,
-                style: style,
+              child: Stack(
+                children: [
+                  Text(preparedText,
+                      style: style.copyWith(
+                        color: Colors.transparent,
+                      )),
+                  LAnimatedText(
+                    key: Key(text),
+                    text: preparedText,
+                    style: style,
+                  ),
+                ],
               ),
             ),
             if (name != null) _buildNamePanel(),

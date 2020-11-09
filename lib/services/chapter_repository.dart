@@ -2,6 +2,7 @@
 // TODO check ichapter changes
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:lastochki/models/entities/Chapter.dart';
+import 'package:lastochki/models/entities/Note.dart';
 import 'package:lastochki/models/entities/Story.dart';
 
 import 'persistance_exception.dart';
@@ -23,14 +24,14 @@ class ChapterRepository {
     }
   }
 
-  Future<Story> getStory(Chapter chapter, Function onReceiveProgress) async {
+  Future<Map> getStory(Chapter chapter, Function onReceiveProgress) async {
     try {
       final response = await Future.wait([
         _apiClient.loadSource(chapter.storyUri, null),
+        _apiClient.loadSource(chapter.noteUri, null),
         // watch only for images loading cause it biggest
         // _apiClient.downloadFiles(chapter.mediaUri, onReceiveProgress),
         // TODO
-        _apiClient.loadSource(chapter.noteUri, null),
       ]);
       // onReceiveProgress(1, 1, total: 1);
       Map story = response[0].data;
@@ -41,7 +42,15 @@ class ChapterRepository {
         m[p['pid']] = p;
       });
       story['script'] = m;
-      return Story.fromMap(story);
+      // TODO set notes to db
+      var chapterId = response[1].data['chapter'];
+      return {
+        'story': Story.fromBackendMap(story),
+        'notes': response[1]
+            .data['list']
+            .map<Note>((n) => Note.fromBackendMap(n, chapterId))
+            .toList(),
+      };
     } catch (e) {
       throw PersistanceException(e);
     }
