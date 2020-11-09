@@ -58,10 +58,9 @@ class ChapterService {
   }
 
   loadGame() async {
-    // TODO
+    if (chapters != null) return;
     List values = await Future.wait([
-      SharedPreferences.getInstance()
-          .then((value) => value.getString(gameInfoName)),
+      SharedPreferences.getInstance(),
       _repository.getChapters(),
     ]);
     print(values);
@@ -69,13 +68,21 @@ class ChapterService {
     chapters = values[1];
     // TODO calc last
     lastChapterVersion = chapters.length;
+    final SharedPreferences prefs = values[0];
+
+    final gameString = prefs.getString(gameInfoName);
     if (gameInfo == null) {
       // TODO
-      if (values[0] == null) {
+      if (gameString == null) {
         gameInfo = GameInfo();
       } else {
-        gameInfo = GameInfo.fromJson(values[0]);
+        gameInfo = GameInfo.fromJson(gameString);
       }
+    }
+    // TODO rewrite to bd
+    final List<String> notesStrings = prefs.getStringList('notes');
+    if (notesStrings != null && notesStrings.length > 0) {
+      notes = notesStrings.map<Note>((e) => Note.fromJson(e)).toList();
     }
 
     await loadChapter();
@@ -101,6 +108,9 @@ class ChapterService {
     uniqNotes.addAll(data['notes']);
     notes = uniqNotes.toList();
     notes.sort((Note a, Note b) => a.id.compareTo(b.id));
+    // TODO rewrite
+    SharedPreferences.getInstance().then((value) =>
+        value.setStringList('notes', notes.map((e) => e.toJson()).toList()));
     // TODO clean logic
     initGame();
   }
@@ -179,8 +189,18 @@ class ChapterService {
     if (gameInfo.currentPassage.tags.length > 0) {
       gameInfo.currentPassage.tags.forEach((element) {
         var setting = element.split(':');
-        if (setting[0] == 'SetAccessToNote') {
-          _accessNoteId = int.parse(setting[1]);
+        switch (setting[0]) {
+          case 'SetAccessToNote':
+            _accessNoteId = int.parse(setting[1]);
+
+            break;
+          case 'SetIntVar':
+            gameInfo.gameVariables[setting[1]] = int.parse(setting[2]);
+            break;
+          case 'SetTextVar':
+            gameInfo.gameVariables[setting[1]] = setting[2];
+            break;
+          default:
         }
       });
     }
@@ -259,5 +279,18 @@ class ChapterService {
       if (testQuestion.length == numberOfTestQuestion) break;
     }
     return Test(questions: testQuestion);
+  }
+
+  getGameVariable(String name) async {
+    if (chapters == null) {
+      await loadGame();
+    }
+    return gameInfo.gameVariables[name];
+  }
+
+  setGameParam({String name, dynamic value}) {
+    gameInfo.gameVariables[name] = value;
+    SharedPreferences.getInstance()
+        .then((value) => value.setString(gameInfoName, gameInfo.toJson()));
   }
 }

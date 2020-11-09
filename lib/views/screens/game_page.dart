@@ -37,7 +37,7 @@ class _GamePageState extends State<GamePage> {
     return StateBuilder(
         observe: () => RM.get<ChapterService>(),
         onRebuildState: (context, model) async {
-          print('onrebuild');
+          debugPrint('onrebuild');
           var popup = model.state.gameInfo.currentPassage?.popup;
           if (popup != null) {
             Future.delayed(
@@ -56,7 +56,7 @@ class _GamePageState extends State<GamePage> {
           }
         },
         builder: (context, chapterRM) {
-          print('rebuild');
+          debugPrint('rebuild');
           return buildChapter(chapterRM.state.gameInfo);
         });
   }
@@ -188,7 +188,7 @@ class _GamePageState extends State<GamePage> {
 
               characterName = nameStr.toName().toString();
             } else {
-              characterName = 'Бегайым'; // TODO
+              characterName = variables['Main']; // TODO
 
             }
             break;

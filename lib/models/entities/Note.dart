@@ -100,12 +100,6 @@ class Note {
 
   @override
   int get hashCode {
-    return id.hashCode ^
-        chapterNumber.hashCode ^
-        title.hashCode ^
-        text.hashCode ^
-        swallow.hashCode ^
-        questions.hashCode ^
-        isRead.hashCode;
+    return id.hashCode;
   }
 }

@@ -58,7 +58,10 @@ class Name {
 
   String toStringWithVar({Map<String, dynamic> variables}) {
     String text = toString();
-    variables.forEach((key, value) {
+    List<String> keys = variables.keys.toList();
+    keys.sort((a, b) => b.length.compareTo(a.length));
+    keys.forEach((key) {
+      var value = variables[key];
       text = text.replaceAll('\$$key', value.toString());
     });
     return text;

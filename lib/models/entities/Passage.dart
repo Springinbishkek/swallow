@@ -94,7 +94,7 @@ class Passage {
     var params = map['text'].split('____');
     PopupText popup;
     String nameStr = params[0];
-    print(map['pid']);
+    // print(map['pid']);
     if (map['popup'] == null && params.length > 1 && params[1] != '') {
       var document = parse(params[1]);
       var ruTitle = getText('TitleRu', document);
