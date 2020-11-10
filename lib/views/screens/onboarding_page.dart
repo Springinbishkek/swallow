@@ -30,7 +30,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       ru: 'Как тебя зовут?',
       kg: 'Сенин атың ким болсо, башкы каармандын да\nаты ошондой болот');
   Name aboutName = Name(ru: 'Также будут звать главную героиню игры', kg: '');
-  Name greetingName = Name(ru: 'Отлично, @name!', kg: 'Абдан жакшы, @name!');
+  Name greetingName = Name(ru: 'Отлично, \$name!', kg: 'Абдан жакшы, \$name!');
   Name aboutSettings = Name(
       ru: 'Поменять имя, язык или начать игру заново можно в разделе «Настройки» с таким значком: ',
       kg: 'Төмөнкү белги менен "Баптоолор" бөлүмүндө атын, тилин өзгөртүп жана оюнду кайрадан баштаса болот: ');
