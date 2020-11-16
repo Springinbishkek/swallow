@@ -5,7 +5,6 @@ import 'package:lastochki/models/route_arguments.dart';
 import 'package:lastochki/services/api_client.dart';
 import 'package:lastochki/services/chapter_repository.dart';
 import 'package:lastochki/services/chapter_service.dart';
-import 'package:lastochki/services/note_service.dart';
 import 'package:lastochki/views/screens/game_page.dart';
 import 'package:lastochki/views/screens/home_page.dart';
 import 'package:lastochki/views/screens/note_page.dart';
