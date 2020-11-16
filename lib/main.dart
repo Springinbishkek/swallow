@@ -14,7 +14,14 @@ import 'package:lastochki/views/screens/openline_logo_page.dart';
 import 'package:lastochki/views/screens/settings_page.dart';
 import 'package:lastochki/views/screens/test_page.dart';
 import 'package:lastochki/views/screens/test_result_page.dart';
+import 'package:lastochki/views/theme.dart';
+import 'package:lastochki/views/translation.dart';
+import 'package:lastochki/views/ui/l_button.dart';
+import 'package:lastochki/views/ui/l_info_popup.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
+
+import 'models/entities/PopupText.dart';
+import 'models/entities/Test.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -89,12 +96,16 @@ class App extends StatelessWidget {
         }
       case '/test':
         {
-          final ArgumentsTestPage args = settings.arguments;
+          // final ArgumentsTestPage args = settings?.arguments;
+          ReactiveModel<ChapterService> service = RM.get<ChapterService>();
+          Test test = service.state.getTest();
           return MaterialPageRoute(
               settings: settings,
               builder: (BuildContext context) => TestPage(
-                    test: args.test,
-                    onTestPassed: args.onTestPassed,
+                    test: test,
+                    onTestPassed: () {
+                      service.setState((s) => s.onTestPassed());
+                    },
                   ));
         }
       case '/test_result':

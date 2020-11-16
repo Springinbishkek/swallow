@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         SizedBox(width: 5),
                         Text(
-                          '30', // TODO
+                          g.swallowCount.toString(),
                           style: TextStyle(
                               color: whiteColor,
                               fontSize: 18,
