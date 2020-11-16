@@ -31,10 +31,6 @@ class _NotesPageState extends State<NotesPage> {
   final Name noNotes =
       Name(ru: 'Скоро будут ещё!', kg: 'Жакында дагы жаңысы болот!');
 
-  final String bottomBanner = 'assets/backgrounds/note_bottom_banner.png';
-  final String testImg = 'assets/icons/mw_test.png';
-  final String noteImg = 'assets/icons/mw_note.png';
-
   void _navigateBack() {
     Navigator.pop(context);
   }

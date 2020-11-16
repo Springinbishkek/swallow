@@ -36,3 +36,7 @@ final String closeIcon = 'assets/icons/close_icon.png';
 final String swallowIcon = 'assets/icons/swallow.png';
 final String refreshIcon = 'assets/icons/refresh_icon.png';
 final String testBG = 'assets/backgrounds/test_bottom_background.png';
+
+final String bottomBanner = 'assets/backgrounds/note_bottom_banner.png';
+final String testImg = 'assets/icons/mw_test.png';
+final String noteImg = 'assets/icons/mw_note.png';
