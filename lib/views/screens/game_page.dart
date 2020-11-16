@@ -199,6 +199,11 @@ class _GamePageState extends State<GamePage> {
                 t.skip(1).map((e) => 'assets/Base/$e.png').toList();
             break;
           }
+        case 'SceneImage':
+          {
+            // TODO
+            break;
+          }
         case 'MainCharacter':
           {
             isMain = true;
@@ -228,8 +233,39 @@ class _GamePageState extends State<GamePage> {
   }
 
   void chooseOption(Choice o) {
+    ReactiveModel chapterService = RM.get<ChapterService>();
     print(o.pid);
-    goNext(o.pid);
+    if (chapterService.state.gameInfo.swallowCount < o.swallow) {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) => LInfoPopup(
+          image: alertImg,
+          title: needMoreSwallowTitle.toString(),
+          content: needMoreSwallowContent.toString(),
+          actions: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 26),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                LButton(
+                  text: takeTest.toString(),
+                  func: () => Navigator.pushNamed(context, '/test'),
+                ),
+                LButton(
+                  text: backToChapter.toString(),
+                  func: () => Navigator.pop(context),
+                  buttonColor: Colors.white,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    } else {
+      chapterService.state.changeSwallowDelta(-o.swallow);
+      goNext(o.pid);
+    }
   }
 
   Widget buildScene({

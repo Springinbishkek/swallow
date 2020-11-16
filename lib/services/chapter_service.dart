@@ -17,6 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
 const gameInfoName = 'gameInfo';
+const TEST_SWALLOW = 15;
 
 class ChapterService {
   final ChapterRepository _repository;
@@ -108,9 +109,7 @@ class ChapterService {
     uniqNotes.addAll(data['notes']);
     notes = uniqNotes.toList();
     notes.sort((Note a, Note b) => a.id.compareTo(b.id));
-    // TODO rewrite
-    SharedPreferences.getInstance().then((value) =>
-        value.setStringList('notes', notes.map((e) => e.toJson()).toList()));
+    saveGameInfo();
     // TODO clean logic
     initGame();
   }
@@ -204,8 +203,7 @@ class ChapterService {
         }
       });
     }
-    SharedPreferences.getInstance()
-        .then((value) => value.setString(gameInfoName, gameInfo.toJson()));
+    saveGameInfo();
   }
 
   void initGame() {
@@ -213,8 +211,7 @@ class ChapterService {
       String pid = currentChapter.story.firstPid;
       gameInfo.currentPassage = currentChapter.story.script[pid];
     }
-    SharedPreferences.getInstance()
-        .then((value) => value.setString(gameInfoName, gameInfo.toJson()));
+    saveGameInfo();
   }
 
   getNotes() {
@@ -232,15 +229,36 @@ class ChapterService {
   void onNewNoteRead(int noteId) {
     _numberOfAttempt = 0;
     Note note = notes.firstWhere((element) => element.id == noteId);
+    if (note.isRead == null || !note.isRead) {
+      gameInfo.swallowCount += note.swallow;
+    }
     note.isRead = true;
     if (note.questions != null) {
       _numberOfNewQuestions += note.questions.length;
       _questionBase.addAll(note.questions);
     }
+    saveGameInfo();
   }
 
-  void onTestPassed() {
+  void onTestPassed({bool successful = false}) {
     _numberOfAttempt++;
+    if (successful) {
+      gameInfo.swallowCount += TEST_SWALLOW;
+      saveGameInfo();
+    }
+  }
+
+  void changeSwallowDelta(int swallow) {
+    gameInfo.swallowCount += swallow;
+    saveGameInfo();
+  }
+
+  saveGameInfo() {
+    SharedPreferences.getInstance().then((value) {
+      value.setString(gameInfoName, gameInfo.toJson());
+      // TODO
+      value.setStringList('notes', notes.map((e) => e.toJson()).toList());
+    });
   }
 
   PopupText getPopupText() {
@@ -290,7 +308,6 @@ class ChapterService {
 
   setGameParam({String name, dynamic value}) {
     gameInfo.gameVariables[name] = value;
-    SharedPreferences.getInstance()
-        .then((value) => value.setString(gameInfoName, gameInfo.toJson()));
+    saveGameInfo();
   }
 }

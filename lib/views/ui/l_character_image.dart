@@ -25,7 +25,7 @@ class _LCharacterImageState extends State<LCharacterImage>
   void initState() {
     super.initState();
     controller = AnimationController(
-        duration: const Duration(milliseconds: 300), vsync: this);
+        vsync: this, duration: const Duration(milliseconds: 300));
     animation = CurvedAnimation(parent: controller, curve: Curves.linear);
   }
 

@@ -18,7 +18,7 @@ class Note {
     this.text,
     this.swallow,
     this.questions,
-    this.isRead,
+    this.isRead = false,
   });
 
   Note copyWith({

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/AnswerOption.dart';
+import 'package:lastochki/models/entities/PopupText.dart';
 import 'package:lastochki/models/entities/Test.dart';
 import 'package:lastochki/models/route_arguments.dart';
+import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_info_popup.dart';
 import 'package:lastochki/views/ui/l_test_box.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
 
 import '../translation.dart';
 
@@ -23,6 +26,7 @@ class _TestPageState extends State<TestPage> {
   final PageController _testPageController = PageController(initialPage: 0);
   final String rocketImg = 'assets/icons/mw_rocket.png';
   final String cloverImg = 'assets/icons/mw_rocket.png';
+  Test test;
 
   int _currentPage = 0;
   bool _isAnswerChosen = false;
@@ -31,6 +35,30 @@ class _TestPageState extends State<TestPage> {
   AnswerOption _currentAnswer;
 
   static const int swallowForTest = 15;
+
+  @override
+  void initState() {
+    test = widget.test ?? Test(questions: []);
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (widget.test == null) {
+        PopupText popupText = RM.get<ChapterService>().state.getPopupText();
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) => LInfoPopup(
+                image: noteImg,
+                title: (popupText.title ?? '').toString(),
+                content: (popupText.content ?? '').toString(),
+                actions: LButton(
+                    text: backToChapter.toString(),
+                    func: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    })));
+      }
+    });
+  }
 
   void _navigateToNextPage() {
     _checkCorrectness();
@@ -53,7 +81,7 @@ class _TestPageState extends State<TestPage> {
 
   void _onTestEnd() {
     _checkCorrectness();
-    if (_result == widget.test.questions.length) {
+    if (_result == test.questions.length) {
       _openWellDonePopup();
     } else {
       _openFailedPopup();
@@ -81,8 +109,7 @@ class _TestPageState extends State<TestPage> {
                         Navigator.pop(context);
                         Navigator.pushReplacementNamed(context, '/test',
                             arguments: ArgumentsTestPage(
-                                test: widget.test,
-                                onTestPassed: widget.onTestPassed));
+                                test: test, onTestPassed: widget.onTestPassed));
                       }),
                   SizedBox(
                     height: 8.0,
@@ -95,7 +122,7 @@ class _TestPageState extends State<TestPage> {
                         Navigator.pop(context);
                         Navigator.pushReplacementNamed(context, '/test_result',
                             arguments: ArgumentsTestResultPage(
-                                questions: widget.test.questions,
+                                questions: test.questions,
                                 userAnswers: _chosenAnswers));
                       }),
                 ],
@@ -122,7 +149,7 @@ class _TestPageState extends State<TestPage> {
   }
 
   Widget _buildButton() {
-    if (_currentPage == widget.test.questions.length - 1) {
+    if (_currentPage == test.questions.length - 1) {
       return LButton(
         text: done.toString(),
         func: _isAnswerChosen ? _onTestEnd : null,
@@ -159,7 +186,7 @@ class _TestPageState extends State<TestPage> {
         Column(
           children: [
             Text(
-              '${_currentPage + 1}/${widget.test.questions.length}',
+              '${_currentPage + 1}/${test.questions.length}',
               style: TextStyle(
                   color: accentColor,
                   fontWeight: FontWeight.bold,
@@ -207,10 +234,10 @@ class _TestPageState extends State<TestPage> {
             child: PageView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 controller: _testPageController,
-                itemCount: widget.test.questions.length,
+                itemCount: test.questions.length,
                 itemBuilder: (BuildContext context, index) => _buildBody(
                         testBox: LTestBox(
-                      question: widget.test.questions[index],
+                      question: test.questions[index],
                       onChooseAnswer: _onChooseAnswer,
                     )))));
   }
