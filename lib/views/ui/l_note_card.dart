@@ -34,7 +34,7 @@ class LNoteCard extends StatelessWidget {
   Widget _buildUnreadIcon({int profit}) {
     Color blueColor = Color(0xFF2589F6);
     return Container(
-      height: 30.0,
+      height: 26,
       width: 60.0,
       margin: EdgeInsets.only(top: 10, right: 8.0, left: 16.0),
       padding: EdgeInsets.all(4.0),
@@ -43,12 +43,21 @@ class LNoteCard extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(14.0)),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.baseline,
         children: <Widget>[
-          Text(
-            '+$profit',
-            style: TextStyle(
-                color: blueColor, fontWeight: FontWeight.bold, fontSize: 16.0),
+          Flexible(
+            flex: 1,
+            fit: FlexFit.tight,
+            child: Text(
+              '+$profit',
+              style: TextStyle(
+                color: blueColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 16.0,
+                height: 0.95,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ),
           Image.asset(swallowIcon)
         ],
