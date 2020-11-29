@@ -209,9 +209,9 @@ class ChapterService {
     }
     if (gameInfo.currentPassage.links.length == 0) {
       int diffLastChapter = lastChapterVersion - currentChapter.number;
-      String contentText = diffLastChapter > 0
-          ? chapterContinue.toString()
-          : chapterNoContinue.toString();
+      final bool isLast = diffLastChapter > 0;
+      String contentText =
+          !isLast ? chapterContinue.toString() : chapterNoContinue.toString();
       // story end
       RM.navigate.toDialog(
         LInfoPopup(
@@ -222,24 +222,25 @@ class ChapterService {
             content: contentText,
             actions: Column(
               children: [
-                Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.only(
-                        bottom: 10, left: 20, right: 20, top: 20),
-                    child: LButton(
-                        text: continueGame.toString(),
-                        swallow: END_SWALLOW_BONUS, //TODO
-                        icon: swallowIcon,
-                        func: () {
-                          RM.get<ChapterService>().setState((s) {
-                            s.gameInfo.currentPassage = null;
-                            s.gameInfo.swallowCount += END_SWALLOW_BONUS;
-                          });
-                          RM.get<ChapterService>().setState((s) async {
-                            await s.loadChapter();
-                          });
-                          RM.navigate.back();
-                        })),
+                if (!isLast)
+                  Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.only(
+                          bottom: 10, left: 20, right: 20, top: 20),
+                      child: LButton(
+                          text: continueGame.toString(),
+                          swallow: END_SWALLOW_BONUS, //TODO
+                          icon: swallowIcon,
+                          func: () {
+                            RM.get<ChapterService>().setState((s) {
+                              s.gameInfo.currentPassage = null;
+                              s.gameInfo.swallowCount += END_SWALLOW_BONUS;
+                            });
+                            RM.get<ChapterService>().setState((s) async {
+                              await s.loadChapter();
+                            });
+                            RM.navigate.back();
+                          })),
                 Container(
                   width: double.infinity,
                   margin: EdgeInsets.only(bottom: 0, left: 20, right: 20),
