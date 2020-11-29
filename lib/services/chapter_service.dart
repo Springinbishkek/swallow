@@ -18,6 +18,7 @@ import 'package:states_rebuilder/states_rebuilder.dart';
 
 const gameInfoName = 'gameInfo';
 const TEST_SWALLOW = 15;
+const END_SWALLOW_BONUS = 2;
 
 class ChapterService {
   final ChapterRepository _repository;
@@ -38,7 +39,6 @@ class ChapterService {
   List<Question> _questionBase = [];
   int _numberOfNewQuestions = 0;
   int _numberOfAttempt = 0;
-  int _accessNoteId = 0;
 
   void onReceive(int loaded, int info, {double total}) {
     loadingPercent = loaded / (total ?? loaded);
@@ -146,11 +146,12 @@ class ChapterService {
                         bottom: 10, left: 20, right: 20, top: 20),
                     child: LButton(
                         text: continueGame.toString(),
-                        swallow: 2, //TODO
+                        swallow: END_SWALLOW_BONUS, //TODO
                         icon: swallowIcon,
                         func: () {
                           RM.get<ChapterService>().setState((s) {
                             s.gameInfo.currentPassage = null;
+                            s.gameInfo.swallowCount += END_SWALLOW_BONUS;
                           });
                           RM.get<ChapterService>().setState((s) async {
                             await s.loadChapter();
@@ -190,8 +191,7 @@ class ChapterService {
         var setting = element.split(':');
         switch (setting[0]) {
           case 'SetAccessToNote':
-            _accessNoteId = int.parse(setting[1]);
-
+            gameInfo.accessNoteId = int.parse(setting[1]);
             break;
           case 'SetIntVar':
             gameInfo.gameVariables[setting[1]] = int.parse(setting[2]);
@@ -215,7 +215,9 @@ class ChapterService {
   }
 
   getNotes() {
-    return notes.takeWhile((value) => value.id <= _accessNoteId).toList();
+    return notes
+        .takeWhile((value) => value.id <= gameInfo.accessNoteId)
+        .toList();
   }
 
   bool _isAllRead() {
