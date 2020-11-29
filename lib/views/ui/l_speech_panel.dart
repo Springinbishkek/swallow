@@ -111,6 +111,7 @@ class LSpeechPanel extends StatelessWidget {
   final String speech;
   final bool isLeftSide;
   final bool isThinking;
+  final GlobalKey textKey = GlobalKey();
 
   LSpeechPanel(
       {@required this.name,
@@ -163,21 +164,7 @@ class LSpeechPanel extends StatelessWidget {
       style = contentTextStyle.copyWith(fontStyle: FontStyle.italic);
       text = speech.substring(2);
     }
-    // double widgetWidth =
-    //     MediaQuery.of(context).size.width; // TODO
-    // int symbolsPerLine = (widgetWidth / (style.fontSize / 1.5)).floor();
-    String preparedText = text;
-    // TODO
-    // debugPrint(symbolsPerLine.toString());
-    // for (int i = symbolsPerLine; i < text.length; i += symbolsPerLine) {
-    //   while (text[i] != ' ' && i > 0) {
-    //     i--;
-    //   }
-    //   preparedText = text.replaceRange(i, i + 1, '\n');
-    // }
-
-    // print(preparedText);
-    // print(text);
+    final String preparedText = text;
 
     return Container(
       width: double.infinity,
@@ -201,15 +188,22 @@ class LSpeechPanel extends StatelessWidget {
                   left: 24.0, top: 40.0, right: 24.0, bottom: 20),
               child: Stack(
                 children: [
-                  Text(preparedText,
-                      style: style.copyWith(
-                        color: Colors.transparent,
-                      )),
                   LAnimatedText(
                     key: Key(text),
                     text: preparedText,
                     style: style,
                   ),
+                  ShaderMask(
+                    blendMode: BlendMode.srcOut,
+                    shaderCallback: (bounds) =>
+                        LinearGradient(colors: [Colors.white], stops: [0.0])
+                            .createShader(bounds),
+                    child: Text(preparedText,
+                        key: textKey,
+                        style: style.copyWith(
+                          color: Colors.black,
+                        )),
+                  )
                 ],
               ),
             ),

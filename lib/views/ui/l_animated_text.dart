@@ -9,7 +9,7 @@ class LAnimatedText extends StatelessWidget {
     @required this.text,
     duration,
     this.style,
-  })  : this.duration = duration ?? 10 * text.length,
+  })  : this.duration = duration ?? 20 * text.length,
         super(key: key);
 
   @override
@@ -21,6 +21,7 @@ class LAnimatedText extends StatelessWidget {
           String printed = text.substring(0, size);
           return Text(
             printed,
+            key: Key(printed),
             style: style,
           );
         });
