@@ -103,26 +103,25 @@ class LNoteCard extends StatelessWidget {
               ],
             ),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              // mainAxisAlignment: ,
               children: <Widget>[
                 Expanded(
                   child: Container(
                     margin: EdgeInsets.only(left: 16.0, right: 8.0),
-                    child: Center(
-                      child: Text(
-                        '${index + 1}. ${note.title}',
-                        maxLines: 3,
-                        style: note.isRead ?? false
-                            ? TextStyle(
-                                color: textColor.withOpacity(0.6),
-                                fontSize: 17.0,
-                                fontWeight: FontWeight.bold)
-                            : subtitleTextStyle,
-                      ),
+                    child: Text(
+                      '${index + 1}. ${note.title}',
+                      maxLines: 3,
+                      style: note.isRead ?? false
+                          ? TextStyle(
+                              color: textColor.withOpacity(0.6),
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.bold)
+                          : subtitleTextStyle,
                     ),
                   ),
                 ),
-                _buildIcon()
+                Align(alignment: Alignment.topCenter, child: _buildIcon())
               ],
             )),
       ),

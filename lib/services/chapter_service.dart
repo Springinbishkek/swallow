@@ -132,7 +132,7 @@ class ChapterService {
         bool isHidden = false;
         if (potentialNextPassage != null) {
           String hideCommand = potentialNextPassage.tags
-              .firstWhere((tag) => tag.startsWith('Hide:'));
+              .firstWhere((tag) => tag.startsWith('Hide:'), orElse: () => null);
           if (hideCommand != null) {
             List<String> hideCommandParsed = hideCommand.split(':');
             var variableHide = gameInfo.gameVariables[hideCommandParsed[1]];
@@ -168,8 +168,9 @@ class ChapterService {
               }
             }
           }
-          String showCommand = potentialNextPassage.tags
-              .firstWhere((tag) => tag.startsWith('ShowOnly:'));
+          String showCommand = potentialNextPassage.tags.firstWhere(
+              (tag) => tag.startsWith('ShowOnly:'),
+              orElse: () => null);
           if (showCommand != null) {
             List<String> showCommandParsed = showCommand.split(':');
             var variableShow = gameInfo.gameVariables[showCommandParsed[1]];

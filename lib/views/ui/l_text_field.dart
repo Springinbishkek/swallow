@@ -13,28 +13,33 @@ class LTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-        decoration: InputDecoration(
-          enabledBorder: OutlineInputBorder(
-              borderRadius: boxBorderRadius,
-              borderSide: BorderSide(color: boxBorderColor)),
-          border: OutlineInputBorder(
+      decoration: InputDecoration(
+        enabledBorder: OutlineInputBorder(
             borderRadius: boxBorderRadius,
-          ),
-          filled: true,
-          fillColor: menuBgColor,
-          hintText: hintText,
+            borderSide: BorderSide(color: boxBorderColor)),
+        border: OutlineInputBorder(
+          borderRadius: boxBorderRadius,
         ),
-        maxLength: maxLength,
-        autofocus: false,
-        textCapitalization: TextCapitalization.words,
-        inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp('[а-яА-Я#0-9 ]')),
-        ],
-        controller: controller,
-        onChanged: (String name) {
-          if (onChanged != null) {
-            onChanged(name);
-          }
-        });
+        filled: true,
+        fillColor: menuBgColor,
+        hintText: hintText,
+      ),
+      maxLength: maxLength,
+      autofocus: false,
+      textCapitalization: TextCapitalization.words,
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.allow(RegExp('[а-яА-Я#0-9 ]')),
+      ],
+      controller: controller,
+      onChanged: (String name) {
+        if (onChanged != null) {
+          onChanged(name);
+        }
+      },
+      onFieldSubmitted: (value) {
+        // TODO
+        print('submited');
+      },
+    );
   }
 }

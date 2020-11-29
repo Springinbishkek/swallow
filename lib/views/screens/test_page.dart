@@ -31,7 +31,6 @@ class _TestPageState extends State<TestPage> {
   int _currentPage = 0;
   bool _isAnswerChosen = false;
   List<AnswerOption> _chosenAnswers = [];
-  int _result = 0;
   AnswerOption _currentAnswer;
 
   static const int swallowForTest = 15;
@@ -61,7 +60,7 @@ class _TestPageState extends State<TestPage> {
   }
 
   void _navigateToNextPage() {
-    _checkCorrectness();
+    _saveAnswer();
     setState(() {
       _isAnswerChosen = false;
       _currentPage++;
@@ -70,18 +69,17 @@ class _TestPageState extends State<TestPage> {
         duration: Duration(microseconds: 500), curve: Curves.ease);
   }
 
-  void _checkCorrectness() {
+  void _saveAnswer() {
+    if (_chosenAnswers.length >= test.questions.length) return;
     setState(() {
       _chosenAnswers.add(_currentAnswer);
-      if (_currentAnswer.isRight) {
-        _result++;
-      }
     });
   }
 
   void _onTestEnd() {
-    _checkCorrectness();
-    if (_result == test.questions.length) {
+    _saveAnswer();
+    int result = _chosenAnswers.where((a) => a.isRight).length;
+    if (result == test.questions.length) {
       _openWellDonePopup();
     } else {
       _openFailedPopup();
@@ -89,7 +87,7 @@ class _TestPageState extends State<TestPage> {
   }
 
   void _openFailedPopup() {
-    int mistakes = _chosenAnswers.length - _result;
+    int mistakes = _chosenAnswers.where((a) => !a.isRight).length;
     showDialog(
         barrierDismissible: false,
         context: context,
