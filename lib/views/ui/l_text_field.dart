@@ -28,9 +28,13 @@ class LTextField extends StatelessWidget {
         autofocus: false,
         textCapitalization: TextCapitalization.words,
         inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp('[а-яА-Я#0-9 ]'))
+          FilteringTextInputFormatter.allow(RegExp('[а-яА-Я#0-9 ]')),
         ],
         controller: controller,
-        onChanged: (String name) => onChanged(name));
+        onChanged: (String name) {
+          if (onChanged != null) {
+            onChanged(name);
+          }
+        });
   }
 }

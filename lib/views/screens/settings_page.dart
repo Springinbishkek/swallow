@@ -58,6 +58,9 @@ class _SettingBodyState extends State<SettingBody> {
       Name.curLocale = Locale(languageCode);
     });
     String name = _textNameController.text;
+    RM
+        .get<ChapterService>()
+        .setState((s) => s.setGameParam(name: 'Main', value: name));
     if (name.startsWith('#')) {
       ReactiveModel chapterService = RM.get<ChapterService>();
       var cheat = name.substring(1).split(' ');

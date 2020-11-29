@@ -84,9 +84,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ],
                     ),
-                    onTap: () {
-                      // TODO
-                    }),
+                    onTap: null),
               ),
             ]),
         body: Center(
