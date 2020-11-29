@@ -36,8 +36,11 @@ class ChapterRepository {
       // onReceiveProgress(1, 1, total: 1);
       Map story = response[0].data;
       story['chapterId'] = chapter.number;
-      Map firstPassage = story['passages']
-          .firstWhere((p) => p['tags'].contain('IsStartBlock:True'));
+
+      Map firstPassage = story['passages'].firstWhere((p) {
+        List<dynamic> tags = p['tags'];
+        return tags.contains('IsStartBlock:True');
+      });
       story['firstPid'] = firstPassage['pid'];
       Map<dynamic, dynamic> m = {};
       story['passages'].forEach((p) {
