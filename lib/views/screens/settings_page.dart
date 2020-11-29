@@ -76,43 +76,45 @@ class _SettingBodyState extends State<SettingBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: Column(
+    return Column(
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 16.0),
-                child: Text(
-                  changeLanguage.toString(),
-                  style: subtitleTextStyle,
-                ),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: Text(
+                      changeLanguage.toString(),
+                      style: subtitleTextStyle,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0, bottom: 36.0),
+                    child: LLanguageCheckbox(
+                      onChanged: onChangeLanguageCode,
+                      isColumn: false,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: Text(
+                      changeName.toString(),
+                      style: subtitleTextStyle,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0, bottom: 36.0),
+                    child: LCharacterNameInput(_textNameController),
+                  ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 36.0),
-                child: LLanguageCheckbox(
-                  onChanged: onChangeLanguageCode,
-                  isColumn: false,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 16.0),
-                child: Text(
-                  changeName.toString(),
-                  style: subtitleTextStyle,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 36.0),
-                child: LCharacterNameInput(_textNameController),
-              ),
-            ],
+            ),
           ),
         ),
-        Expanded(child: Container()),
         Container(
           height: 145.0,
           color: whiteColor,
@@ -125,6 +127,6 @@ class _SettingBodyState extends State<SettingBody> {
           ),
         )
       ],
-    ));
+    );
   }
 }
