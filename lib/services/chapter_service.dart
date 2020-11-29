@@ -137,8 +137,8 @@ class ChapterService {
             List<String> hideCommandParsed = hideCommand.split(':');
             var variableHide = gameInfo.gameVariables[hideCommandParsed[1]];
             if (variableHide != null) {
-              String sign = gameInfo.gameVariables[hideCommandParsed[2]];
-              String value = gameInfo.gameVariables[hideCommandParsed[3]];
+              String sign = hideCommandParsed[2];
+              String value = hideCommandParsed[3];
               switch (sign) {
                 case '=':
                   isHidden = (variableHide.toString() == value);
