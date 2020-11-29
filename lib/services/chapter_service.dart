@@ -308,7 +308,9 @@ class ChapterService {
   }
 
   bool _isAllRead() {
-    return !notes.any((element) => element.isRead == null);
+    return notes.every((note) =>
+        note.id > gameInfo.accessNoteId ||
+        (note.isRead != null && note.isRead));
   }
 
   bool _isTestAvailable() => questionBase.length >= minQuestionBaseLength;
