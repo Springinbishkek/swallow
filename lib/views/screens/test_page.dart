@@ -144,7 +144,11 @@ class _TestPageState extends State<TestPage> {
                 swallow: swallowForTest,
                 func: () {
                   widget.onTestPassed();
-                  Navigator.of(context).popUntil(ModalRoute.withName('/notes'));
+                  Navigator.of(context).popUntil((route) {
+                    return ModalRoute.withName('/notes')(route) ||
+                        ModalRoute.withName('/home')(route) ||
+                        ModalRoute.withName('/game')(route);
+                  });
                 })));
   }
 

@@ -18,14 +18,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
 const gameInfoName = 'gameInfo';
-const TEST_SWALLOW = 15;
-const END_SWALLOW_BONUS = 2;
+const int TEST_SWALLOW = 15;
+const int END_SWALLOW_BONUS = 2;
+const int minQuestionBaseLength = 15;
+const int maxNumberOfAttempt = 3;
+const int numberOfTestQuestion = 10;
 
 class ChapterService {
   final ChapterRepository _repository;
-  static const int minQuestionBaseLength = 15;
-  static const int maxNumberOfAttempt = 3;
-  static const int numberOfTestQuestion = 10;
 
   ChapterService({
     ChapterRepository repository,
