@@ -7,6 +7,7 @@ import 'package:lastochki/models/entities/Passage.dart';
 class GameInfo {
   int currentChapterId;
   int accessNoteId;
+  int numberOfTestAttempt;
   Passage currentPassage;
   int swallowCount;
   String languageCode;
@@ -16,6 +17,7 @@ class GameInfo {
   GameInfo({
     this.currentChapterId = 0,
     this.accessNoteId = 0,
+    this.numberOfTestAttempt = 0,
     this.currentPassage,
     this.swallowCount = 30,
     this.languageCode,

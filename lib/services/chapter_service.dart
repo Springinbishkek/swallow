@@ -37,9 +37,7 @@ class ChapterService {
   double loadingPercent;
   int lastChapterVersion = 0;
   List<Note> notes = [];
-  List<Question> _questionBase = [];
-  int _numberOfNewQuestions = 0;
-  int _numberOfAttempt = 0;
+  List<Question> questionBase = [];
 
   void onReceive(int loaded, int info, {double total}) {
     loadingPercent = loaded / (total ?? loaded);
@@ -85,6 +83,11 @@ class ChapterService {
     final List<String> notesStrings = prefs.getStringList('notes');
     if (notesStrings != null && notesStrings.length > 0) {
       notes = notesStrings.map<Note>((e) => Note.fromJson(e)).toList();
+    }
+    final List<String> questionsStrings = prefs.getStringList('questionBase');
+    if (questionsStrings != null && questionsStrings.length > 0) {
+      questionBase =
+          questionsStrings.map<Question>((e) => Question.fromJson(e)).toList();
     }
 
     await loadChapter();
@@ -307,30 +310,29 @@ class ChapterService {
     return !notes.any((element) => element.isRead == null);
   }
 
-  bool _isTestAvailable() => _questionBase.length >= minQuestionBaseLength;
+  bool _isTestAvailable() => questionBase.length >= minQuestionBaseLength;
 
-  bool _isAttemptLeft() => _numberOfAttempt < maxNumberOfAttempt;
+  bool _isAttemptLeft() => gameInfo.numberOfTestAttempt < maxNumberOfAttempt;
 
   void onNewNoteRead(int noteId) {
-    _numberOfAttempt = 0;
+    gameInfo.numberOfTestAttempt = 0;
     Note note = notes.firstWhere((element) => element.id == noteId);
     if (note.isRead == null || !note.isRead) {
       gameInfo.swallowCount += note.swallow;
     }
     note.isRead = true;
     if (note.questions != null) {
-      _numberOfNewQuestions += note.questions.length;
-      _questionBase.addAll(note.questions);
+      questionBase.addAll(note.questions);
     }
     saveGameInfo();
   }
 
   void onTestPassed({bool successful = false}) {
-    _numberOfAttempt++;
+    gameInfo.numberOfTestAttempt++;
     if (successful) {
       gameInfo.swallowCount += TEST_SWALLOW;
-      saveGameInfo();
     }
+    saveGameInfo();
   }
 
   void changeSwallowDelta(int swallow) {
@@ -343,6 +345,8 @@ class ChapterService {
       value.setString(gameInfoName, gameInfo.toJson());
       // TODO
       value.setStringList('notes', notes.map((e) => e.toJson()).toList());
+      value.setStringList(
+          'questionBase', questionBase.map((e) => e.toJson()).toList());
     });
   }
 
@@ -364,23 +368,14 @@ class ChapterService {
 
   Test getTest() {
     if (!_isAllRead() || !_isTestAvailable() || !_isAttemptLeft()) return null;
-    List<Question> testQuestion = [];
-    int _numberOfOldQuestions = _numberOfNewQuestions >= numberOfTestQuestion
-        ? 0
-        : numberOfTestQuestion - _numberOfNewQuestions;
-    _questionBase.shuffle();
-    for (Question q in _questionBase) {
-      if (q.isNew && _numberOfNewQuestions != 0) {
-        testQuestion.add(q);
-        q.isNew = false;
-        _numberOfNewQuestions--;
-      }
-      if (!q.isNew && _numberOfOldQuestions != 0) {
-        testQuestion.add(q);
-        _numberOfOldQuestions--;
-      }
-      if (testQuestion.length == numberOfTestQuestion) break;
-    }
+    questionBase.shuffle();
+    questionBase.sort((a, b) {
+      int a1 = a.isNew ? 0 : 1;
+      int b1 = b.isNew ? 0 : 1;
+      return b1 - a1;
+    });
+    List<Question> testQuestion = questionBase.sublist(0, numberOfTestQuestion);
+    testQuestion.shuffle();
     return Test(questions: testQuestion);
   }
 
