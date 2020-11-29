@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Chapter.dart';
+import 'package:lastochki/models/entities/Choice.dart';
 import 'package:lastochki/models/entities/GameInfo.dart';
 import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/models/entities/Note.dart';
@@ -119,11 +120,92 @@ class ChapterService {
       int nextPid = int.parse(step ?? gameInfo.currentPassage.links[0].pid);
       Passage p;
       while (p == null) {
-        // if cant find step
         p = currentChapter.story.script[nextPid.toString()];
+        // if cant find step
         nextPid++;
       }
-      gameInfo.currentPassage = p;
+      List<Choice> availableLinks = p.links.where((Choice link) {
+        Passage potentialNextPassage = currentChapter.story.script[link.pid];
+        bool isHidden = false;
+        if (potentialNextPassage != null) {
+          String hideCommand = potentialNextPassage.tags
+              .firstWhere((tag) => tag.startsWith('Hide:'));
+          if (hideCommand != null) {
+            List<String> hideCommandParsed = hideCommand.split(':');
+            var variableHide = gameInfo.gameVariables[hideCommandParsed[1]];
+            if (variableHide != null) {
+              String sign = gameInfo.gameVariables[hideCommandParsed[2]];
+              String value = gameInfo.gameVariables[hideCommandParsed[3]];
+              switch (sign) {
+                case '=':
+                  isHidden = (variableHide.toString() == value);
+                  break;
+                case '!=':
+                  isHidden = (variableHide.toString() != value);
+
+                  break;
+                case '>':
+                  // can operate only int
+                  isHidden = (variableHide > int.parse(value));
+
+                  break;
+                case '<':
+                  isHidden = (variableHide < int.parse(value));
+
+                  break;
+                case '<=':
+                  isHidden = (variableHide <= int.parse(value));
+
+                  break;
+                case '>=':
+                  isHidden = (variableHide >= int.parse(value));
+
+                  break;
+                default:
+              }
+            }
+          }
+          String showCommand = potentialNextPassage.tags
+              .firstWhere((tag) => tag.startsWith('ShowOnly:'));
+          if (showCommand != null) {
+            List<String> showCommandParsed = showCommand.split(':');
+            var variableShow = gameInfo.gameVariables[showCommandParsed[1]];
+            if (variableShow != null) {
+              String sign = gameInfo.gameVariables[showCommandParsed[2]];
+              String value = gameInfo.gameVariables[showCommandParsed[3]];
+              switch (sign) {
+                case '=':
+                  isHidden = (variableShow.toString() != value);
+                  break;
+                case '!=':
+                  isHidden = (variableShow.toString() == value);
+
+                  break;
+                case '>':
+                  // can operate only int
+                  isHidden = (variableShow <= int.parse(value));
+
+                  break;
+                case '<':
+                  isHidden = (variableShow >= int.parse(value));
+
+                  break;
+                case '<=':
+                  isHidden = (variableShow > int.parse(value));
+
+                  break;
+                case '>=':
+                  isHidden = (variableShow < int.parse(value));
+
+                  break;
+                default:
+              }
+            }
+          }
+        }
+        return !isHidden;
+      }).toList();
+      gameInfo.currentPassage = p.copyWith(links: availableLinks);
     }
     if (gameInfo.currentPassage.links.length == 0) {
       int diffLastChapter = lastChapterVersion - currentChapter.number;
