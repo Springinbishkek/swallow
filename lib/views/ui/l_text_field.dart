@@ -28,7 +28,9 @@ class LTextField extends StatelessWidget {
       autofocus: false,
       textCapitalization: TextCapitalization.words,
       inputFormatters: <TextInputFormatter>[
+        // TODO check rule if langs added
         FilteringTextInputFormatter.allow(RegExp('[а-яА-Я#0-9 ]')),
+        LengthLimitingTextInputFormatter(maxLength),
       ],
       controller: controller,
       onChanged: (String name) {
