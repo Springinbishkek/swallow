@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
-import 'package:path_provider/path_provider.dart';
 
-final String baseUrl = 'https://astories.info/public/';
+final String baseUrl = 'https://lastochki.online/public/test/';
 final int connectTimeout = 10000;
 
 class ApiClient {
@@ -46,13 +43,10 @@ class ApiClient {
   }
 
   Future<Response> downloadFiles(
-      String path, Function onReceiveProgress) async {
-    Directory tempDir = await getTemporaryDirectory();
-    String tempPath = tempDir.path;
-
+      String path, String savingPath, Function onReceiveProgress) async {
     Response response = await dio.download(
       path,
-      '$tempPath/images.zip',
+      savingPath,
       onReceiveProgress: onReceiveProgress,
     );
     return response;

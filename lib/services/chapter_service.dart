@@ -1,21 +1,31 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_archive/flutter_archive.dart';
 import 'package:lastochki/models/entities/Chapter.dart';
 import 'package:lastochki/models/entities/Choice.dart';
 import 'package:lastochki/models/entities/GameInfo.dart';
 import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/models/entities/Note.dart';
 import 'package:lastochki/models/entities/Passage.dart';
+import 'package:lastochki/models/entities/Photo.dart';
 import 'package:lastochki/models/entities/PopupText.dart';
 import 'package:lastochki/models/entities/Question.dart';
 import 'package:lastochki/models/entities/Story.dart';
 import 'package:lastochki/models/entities/Test.dart';
 import 'package:lastochki/services/chapter_repository.dart';
+import 'package:lastochki/utils/utility.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/translation.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_info_popup.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
+
+import 'db_helper.dart';
 
 const gameInfoName = 'gameInfo';
 const int TEST_SWALLOW = 15;
@@ -35,13 +45,20 @@ class ChapterService {
   Chapter currentChapter;
   GameInfo gameInfo;
   double loadingPercent;
+  Stream loadingPercentStream;
   int lastChapterVersion = 0;
   List<Note> notes = [];
   List<Question> questionBase = [];
+  DBHelper dbHelper = DBHelper();
+  Map<String, MemoryImage> images = {};
 
   void onReceive(int loaded, int info, {double total}) {
-    loadingPercent = loaded / (total ?? loaded);
-    print(loadingPercent);
+    // TODO
+    // RM
+    //     .get<ChapterService>()
+    //     .setState((s) => s.loadingPercent = loaded / (total ?? loaded));
+    // loadingPercent = loaded / (total ?? loaded);
+    // print('loadingPercent $loadingPercent');
     // print('$loaded  $info $total $loadingPercent');
   }
 
@@ -89,7 +106,6 @@ class ChapterService {
       questionBase =
           questionsStrings.map<Question>((e) => Question.fromJson(e)).toList();
     }
-
     await loadChapter();
   }
 
@@ -101,21 +117,76 @@ class ChapterService {
             : gameInfo.currentChapterId);
     currentChapter =
         chapters.firstWhere((element) => element.number == currentChapterId);
+    if (currentChapter?.number != currentChapterId ||
+        currentChapter?.version != gameInfo.currentChapterVersion ||
+        dbHelper.version != gameInfo.currentDBVersion) {
+      await loadChapterInfo(currentChapterId: currentChapterId);
+    }
+
+    List<Photo> p = await dbHelper.getPhotos();
+    var pairs = p.map((e) {
+      Uint8List bytes = base64.decode(e.base64);
+      var image = MemoryImage(bytes);
+      return MapEntry(e.photoName, image);
+    });
+    images.addEntries(pairs);
+    currentChapter.story = await dbHelper.getStory(currentChapterId);
+    gameInfo.currentChapterId = currentChapterId;
+    gameInfo.currentChapterVersion = currentChapter.version;
+    gameInfo.currentDBVersion = dbHelper.version;
+    loadingPercent = null;
+    saveGameInfo();
+    // TODO clean logic
+    initGame();
+  }
+
+  Future<void> loadChapterInfo({int currentChapterId}) async {
     Map data = await _repository.getStory(
         currentChapter,
         (i, j) =>
             this.onReceive(i, j, total: currentChapter.mBytes * 1024 * 1024));
+    final zipFile = File(data['zipPath']);
+    final Directory tempDir = await getTemporaryDirectory();
+    final Directory destinationDir = await tempDir.createTemp();
+    print('destinationDir $destinationDir');
+    try {
+      await ZipFile.extractToDirectory(
+          zipFile: zipFile,
+          destinationDir: destinationDir,
+          onExtracting: (zipEntry, progress) {
+            print('progress: ${progress.toStringAsFixed(1)}%');
+            print('name: ${zipEntry.name}');
+            print('isDirectory: ${zipEntry.isDirectory}');
+            print(
+                'modificationDate: ${zipEntry.modificationDate.toLocal().toIso8601String()}');
+            print('uncompressedSize: ${zipEntry.uncompressedSize}');
+            print('compressedSize: ${zipEntry.compressedSize}');
+            print('compressionMethod: ${zipEntry.compressionMethod}');
+            print('crc: ${zipEntry.crc}');
+            return ExtractOperation.extract;
+          });
+      List<FileSystemEntity> files = destinationDir.listSync();
+      await Future.forEach(files, (element) async {
+        if (element is File) {
+          String name = element.path.split("/")?.last;
+          int photoChapterId = name.contains('Base_') ? 0 : currentChapterId;
+          // if (!name.contains('Base_')) {
+          // // we saved base photo on build dir
+          String imgString = Utility.base64String(element.readAsBytesSync());
+          Photo photo = Photo(0, photoChapterId, name, imgString);
+          await dbHelper.save(photo);
+          // }
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
     Story s = data['story'];
-    currentChapter.story = s;
-    gameInfo.currentChapterId = currentChapterId;
-    loadingPercent = null;
+    await dbHelper.saveStory(s);
     var uniqNotes = notes.toSet();
     uniqNotes.addAll(data['notes']);
     notes = uniqNotes.toList();
     notes.sort((Note a, Note b) => a.id.compareTo(b.id));
-    saveGameInfo();
-    // TODO clean logic
-    initGame();
   }
 
   void goNext(String step) {

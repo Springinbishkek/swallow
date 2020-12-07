@@ -14,6 +14,7 @@ class LLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('percent $percent');
+    print(RM.get<ChapterService>().state.getLoadingPercent());
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -38,6 +39,19 @@ class LLoading extends StatelessWidget {
                 height: 10,
                 child: StateBuilder(
                     observe: () => RM.get<ChapterService>(),
+                    watch: (ReactiveModel<ChapterService> exposedModel) {
+                      return exposedModel.state.loadingPercent;
+
+                      //Specify the parts of the state to be monitored so that the notification is not sent unless this part changes
+                    },
+                    shouldRebuild:
+                        (ReactiveModel<ChapterService> exposedModel) {
+                      //Returns bool. if true the widget will rebuild if notified.
+                      print('shouldRebuild');
+
+                      //By default StateBuilder will rebuild only if the notifying model has data.
+                      return exposedModel.hasData;
+                    },
                     builder: (context, chapterRM) {
                       print('chapterRM.state.loadingPercent');
                       return LinearProgressIndicator(

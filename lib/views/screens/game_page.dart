@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Choice.dart';
 import 'package:lastochki/models/entities/GameInfo.dart';
+import 'package:lastochki/models/entities/Photo.dart';
 import 'package:lastochki/utils/extentions.dart';
 
 import 'package:lastochki/models/entities/Passage.dart';
@@ -25,6 +26,7 @@ class GamePage extends StatefulWidget {
 
 class _GamePageState extends State<GamePage> {
   bool isStepDisabled = false;
+  String currentPassagePid = '';
 
   @override
   void initState() {
@@ -39,7 +41,8 @@ class _GamePageState extends State<GamePage> {
         onRebuildState: (context, model) async {
           debugPrint('onrebuild');
           var popup = model.state.gameInfo.currentPassage?.popup;
-          if (popup != null) {
+          if (popup != null &&
+              currentPassagePid != model.state.gameInfo.currentPassage.pid) {
             Future.delayed(
               Duration(milliseconds: 500),
               () => showDialog(
@@ -54,6 +57,7 @@ class _GamePageState extends State<GamePage> {
                           func: () => Navigator.pop(context)))),
             );
           }
+          currentPassagePid = model.state.gameInfo.currentPassage.pid;
         },
         builder: (context, chapterRM) {
           debugPrint('rebuild');
@@ -156,7 +160,8 @@ class _GamePageState extends State<GamePage> {
     Passage p = RM.get<ChapterService>().state.gameInfo.currentPassage;
     Map<String, dynamic> variables =
         RM.get<ChapterService>().state.gameInfo.gameVariables ?? {'': ''};
-    List<String> characterImages;
+    Map<String, MemoryImage> images = RM.get<ChapterService>().state.images;
+    List<MemoryImage> characterImages;
     String bgImage = 'assets/backgrounds/loading_background.png';
     bool isThinking = false;
     bool isMain = false;
@@ -195,23 +200,18 @@ class _GamePageState extends State<GamePage> {
           }
         case 'CharacterImage':
           {
-            characterImages =
-                t.skip(1).map((e) => 'assets/Base/$e.png').toList();
-            break;
-          }
-        case 'SceneImage':
-          {
-            // TODO
+            characterImages = t.skip(1).map((e) {
+              // if (e.startsWith('Base_')) {
+              //   return 'assets/Base/$e.png';
+              // }
+              //  TODO
+              return images['$e.png'];
+            }).toList();
             break;
           }
         case 'MainCharacter':
           {
             isMain = true;
-            break;
-          }
-        case 'SetAccessToNote':
-          {
-            // TODO
             break;
           }
         default:
@@ -271,7 +271,7 @@ class _GamePageState extends State<GamePage> {
   Widget buildScene({
     bool isThinking,
     bool isMain,
-    List<String> characterImages,
+    List<MemoryImage> characterImages,
     String speech,
     String pid,
     String bgImage,
@@ -308,7 +308,7 @@ class _GamePageState extends State<GamePage> {
                   child: Column(children: [
                     if (characterImages != null && characterImages.length > 0)
                       LCharacterImage(
-                        images: characterImages,
+                        photoImages: characterImages,
                         key: Key(pid.toString()),
                         isMain: isMain,
                       ),
