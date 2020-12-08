@@ -7,9 +7,11 @@ final Name settings = Name(ru: 'Настройки', kg: 'Баптоолор');
 final Name done = Name(ru: 'Готово', kg: 'Даяр');
 final Name next = Name(ru: 'Далее', kg: 'Кийинкиси');
 final Name letsPlay = Name(ru: 'Играть!', kg: 'Ойноо!');
-final Name noInternet = Name(
-    ru: 'Мы не находим интернет. Проверь подключение и попробуй снова!',
-    kg: 'Интернетке  байланыш табылган жок. Туташууну текшерип, дагы бир жолу аракет кылып көр!');
+final Name noInternet =
+    Name(ru: 'Мы не находим интернет', kg: 'Интернетке  байланыш табылган жок');
+final Name noInternetText = Name(
+    ru: 'Проверь подключение и попробуй снова!',
+    kg: 'Туташууну текшерип, дагы бир жолу аракет кылып көр!');
 final Name tryMsg = Name(ru: 'Попробовать', kg: 'Аракет кылуу');
 final Name aboutGame = Name(ru: 'Об игре', kg: 'Оюн жөнүндө');
 final Name titleChapter =

@@ -112,24 +112,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Padding(
                         padding: EdgeInsets.fromLTRB(48, 90, 48, 20),
-                        child: Column(
-                          children: [
-                            Text(
-                                numberChapter.toStringWithVar(
-                                    variables: {'number': ch.number}),
-                                style: subtitleTextStyle),
-                            SizedBox(height: 10),
-                            Text(ch.title.toString(),
-                                style: titleLightTextStyle),
-                            SizedBox(height: 34),
-                            LButton(
-                              text: g.currentPassage == null
-                                  ? letsPlay.toString()
-                                  : continueGame.toString(),
-                              func: startGame,
-                            )
-                          ],
-                        ),
+                        child: buildChapterInfo(ch, g),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
@@ -161,6 +144,32 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildChapterInfo(Chapter ch, GameInfo g) {
+    int lastChapterNumber = RM.get<ChapterService>().state.lastChapterNumber;
+    Name futureChapterText = RM.get<ChapterService>().state.futureChapterText;
+    if (lastChapterNumber < g.currentChapterId) {
+      return Center(
+          child:
+              Text(futureChapterText.toString(), style: titleLightTextStyle));
+    }
+
+    return Column(
+      children: [
+        Text(numberChapter.toStringWithVar(variables: {'number': ch.number}),
+            style: subtitleTextStyle),
+        SizedBox(height: 10),
+        Text(ch.title.toString(), style: titleLightTextStyle),
+        SizedBox(height: 34),
+        LButton(
+          text: g.currentPassage == null
+              ? letsPlay.toString()
+              : continueGame.toString(),
+          func: startGame,
+        )
+      ],
     );
   }
 

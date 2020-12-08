@@ -42,11 +42,12 @@ class ChapterService {
   }) : _repository = repository;
 
   List<Chapter> chapters;
+  Name futureChapterText;
   Chapter currentChapter;
   GameInfo gameInfo;
   double loadingPercent;
   Stream loadingPercentStream;
-  int lastChapterVersion = 0;
+  int lastChapterNumber = 0;
   List<Note> notes = [];
   List<Question> questionBase = [];
   DBHelper dbHelper = DBHelper();
@@ -93,9 +94,10 @@ class ChapterService {
     ]);
     print(values);
 
-    chapters = values[1];
+    chapters = values[1]['chapters'];
+    futureChapterText = values[1]['futureChapterText'];
     // TODO calc last
-    lastChapterVersion = chapters.length;
+    lastChapterNumber = chapters.length;
     final SharedPreferences prefs = values[0];
 
     final gameString = prefs.getString(gameInfoName);
@@ -294,8 +296,7 @@ class ChapterService {
       gameInfo.currentPassage = p.copyWith(links: availableLinks);
     }
     if (gameInfo.currentPassage.links.length == 0) {
-      int diffLastChapter = lastChapterVersion - currentChapter.number;
-      final bool isLast = diffLastChapter > 0;
+      final bool isLast = lastChapterNumber == currentChapter.number;
       String contentText =
           !isLast ? chapterContinue.toString() : chapterNoContinue.toString();
       // story end

@@ -1,6 +1,7 @@
 // load from db
 // TODO check ichapter changes
 import 'dart:io';
+import 'package:lastochki/models/entities/Name.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -15,12 +16,17 @@ class ChapterRepository {
   final ApiClient _apiClient;
   ChapterRepository() : _apiClient = ApiClient();
 
-  Future<List> getChapters() async {
+  Future<Map> getChapters() async {
     try {
       final response = await _apiClient.getChapters();
       Map data = response.data;
       List<dynamic> chapters = data['chapters'];
-      return chapters.map((e) => Chapter.fromBackendMap(e)).toList();
+      return {
+        'chapters': chapters.map((e) => Chapter.fromBackendMap(e)).toList(),
+        // TODO work with lang
+        'futureChapterText': Name(
+            ru: data['future_chapter_text'], kg: data['future_chapter_text_kg'])
+      };
     } catch (e) {
       throw PersistanceException(e);
     }
