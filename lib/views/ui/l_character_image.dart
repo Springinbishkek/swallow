@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 
 class LCharacterImage extends StatefulWidget {
   final List<String> images;
+  final List<ImageProvider> photoImages;
   final double sign;
   const LCharacterImage({
     Key key,
     this.images,
+    this.photoImages,
     bool isMain = false,
   })  : sign = isMain ? 1 : -1,
         super(key: key);
@@ -49,55 +51,53 @@ class _LCharacterImageState extends State<LCharacterImage>
             child: child,
           );
         },
-        child: AnimatedLogo(
+        child: AnimatedPhoto(
           animation: animation,
           images: widget.images,
+          photoImages: widget.photoImages,
         ));
   }
 }
 
-class AnimatedLogo extends AnimatedWidget {
+class AnimatedPhoto extends AnimatedWidget {
   // Make the Tweens static because they don't change.
   static final _opacityTween = Tween<double>(begin: 0, end: 1);
   final List<String> images;
+  final List<ImageProvider> photoImages;
 
-  AnimatedLogo({Key key, Animation<double> animation, this.images})
+  AnimatedPhoto(
+      {Key key, Animation<double> animation, this.images, this.photoImages})
       : super(key: key, listenable: animation);
 
   Widget build(BuildContext context) {
     final animation = listenable as Animation<double>;
     var opacity = _opacityTween.evaluate(animation);
-    // debugPrint('$opacity');
+    debugPrint('$opacity');
 
     return Stack(
       children: [
         Opacity(
-          opacity: 1,
-          child: Image.asset(
-            images[0],
-            width: 220,
-            height: 205,
-            errorBuilder: (context, error, stackTrace) => SizedBox(
-              width: 220,
-              height: 205,
-              child: Placeholder(),
-            ),
-          ),
+          opacity: 1 - opacity * opacity,
+          child: buildImage(photoImages.first),
         ),
         Opacity(
           opacity: opacity,
-          child: Image.asset(
-            images[images.length - 1],
-            width: 220,
-            height: 205,
-            errorBuilder: (context, error, stackTrace) => SizedBox(
-              width: 220,
-              height: 205,
-              child: Placeholder(),
-            ),
-          ),
+          child: buildImage(photoImages.last),
         )
       ],
+    );
+  }
+
+  Image buildImage(ImageProvider photo) {
+    return Image(
+      image: photo,
+      width: 220,
+      height: 205,
+      errorBuilder: (context, error, stackTrace) => SizedBox(
+        width: 220,
+        height: 205,
+        child: Placeholder(),
+      ),
     );
   }
 }

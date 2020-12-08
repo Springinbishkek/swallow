@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Choice.dart';
+import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_speech_panel.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
 
 class LChoiceBox extends StatelessWidget {
   final String premiumStar = 'assets/icons/premium_star.png';
@@ -22,83 +24,44 @@ class LChoiceBox extends StatelessWidget {
       this.isMain = false,
       this.isThinking = false});
 
-  Widget _buildOptionButton(Choice option, double width) {
-    return Container(
-      width: width,
-      margin: EdgeInsets.only(bottom: 5),
-      // margin: EdgeInsets.only(bottom: 8.0),
-      decoration: BoxDecoration(
-          borderRadius: boxBorderRadius,
-          border: Border.all(color: boxBorderColor, width: 2.0),
-          color: Color(0xFFE7F2F7),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.6),
-              offset: const Offset(4, 4),
-              blurRadius: 16,
-            ),
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              offset: const Offset(4, 4),
-              blurRadius: 8,
-            )
-          ]),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: boxBorderRadius,
-          highlightColor: Color(0xFFA3D5EC),
-          onTap: () {
-            debugPrint('simple');
-            debugPrint(option.toString());
-            onChoose(option);
-          },
-          child: Padding(
-            padding: const EdgeInsets.only(
-              left: 16,
-              top: 10,
-              bottom: 10,
-              right: 10,
-            ),
-            child: Text(
-              option.name.toString(),
-              style: contentTextStyle,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPremiumOptionButton(Choice option, double width) {
+  Widget _buildOptionButton(
+    Choice option,
+    double width,
+  ) {
+    bool isPremium = option.swallow != null && option.swallow > 0;
+    var variables = RM.get<ChapterService>().state.gameInfo.gameVariables;
     return Stack(
       overflow: Overflow.visible,
       children: [
         Container(
           width: width,
           margin: EdgeInsets.only(bottom: 5),
+          // margin: EdgeInsets.only(bottom: 8.0),
           decoration: BoxDecoration(
               borderRadius: boxBorderRadius,
-              border: Border.all(color: Color(0xFFFFBA06), width: 2.0),
-              color: Color(0xFFFFF4E0),
+              border: isPremium
+                  ? Border.all(color: Color(0xFFFFBA06), width: 2.0)
+                  : Border.all(color: boxBorderColor, width: 2.0),
+              color: isPremium ? Color(0xFFFFF4E0) : Color(0xFFE7F2F7),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.4),
-                  offset: const Offset(8, 8),
+                  color: Colors.black.withOpacity(isPremium ? 0.4 : 0.6),
+                  offset: isPremium ? const Offset(8, 8) : const Offset(4, 4),
                   blurRadius: 16,
                 ),
                 BoxShadow(
                   color: Colors.black.withOpacity(0.2),
-                  offset: const Offset(2, 2),
+                  offset: isPremium ? const Offset(2, 2) : const Offset(4, 4),
                   blurRadius: 8,
                 )
               ]),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              highlightColor: Color(0xFFFAD289),
+              borderRadius: boxBorderRadius,
+              highlightColor: isPremium ? Color(0xFFFAD289) : Color(0xFFA3D5EC),
               onTap: () {
-                print('option $option');
+                debugPrint(option.toString());
                 onChoose(option);
               },
               child: Padding(
@@ -108,65 +71,70 @@ class LChoiceBox extends StatelessWidget {
                   bottom: 10,
                   right: 10,
                 ),
-                child: Row(
+                child:
+                    // Text(
+                    //   option.name.toString(),
+                    //   style: contentTextStyle,
+                    // ),
+                    Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       child: Text(
-                        option.name.toString(),
+                        option.name.toStringWithVar(variables: variables),
                         style: contentTextStyle,
                       ),
                     ),
-                    Container(
-                      height: 25.0,
-                      padding: EdgeInsets.symmetric(horizontal: 6.0),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                          color: Color(0xFFEDC06B)),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '-${option.swallow}',
-                            style: TextStyle(
-                                color: whiteColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16.0),
-                          ),
-                          Image.asset(
-                            swallowIcon,
-                            color: whiteColor,
-                            height: 16.0,
-                          )
-                        ],
-                      ),
-                    )
+                    if (isPremium)
+                      Container(
+                        height: 25.0,
+                        padding: EdgeInsets.symmetric(horizontal: 6.0),
+                        decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15.0)),
+                            color: Color(0xFFEDC06B)),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '-${option.swallow}',
+                              style: TextStyle(
+                                  color: whiteColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.0),
+                            ),
+                            Image.asset(
+                              swallowIcon,
+                              color: whiteColor,
+                              height: 16.0,
+                            )
+                          ],
+                        ),
+                      )
                   ],
                 ),
               ),
             ),
           ),
         ),
-        Positioned(
-          top: -13,
-          right: -25,
-          child: IgnorePointer(
-            child: Image.asset(
-              premiumStar,
-              fit: BoxFit.contain,
-              width: 60,
+        if (isPremium)
+          Positioned(
+            top: -13,
+            right: -25,
+            child: IgnorePointer(
+              child: Image.asset(
+                premiumStar,
+                fit: BoxFit.contain,
+                width: 60,
+              ),
             ),
           ),
-        ),
       ],
     );
   }
 
   Widget buildOption(Choice option, double width) {
-    if (option.swallow != null && option.swallow > 0) {
-      return _buildPremiumOptionButton(option, width);
-    }
     return _buildOptionButton(option, width);
   }
 

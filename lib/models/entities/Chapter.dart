@@ -20,14 +20,11 @@ class Chapter {
     this.title,
     this.description,
     this.mBytes,
-    // this.mediaUri,
-    mediaUri,
+    this.mediaUri,
     this.noteUri,
     this.storyUri,
     this.story,
-  })
-  // TODO cut hardcode
-  : this.mediaUri = 'https://astories.info/public/ios/chapter1';
+  });
 
   Chapter copyWith({
     int number,
@@ -46,9 +43,7 @@ class Chapter {
       title: title ?? this.title,
       description: description ?? this.description,
       mBytes: mBytes ?? this.mBytes,
-      // TODO cut hardcode
-      // mediaUri: mediaUri ?? this.mediaUri,
-      mediaUri: 'https://astories.info/public/ios/chapter1',
+      mediaUri: mediaUri ?? this.mediaUri,
       noteUri: noteUri ?? this.noteUri,
       storyUri: storyUri ?? this.storyUri,
       story: story ?? this.story,
@@ -87,6 +82,21 @@ class Chapter {
   }
 
   static Chapter fromMap(Map<String, dynamic> map) {
+    if (map == null) return null;
+    return Chapter(
+      number: map['number'],
+      version: map['version'],
+      title: Name.fromMap(map['title']),
+      description: Name.fromMap(map['description']),
+      mBytes: double.parse(map['mBytes'].toString()),
+      mediaUri: map['mediaUri'],
+      noteUri: map['noteUri'],
+      storyUri: map['storyUri'],
+      story: Story.fromMap(map['story']),
+    );
+  }
+
+  static Chapter fromBackendMap(Map<String, dynamic> map) {
     if (map == null) return null;
 
     map = getPrepared(map);

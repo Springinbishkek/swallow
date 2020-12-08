@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
+import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_character_name_input.dart';
 import 'package:lastochki/views/ui/l_language_checkbox.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
 
 import '../translation.dart';
 
@@ -29,7 +31,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Name askName = Name(
       ru: 'Как тебя зовут?',
       kg: 'Сенин атың ким болсо, башкы каармандын да\nаты ошондой болот');
-  Name aboutName = Name(ru: 'Также будут звать главную героиню игры', kg: '');
+  Name aboutName = Name(ru: 'Так же будут звать главную героиню игры', kg: '');
   Name greetingName = Name(ru: 'Отлично, \$name!', kg: 'Абдан жакшы, \$name!');
   Name aboutSettings = Name(
       ru: 'Поменять имя, язык или начать игру заново можно в разделе «Настройки» с таким значком: ',
@@ -145,6 +147,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
           if (_textNameController.text != '') {
             setState(() {
               name = _textNameController.text;
+              RM
+                  .get<ChapterService>()
+                  .setState((s) => s.setGameParam(name: 'Main', value: name));
             });
           }
           _navigateToNextPage();

@@ -57,6 +57,7 @@ class _NotePageState extends State<NotePage> {
               ),
               Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  // TODO make text selectable!
                   child: Html(
                     data: widget.note.text.toString().replaceAll('\n', '<br>'),
                     style: {

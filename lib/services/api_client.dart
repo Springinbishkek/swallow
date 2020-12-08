@@ -1,9 +1,12 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:lastochki/views/theme.dart';
+import 'package:lastochki/views/translation.dart';
+import 'package:lastochki/views/ui/l_button.dart';
+import 'package:lastochki/views/ui/l_info_popup.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
 
-final String baseUrl = 'https://astories.info/public/';
+final String baseUrl = 'https://lastochki.online/public/test/';
 final int connectTimeout = 10000;
 
 class ApiClient {
@@ -22,7 +25,28 @@ class ApiClient {
     }, onError: (DioError e) async {
       // TODO show error popup
       print(e.response);
-      return e;
+      var options = e.request;
+
+      var result = await RM.navigate.toDialog(
+        LInfoPopup(
+          isCloseEnable: true,
+          image: alertImg,
+          title: noInternet.toString(),
+          content: noInternetText.toString(),
+          actions: LButton(
+              icon: refreshIcon,
+              buttonColor: whiteColor,
+              text: tryMsg.toString(),
+              fontSize: 10,
+              height: 30,
+              func: () async {
+                var response =
+                    await dio.request(options.path, options: options);
+                RM.navigate.back(response);
+              }),
+        ),
+      );
+      return result ?? e;
     }));
     dio.options.baseUrl = baseUrl;
     dio.options.connectTimeout = connectTimeout;
@@ -46,13 +70,10 @@ class ApiClient {
   }
 
   Future<Response> downloadFiles(
-      String path, Function onReceiveProgress) async {
-    Directory tempDir = await getTemporaryDirectory();
-    String tempPath = tempDir.path;
-
+      String path, String savingPath, Function onReceiveProgress) async {
     Response response = await dio.download(
       path,
-      '$tempPath/images.zip',
+      savingPath,
       onReceiveProgress: onReceiveProgress,
     );
     return response;
