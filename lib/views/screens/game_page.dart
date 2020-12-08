@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Choice.dart';
 import 'package:lastochki/models/entities/GameInfo.dart';
-import 'package:lastochki/models/entities/Photo.dart';
 import 'package:lastochki/utils/extentions.dart';
 
 import 'package:lastochki/models/entities/Passage.dart';
@@ -86,18 +85,22 @@ class _GamePageState extends State<GamePage> {
     if (g.currentPassage == null) {
       return LLoading(percent: null);
     }
+    ImageProvider bgImage = RM.get<ChapterService>().state.bgImage;
+    ImageProvider bgPreviousImage =
+        RM.get<ChapterService>().state.bgPreviousImage;
 
     return GestureDetector(
       onTapUp: getTapHandler(g.currentPassage),
-      child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/backgrounds/loading_background.jpg'),
+      child: Stack(children: [
+        Container(
+          height: double.infinity,
+          child: FadeInImage(
+            placeholder: bgPreviousImage,
+            image: bgImage,
             fit: BoxFit.cover,
           ),
-          color: Colors.black,
         ),
-        child: Scaffold(
+        Scaffold(
           backgroundColor: Colors.transparent,
           bottomNavigationBar: Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -152,7 +155,7 @@ class _GamePageState extends State<GamePage> {
               ]),
           body: buildBody(),
         ),
-      ),
+      ]),
     );
   }
 
@@ -162,7 +165,6 @@ class _GamePageState extends State<GamePage> {
         RM.get<ChapterService>().state.gameInfo.gameVariables ?? {'': ''};
     Map<String, MemoryImage> images = RM.get<ChapterService>().state.images;
     List<MemoryImage> characterImages;
-    String bgImage = 'assets/backgrounds/loading_background.png';
     bool isThinking = false;
     bool isMain = false;
     String characterName; // TODO
@@ -178,11 +180,6 @@ class _GamePageState extends State<GamePage> {
                 break;
               default:
             }
-            break;
-          }
-        case 'SceneImage':
-          {
-            // TODO
             break;
           }
         case 'CharacterName':
@@ -226,7 +223,6 @@ class _GamePageState extends State<GamePage> {
           pid: p.pid,
           characterImages: characterImages,
           characterName: characterName,
-          bgImage: bgImage,
           speech: p.text.toStringWithVar(variables: variables),
           options: p.links.length > 1 ? p.links : null,
         ));
@@ -274,7 +270,6 @@ class _GamePageState extends State<GamePage> {
     List<MemoryImage> characterImages,
     String speech,
     String pid,
-    String bgImage,
     String characterName,
     List<Choice> options,
   }) {
