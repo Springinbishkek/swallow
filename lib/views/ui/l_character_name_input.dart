@@ -5,8 +5,9 @@ import 'package:states_rebuilder/states_rebuilder.dart';
 
 class LCharacterNameInput extends StatefulWidget {
   final TextEditingController controller;
+  final Function(String) onChanged;
 
-  LCharacterNameInput(this.controller);
+  LCharacterNameInput(this.controller, {this.onChanged});
 
   @override
   _LCharacterNameInputState createState() => _LCharacterNameInputState();
@@ -15,11 +16,6 @@ class LCharacterNameInput extends StatefulWidget {
 class _LCharacterNameInputState extends State<LCharacterNameInput> {
   final int nameMaxLength = 24;
   String currentName;
-
-  void onChanged(String name) {
-    RM.get<ChapterService>().setState((s) =>
-        s.setGameParam(name: 'Main', value: name.isEmpty ? currentName : name));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +29,7 @@ class _LCharacterNameInputState extends State<LCharacterNameInput> {
         },
         builder: (context, ReactiveModel<ChapterService> chapterRM) {
           return LTextField(
-              widget.controller, currentName, nameMaxLength, onChanged);
+              widget.controller, currentName, nameMaxLength, widget.onChanged);
         });
   }
 }

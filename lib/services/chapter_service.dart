@@ -1,48 +1,66 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_archive/flutter_archive.dart';
 import 'package:lastochki/models/entities/Chapter.dart';
+import 'package:lastochki/models/entities/Choice.dart';
 import 'package:lastochki/models/entities/GameInfo.dart';
 import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/models/entities/Note.dart';
 import 'package:lastochki/models/entities/Passage.dart';
+import 'package:lastochki/models/entities/Photo.dart';
 import 'package:lastochki/models/entities/PopupText.dart';
 import 'package:lastochki/models/entities/Question.dart';
 import 'package:lastochki/models/entities/Story.dart';
 import 'package:lastochki/models/entities/Test.dart';
 import 'package:lastochki/services/chapter_repository.dart';
+import 'package:lastochki/utils/utility.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/translation.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_info_popup.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
+import 'db_helper.dart';
+
 const gameInfoName = 'gameInfo';
-const TEST_SWALLOW = 15;
+const int TEST_SWALLOW = 15;
+const int END_SWALLOW_BONUS = 2;
+const int minQuestionBaseLength = 15;
+const int maxNumberOfAttempt = 3;
+const int numberOfTestQuestion = 10;
 
 class ChapterService {
   final ChapterRepository _repository;
-  static const int minQuestionBaseLength = 15;
-  static const int maxNumberOfAttempt = 3;
-  static const int numberOfTestQuestion = 10;
 
   ChapterService({
     ChapterRepository repository,
   }) : _repository = repository;
 
   List<Chapter> chapters;
+  Name futureChapterText;
   Chapter currentChapter;
   GameInfo gameInfo;
   double loadingPercent;
-  int lastChapterVersion = 0;
+  Stream loadingPercentStream;
+  int lastChapterNumber = 0;
   List<Note> notes = [];
-  List<Question> _questionBase = [];
-  int _numberOfNewQuestions = 0;
-  int _numberOfAttempt = 0;
-  int _accessNoteId = 0;
+  List<Question> questionBase = [];
+  DBHelper dbHelper = DBHelper();
+  Map<String, MemoryImage> images = {};
+  String previousBgName;
 
   void onReceive(int loaded, int info, {double total}) {
-    loadingPercent = loaded / (total ?? loaded);
-    print(loadingPercent);
+    // TODO
+    // RM
+    //     .get<ChapterService>()
+    //     .setState((s) => s.loadingPercent = loaded / (total ?? loaded));
+    // loadingPercent = loaded / (total ?? loaded);
+    // print('loadingPercent $loadingPercent');
     // print('$loaded  $info $total $loadingPercent');
   }
 
@@ -52,6 +70,16 @@ class ChapterService {
 
   double getLoadingPercent() {
     return loadingPercent;
+  }
+
+  get bgImage {
+    return images['${gameInfo.currentBgName}.jpg'] ??
+        AssetImage('assets/backgrounds/loading_background.jpg');
+  }
+
+  get bgPreviousImage {
+    return images['$previousBgName.jpg'] ??
+        AssetImage('assets/backgrounds/loading_background.jpg');
   }
 
   loadNotes() async {
@@ -66,9 +94,10 @@ class ChapterService {
     ]);
     print(values);
 
-    chapters = values[1];
+    chapters = values[1]['chapters'];
+    futureChapterText = values[1]['futureChapterText'];
     // TODO calc last
-    lastChapterVersion = chapters.length;
+    lastChapterNumber = chapters.length;
     final SharedPreferences prefs = values[0];
 
     final gameString = prefs.getString(gameInfoName);
@@ -85,7 +114,11 @@ class ChapterService {
     if (notesStrings != null && notesStrings.length > 0) {
       notes = notesStrings.map<Note>((e) => Note.fromJson(e)).toList();
     }
-
+    final List<String> questionsStrings = prefs.getStringList('questionBase');
+    if (questionsStrings != null && questionsStrings.length > 0) {
+      questionBase =
+          questionsStrings.map<Question>((e) => Question.fromJson(e)).toList();
+    }
     await loadChapter();
   }
 
@@ -97,21 +130,76 @@ class ChapterService {
             : gameInfo.currentChapterId);
     currentChapter =
         chapters.firstWhere((element) => element.number == currentChapterId);
+    if (currentChapter?.number != currentChapterId ||
+        currentChapter?.version != gameInfo.currentChapterVersion ||
+        dbHelper.version != gameInfo.currentDBVersion) {
+      await loadChapterInfo(currentChapterId: currentChapterId);
+    }
+
+    List<Photo> p = await dbHelper.getPhotos();
+    var pairs = p.map((e) {
+      Uint8List bytes = base64.decode(e.base64);
+      var image = MemoryImage(bytes);
+      return MapEntry(e.photoName, image);
+    });
+    images.addEntries(pairs);
+    currentChapter.story = await dbHelper.getStory(currentChapterId);
+    gameInfo.currentChapterId = currentChapterId;
+    gameInfo.currentChapterVersion = currentChapter.version;
+    gameInfo.currentDBVersion = dbHelper.version;
+    loadingPercent = null;
+    saveGameInfo();
+    // TODO clean logic
+    initGame();
+  }
+
+  Future<void> loadChapterInfo({int currentChapterId}) async {
     Map data = await _repository.getStory(
         currentChapter,
         (i, j) =>
             this.onReceive(i, j, total: currentChapter.mBytes * 1024 * 1024));
+    final zipFile = File(data['zipPath']);
+    final Directory tempDir = await getTemporaryDirectory();
+    final Directory destinationDir = await tempDir.createTemp();
+    print('destinationDir $destinationDir');
+    try {
+      await ZipFile.extractToDirectory(
+          zipFile: zipFile,
+          destinationDir: destinationDir,
+          onExtracting: (zipEntry, progress) {
+            print('progress: ${progress.toStringAsFixed(1)}%');
+            print('name: ${zipEntry.name}');
+            print('isDirectory: ${zipEntry.isDirectory}');
+            print(
+                'modificationDate: ${zipEntry.modificationDate.toLocal().toIso8601String()}');
+            print('uncompressedSize: ${zipEntry.uncompressedSize}');
+            print('compressedSize: ${zipEntry.compressedSize}');
+            print('compressionMethod: ${zipEntry.compressionMethod}');
+            print('crc: ${zipEntry.crc}');
+            return ExtractOperation.extract;
+          });
+      List<FileSystemEntity> files = destinationDir.listSync();
+      await Future.forEach(files, (element) async {
+        if (element is File) {
+          String name = element.path.split("/")?.last;
+          int photoChapterId = name.contains('Base_') ? 0 : currentChapterId;
+          // if (!name.contains('Base_')) {
+          // // we saved base photo on build dir
+          String imgString = Utility.base64String(element.readAsBytesSync());
+          Photo photo = Photo(0, photoChapterId, name, imgString);
+          await dbHelper.save(photo);
+          // }
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
     Story s = data['story'];
-    currentChapter.story = s;
-    gameInfo.currentChapterId = currentChapterId;
-    loadingPercent = null;
+    await dbHelper.saveStory(s);
     var uniqNotes = notes.toSet();
     uniqNotes.addAll(data['notes']);
     notes = uniqNotes.toList();
     notes.sort((Note a, Note b) => a.id.compareTo(b.id));
-    saveGameInfo();
-    // TODO clean logic
-    initGame();
   }
 
   void goNext(String step) {
@@ -119,17 +207,98 @@ class ChapterService {
       int nextPid = int.parse(step ?? gameInfo.currentPassage.links[0].pid);
       Passage p;
       while (p == null) {
-        // if cant find step
         p = currentChapter.story.script[nextPid.toString()];
+        // if cant find step
         nextPid++;
       }
-      gameInfo.currentPassage = p;
+      List<Choice> availableLinks = p.links.where((Choice link) {
+        Passage potentialNextPassage = currentChapter.story.script[link.pid];
+        bool isHidden = false;
+        if (potentialNextPassage != null) {
+          String hideCommand = potentialNextPassage.tags
+              .firstWhere((tag) => tag.startsWith('Hide:'), orElse: () => null);
+          if (hideCommand != null) {
+            List<String> hideCommandParsed = hideCommand.split(':');
+            var variableHide = gameInfo.gameVariables[hideCommandParsed[1]];
+            if (variableHide != null) {
+              String sign = hideCommandParsed[2];
+              String value = hideCommandParsed[3];
+              switch (sign) {
+                case '=':
+                  isHidden = (variableHide.toString() == value);
+                  break;
+                case '!=':
+                  isHidden = (variableHide.toString() != value);
+
+                  break;
+                case '>':
+                  // can operate only int
+                  isHidden = (variableHide > int.parse(value));
+
+                  break;
+                case '<':
+                  isHidden = (variableHide < int.parse(value));
+
+                  break;
+                case '<=':
+                  isHidden = (variableHide <= int.parse(value));
+
+                  break;
+                case '>=':
+                  isHidden = (variableHide >= int.parse(value));
+
+                  break;
+                default:
+              }
+            }
+          }
+          String showCommand = potentialNextPassage.tags.firstWhere(
+              (tag) => tag.startsWith('ShowOnly:'),
+              orElse: () => null);
+          if (showCommand != null) {
+            List<String> showCommandParsed = showCommand.split(':');
+            var variableShow = gameInfo.gameVariables[showCommandParsed[1]];
+            if (variableShow != null) {
+              String sign = gameInfo.gameVariables[showCommandParsed[2]];
+              String value = gameInfo.gameVariables[showCommandParsed[3]];
+              switch (sign) {
+                case '=':
+                  isHidden = (variableShow.toString() != value);
+                  break;
+                case '!=':
+                  isHidden = (variableShow.toString() == value);
+
+                  break;
+                case '>':
+                  // can operate only int
+                  isHidden = (variableShow <= int.parse(value));
+
+                  break;
+                case '<':
+                  isHidden = (variableShow >= int.parse(value));
+
+                  break;
+                case '<=':
+                  isHidden = (variableShow > int.parse(value));
+
+                  break;
+                case '>=':
+                  isHidden = (variableShow < int.parse(value));
+
+                  break;
+                default:
+              }
+            }
+          }
+        }
+        return !isHidden;
+      }).toList();
+      gameInfo.currentPassage = p.copyWith(links: availableLinks);
     }
     if (gameInfo.currentPassage.links.length == 0) {
-      int diffLastChapter = lastChapterVersion - currentChapter.number;
-      String contentText = diffLastChapter > 0
-          ? chapterContinue.toString()
-          : chapterNoContinue.toString();
+      final bool isLast = lastChapterNumber == currentChapter.number;
+      String contentText =
+          !isLast ? chapterContinue.toString() : chapterNoContinue.toString();
       // story end
       RM.navigate.toDialog(
         LInfoPopup(
@@ -140,23 +309,25 @@ class ChapterService {
             content: contentText,
             actions: Column(
               children: [
-                Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.only(
-                        bottom: 10, left: 20, right: 20, top: 20),
-                    child: LButton(
-                        text: continueGame.toString(),
-                        swallow: 2, //TODO
-                        icon: swallowIcon,
-                        func: () {
-                          RM.get<ChapterService>().setState((s) {
-                            s.gameInfo.currentPassage = null;
-                          });
-                          RM.get<ChapterService>().setState((s) async {
-                            await s.loadChapter();
-                          });
-                          RM.navigate.back();
-                        })),
+                if (!isLast)
+                  Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.only(
+                          bottom: 10, left: 20, right: 20, top: 20),
+                      child: LButton(
+                          text: continueGame.toString(),
+                          swallow: END_SWALLOW_BONUS, //TODO
+                          icon: swallowIcon,
+                          func: () {
+                            RM.get<ChapterService>().setState((s) {
+                              s.gameInfo.currentPassage = null;
+                              s.gameInfo.swallowCount += END_SWALLOW_BONUS;
+                            });
+                            RM.get<ChapterService>().setState((s) async {
+                              await s.loadChapter();
+                            });
+                            RM.navigate.back();
+                          })),
                 Container(
                   width: double.infinity,
                   margin: EdgeInsets.only(bottom: 0, left: 20, right: 20),
@@ -190,14 +361,17 @@ class ChapterService {
         var setting = element.split(':');
         switch (setting[0]) {
           case 'SetAccessToNote':
-            _accessNoteId = int.parse(setting[1]);
-
+            gameInfo.accessNoteId = int.parse(setting[1]);
             break;
           case 'SetIntVar':
             gameInfo.gameVariables[setting[1]] = int.parse(setting[2]);
             break;
           case 'SetTextVar':
             gameInfo.gameVariables[setting[1]] = setting[2];
+            break;
+          case 'SceneImage':
+            previousBgName = gameInfo.currentBgName;
+            gameInfo.currentBgName = setting[1];
             break;
           default:
         }
@@ -215,37 +389,40 @@ class ChapterService {
   }
 
   getNotes() {
-    return notes.takeWhile((value) => value.id <= _accessNoteId).toList();
+    return notes
+        .takeWhile((value) => value.id <= gameInfo.accessNoteId)
+        .toList();
   }
 
   bool _isAllRead() {
-    return !notes.any((element) => element.isRead == null);
+    return notes.every((note) =>
+        note.id > gameInfo.accessNoteId ||
+        (note.isRead != null && note.isRead));
   }
 
-  bool _isTestAvailable() => _questionBase.length >= minQuestionBaseLength;
+  bool _isTestAvailable() => questionBase.length >= minQuestionBaseLength;
 
-  bool _isAttemptLeft() => _numberOfAttempt < maxNumberOfAttempt;
+  bool _isAttemptLeft() => gameInfo.numberOfTestAttempt < maxNumberOfAttempt;
 
   void onNewNoteRead(int noteId) {
-    _numberOfAttempt = 0;
+    gameInfo.numberOfTestAttempt = 0;
     Note note = notes.firstWhere((element) => element.id == noteId);
     if (note.isRead == null || !note.isRead) {
       gameInfo.swallowCount += note.swallow;
     }
     note.isRead = true;
     if (note.questions != null) {
-      _numberOfNewQuestions += note.questions.length;
-      _questionBase.addAll(note.questions);
+      questionBase.addAll(note.questions);
     }
     saveGameInfo();
   }
 
   void onTestPassed({bool successful = false}) {
-    _numberOfAttempt++;
+    gameInfo.numberOfTestAttempt++;
     if (successful) {
       gameInfo.swallowCount += TEST_SWALLOW;
-      saveGameInfo();
     }
+    saveGameInfo();
   }
 
   void changeSwallowDelta(int swallow) {
@@ -258,6 +435,8 @@ class ChapterService {
       value.setString(gameInfoName, gameInfo.toJson());
       // TODO
       value.setStringList('notes', notes.map((e) => e.toJson()).toList());
+      value.setStringList(
+          'questionBase', questionBase.map((e) => e.toJson()).toList());
     });
   }
 
@@ -279,23 +458,14 @@ class ChapterService {
 
   Test getTest() {
     if (!_isAllRead() || !_isTestAvailable() || !_isAttemptLeft()) return null;
-    List<Question> testQuestion = [];
-    int _numberOfOldQuestions = _numberOfNewQuestions >= numberOfTestQuestion
-        ? 0
-        : numberOfTestQuestion - _numberOfNewQuestions;
-    _questionBase.shuffle();
-    for (Question q in _questionBase) {
-      if (q.isNew && _numberOfNewQuestions != 0) {
-        testQuestion.add(q);
-        q.isNew = false;
-        _numberOfNewQuestions--;
-      }
-      if (!q.isNew && _numberOfOldQuestions != 0) {
-        testQuestion.add(q);
-        _numberOfOldQuestions--;
-      }
-      if (testQuestion.length == numberOfTestQuestion) break;
-    }
+    questionBase.shuffle();
+    questionBase.sort((a, b) {
+      int a1 = a.isNew ? 0 : 1;
+      int b1 = b.isNew ? 0 : 1;
+      return b1 - a1;
+    });
+    List<Question> testQuestion = questionBase.sublist(0, numberOfTestQuestion);
+    testQuestion.shuffle();
     return Test(questions: testQuestion);
   }
 

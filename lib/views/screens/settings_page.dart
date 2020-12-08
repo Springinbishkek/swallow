@@ -10,19 +10,35 @@ import 'package:states_rebuilder/states_rebuilder.dart';
 
 import '../translation.dart';
 
-class SettingsPage extends StatefulWidget {
+class SettingsPage extends StatelessWidget {
   @override
-  _SettingsPageState createState() => _SettingsPageState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: scaffoldBgColor,
+      appBar: LAppbar(
+          title: settings.toString(),
+          func: () {
+            Navigator.pop(context);
+          }),
+      body: SettingBody(),
+    );
+  }
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class SettingBody extends StatefulWidget {
+  @override
+  _SettingBodyState createState() => _SettingBodyState();
+}
+
+class _SettingBodyState extends State<SettingBody> {
+  String languageCode = Name.curLocale.toString();
   Name changeLanguage = Name(ru: 'Сменить язык', kg: 'Тилди өзгөртүү');
   Name changeName =
       Name(ru: 'Сменить имя героини', kg: 'Каармандын атын өзгөртүү');
   Name saveSettings = Name(ru: 'Сохранить настройки', kg: 'Баптоолорду сактоо');
 
   TextEditingController _textNameController = TextEditingController();
-  String languageCode = Name.curLocale.toString();
 
   @override
   void dispose() {
@@ -42,6 +58,9 @@ class _SettingsPageState extends State<SettingsPage> {
       Name.curLocale = Locale(languageCode);
     });
     String name = _textNameController.text;
+    RM
+        .get<ChapterService>()
+        .setState((s) => s.setGameParam(name: 'Main', value: name));
     if (name.startsWith('#')) {
       ReactiveModel chapterService = RM.get<ChapterService>();
       var cheat = name.substring(1).split(' ');
@@ -50,68 +69,67 @@ class _SettingsPageState extends State<SettingsPage> {
       }
       chapterService.state.goNext(cheat[0]);
     }
+
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(confirmChange.toString()),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: scaffoldBgColor,
-      appBar: LAppbar(
-          title: settings.toString(),
-          func: () {
-            Navigator.pop(context);
-          }),
-      body: Container(
-          child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: Text(
-                    changeLanguage.toString(),
-                    style: subtitleTextStyle,
+    return Column(
+      children: <Widget>[
+        Expanded(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: Text(
+                      changeLanguage.toString(),
+                      style: subtitleTextStyle,
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 36.0),
-                  child: LLanguageCheckbox(
-                    onChanged: onChangeLanguageCode,
-                    isColumn: false,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0, bottom: 36.0),
+                    child: LLanguageCheckbox(
+                      onChanged: onChangeLanguageCode,
+                      isColumn: false,
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: Text(
-                    changeName.toString(),
-                    style: subtitleTextStyle,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: Text(
+                      changeName.toString(),
+                      style: subtitleTextStyle,
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 36.0),
-                  child: LCharacterNameInput(_textNameController),
-                ),
-              ],
-            ),
-          ),
-          Expanded(child: Container()),
-          Container(
-            height: 145.0,
-            color: whiteColor,
-            child: Center(
-              child: LButton(
-                text: saveSettings.toString(),
-                func: onSaveSettingsTap,
-                icon: checkIcon,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0, bottom: 36.0),
+                    child: LCharacterNameInput(_textNameController),
+                  ),
+                ],
               ),
             ),
-          )
-        ],
-      )),
+          ),
+        ),
+        Container(
+          height: 145.0,
+          color: whiteColor,
+          child: Center(
+            child: LButton(
+              text: saveSettings.toString(),
+              func: onSaveSettingsTap,
+              icon: checkIcon,
+            ),
+          ),
+        )
+      ],
     );
   }
 }

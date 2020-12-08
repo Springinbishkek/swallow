@@ -14,18 +14,16 @@ import 'package:lastochki/views/screens/openline_logo_page.dart';
 import 'package:lastochki/views/screens/settings_page.dart';
 import 'package:lastochki/views/screens/test_page.dart';
 import 'package:lastochki/views/screens/test_result_page.dart';
-import 'package:lastochki/views/theme.dart';
-import 'package:lastochki/views/translation.dart';
-import 'package:lastochki/views/ui/l_button.dart';
-import 'package:lastochki/views/ui/l_info_popup.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
-import 'models/entities/PopupText.dart';
 import 'models/entities/Test.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIOverlays([]);
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   await DotEnv().load('.env.development'); // TODO
   runApp(App());
 }

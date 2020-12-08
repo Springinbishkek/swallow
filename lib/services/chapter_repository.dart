@@ -1,5 +1,9 @@
 // load from db
 // TODO check ichapter changes
+import 'dart:io';
+import 'package:lastochki/models/entities/Name.dart';
+import 'package:path_provider/path_provider.dart';
+
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:lastochki/models/entities/Chapter.dart';
 import 'package:lastochki/models/entities/Note.dart';
@@ -12,13 +16,17 @@ class ChapterRepository {
   final ApiClient _apiClient;
   ChapterRepository() : _apiClient = ApiClient();
 
-  Future<List> getChapters() async {
+  Future<Map> getChapters() async {
     try {
       final response = await _apiClient.getChapters();
       Map data = response.data;
       List<dynamic> chapters = data['chapters'];
-      print(chapters[0]);
-      return chapters.map((e) => Chapter.fromMap(e)).toList();
+      return {
+        'chapters': chapters.map((e) => Chapter.fromBackendMap(e)).toList(),
+        // TODO work with lang
+        'futureChapterText': Name(
+            ru: data['future_chapter_text'], kg: data['future_chapter_text_kg'])
+      };
     } catch (e) {
       throw PersistanceException(e);
     }
@@ -26,17 +34,24 @@ class ChapterRepository {
 
   Future<Map> getStory(Chapter chapter, Function onReceiveProgress) async {
     try {
+      Directory tempDir = await getTemporaryDirectory();
+      String tempFilePath = '${tempDir.path}/images.zip';
       final response = await Future.wait([
         _apiClient.loadSource(chapter.storyUri, null),
         _apiClient.loadSource(chapter.noteUri, null),
         // watch only for images loading cause it biggest
-        // _apiClient.downloadFiles(chapter.mediaUri, onReceiveProgress),
-        // TODO
+        _apiClient.downloadFiles(
+            chapter.mediaUri, tempFilePath, onReceiveProgress),
       ]);
       // onReceiveProgress(1, 1, total: 1);
       Map story = response[0].data;
       story['chapterId'] = chapter.number;
-      story['firstPid'] = story['passages'][0]['pid'];
+
+      Map firstPassage = story['passages'].firstWhere((p) {
+        List<dynamic> tags = p['tags'];
+        return tags.contains('IsStartBlock:True');
+      });
+      story['firstPid'] = firstPassage['pid'];
       Map<dynamic, dynamic> m = {};
       story['passages'].forEach((p) {
         m[p['pid']] = p;
@@ -46,6 +61,7 @@ class ChapterRepository {
       var chapterId = response[1].data['chapter'];
       return {
         'story': Story.fromBackendMap(story),
+        'zipPath': tempFilePath,
         'notes': response[1]
             .data['list']
             .map<Note>((n) => Note.fromBackendMap(n, chapterId))

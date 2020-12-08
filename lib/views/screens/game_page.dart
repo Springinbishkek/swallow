@@ -25,6 +25,7 @@ class GamePage extends StatefulWidget {
 
 class _GamePageState extends State<GamePage> {
   bool isStepDisabled = false;
+  String currentPassagePid = '';
 
   @override
   void initState() {
@@ -39,7 +40,8 @@ class _GamePageState extends State<GamePage> {
         onRebuildState: (context, model) async {
           debugPrint('onrebuild');
           var popup = model.state.gameInfo.currentPassage?.popup;
-          if (popup != null) {
+          if (popup != null &&
+              currentPassagePid != model.state.gameInfo.currentPassage.pid) {
             Future.delayed(
               Duration(milliseconds: 500),
               () => showDialog(
@@ -54,6 +56,7 @@ class _GamePageState extends State<GamePage> {
                           func: () => Navigator.pop(context)))),
             );
           }
+          currentPassagePid = model.state.gameInfo.currentPassage.pid;
         },
         builder: (context, chapterRM) {
           debugPrint('rebuild');
@@ -82,18 +85,22 @@ class _GamePageState extends State<GamePage> {
     if (g.currentPassage == null) {
       return LLoading(percent: null);
     }
+    ImageProvider bgImage = RM.get<ChapterService>().state.bgImage;
+    ImageProvider bgPreviousImage =
+        RM.get<ChapterService>().state.bgPreviousImage;
 
     return GestureDetector(
       onTapUp: getTapHandler(g.currentPassage),
-      child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/backgrounds/loading_background.jpg'),
+      child: Stack(children: [
+        Container(
+          height: double.infinity,
+          child: FadeInImage(
+            placeholder: bgPreviousImage,
+            image: bgImage,
             fit: BoxFit.cover,
           ),
-          color: Colors.black,
         ),
-        child: Scaffold(
+        Scaffold(
           backgroundColor: Colors.transparent,
           bottomNavigationBar: Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -148,7 +155,7 @@ class _GamePageState extends State<GamePage> {
               ]),
           body: buildBody(),
         ),
-      ),
+      ]),
     );
   }
 
@@ -156,8 +163,8 @@ class _GamePageState extends State<GamePage> {
     Passage p = RM.get<ChapterService>().state.gameInfo.currentPassage;
     Map<String, dynamic> variables =
         RM.get<ChapterService>().state.gameInfo.gameVariables ?? {'': ''};
-    List<String> characterImages;
-    String bgImage = 'assets/backgrounds/loading_background.png';
+    Map<String, MemoryImage> images = RM.get<ChapterService>().state.images;
+    List<MemoryImage> characterImages;
     bool isThinking = false;
     bool isMain = false;
     String characterName; // TODO
@@ -175,11 +182,6 @@ class _GamePageState extends State<GamePage> {
             }
             break;
           }
-        case 'SceneImage':
-          {
-            // TODO
-            break;
-          }
         case 'CharacterName':
           {
             // vars contain name
@@ -195,23 +197,18 @@ class _GamePageState extends State<GamePage> {
           }
         case 'CharacterImage':
           {
-            characterImages =
-                t.skip(1).map((e) => 'assets/Base/$e.png').toList();
-            break;
-          }
-        case 'SceneImage':
-          {
-            // TODO
+            characterImages = t.skip(1).map((e) {
+              // if (e.startsWith('Base_')) {
+              //   return 'assets/Base/$e.png';
+              // }
+              //  TODO
+              return images['$e.png'];
+            }).toList();
             break;
           }
         case 'MainCharacter':
           {
             isMain = true;
-            break;
-          }
-        case 'SetAccessToNote':
-          {
-            // TODO
             break;
           }
         default:
@@ -226,7 +223,6 @@ class _GamePageState extends State<GamePage> {
           pid: p.pid,
           characterImages: characterImages,
           characterName: characterName,
-          bgImage: bgImage,
           speech: p.text.toStringWithVar(variables: variables),
           options: p.links.length > 1 ? p.links : null,
         ));
@@ -271,10 +267,9 @@ class _GamePageState extends State<GamePage> {
   Widget buildScene({
     bool isThinking,
     bool isMain,
-    List<String> characterImages,
+    List<MemoryImage> characterImages,
     String speech,
     String pid,
-    String bgImage,
     String characterName,
     List<Choice> options,
   }) {
@@ -308,7 +303,7 @@ class _GamePageState extends State<GamePage> {
                   child: Column(children: [
                     if (characterImages != null && characterImages.length > 0)
                       LCharacterImage(
-                        images: characterImages,
+                        photoImages: characterImages,
                         key: Key(pid.toString()),
                         isMain: isMain,
                       ),

@@ -132,8 +132,8 @@ class _NotesPageState extends State<NotesPage> {
   Widget build(BuildContext context) {
     return StateBuilder<ChapterService>(
       observe: () => RM.get<ChapterService>(),
-      initState: (context, ChapterServiceRM) {
-        ChapterServiceRM.setState((s) => s.loadNotes());
+      initState: (context, chapterServiceRM) {
+        chapterServiceRM.setState((s) => s.loadNotes());
       },
       builder: (context, chapterService) {
         bool isOneNote = chapterService.state.getNotes().length == 1;
