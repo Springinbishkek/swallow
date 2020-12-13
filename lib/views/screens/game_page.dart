@@ -163,8 +163,8 @@ class _GamePageState extends State<GamePage> {
     Passage p = RM.get<ChapterService>().state.gameInfo.currentPassage;
     Map<String, dynamic> variables =
         RM.get<ChapterService>().state.gameInfo.gameVariables ?? {'': ''};
-    Map<String, MemoryImage> images = RM.get<ChapterService>().state.images;
-    List<MemoryImage> characterImages;
+    Map<String, ImageProvider> images = RM.get<ChapterService>().state.images;
+    List<ImageProvider> characterImages;
     bool isThinking = false;
     bool isMain = false;
     String characterName; // TODO
@@ -267,7 +267,7 @@ class _GamePageState extends State<GamePage> {
   Widget buildScene({
     bool isThinking,
     bool isMain,
-    List<MemoryImage> characterImages,
+    List<ImageProvider> characterImages,
     String speech,
     String pid,
     String characterName,

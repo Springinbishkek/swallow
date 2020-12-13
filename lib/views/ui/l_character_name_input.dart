@@ -15,21 +15,11 @@ class LCharacterNameInput extends StatefulWidget {
 
 class _LCharacterNameInputState extends State<LCharacterNameInput> {
   final int nameMaxLength = 24;
-  String currentName;
 
   @override
   Widget build(BuildContext context) {
-    return StateBuilder(
-        observe: () => RM.get<ChapterService>(),
-        initState: (context, model) async {
-          var name = await model.state.getGameVariable('Main');
-          setState(() {
-            currentName = name ?? 'Бегайым';
-          });
-        },
-        builder: (context, ReactiveModel<ChapterService> chapterRM) {
-          return LTextField(
-              widget.controller, currentName, nameMaxLength, widget.onChanged);
-        });
+    String name =
+        RM.get<ChapterService>().state.getGameVariable('Main') ?? 'Бегайым';
+    return LTextField(widget.controller, name, nameMaxLength, widget.onChanged);
   }
 }
