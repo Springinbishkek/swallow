@@ -102,21 +102,33 @@ class DBHelper {
     return result;
   }
 
-  // Future<Story> cleanStory(int id) async {
-  //   var dbClient = await db;
-  //   List<Map<String, dynamic>> maps = await dbClient.delete(
-  //     TABLE_STORY,
-  //     columns: [ID, CHAPTER_ID, STORY_DATA],
-  //     where: "$CHAPTER_ID = ?",
-  //     whereArgs: [id],
-  //   );
-  //   Story result;
-  //   if (maps.length > 0) {
-  //     var m = maps.first;
-  //     result = Story.fromJson(m['$STORY_DATA']);
-  //   }
-  //   return result;
-  // }
+  Future<void> cleanChapterData(int id) async {
+    var dbClient = await db;
+    await dbClient.delete(
+      TABLE_STORY,
+      where: "$CHAPTER_ID = ?",
+      whereArgs: [id],
+    );
+    await dbClient.delete(
+      TABLE,
+      where: "$CHAPTER_ID = ?",
+      whereArgs: [id],
+    );
+  }
+
+  Future<void> cleanChapterExcept(int id) async {
+    var dbClient = await db;
+    await dbClient.delete(
+      TABLE_STORY,
+      where: "$CHAPTER_ID != ? AND $CHAPTER_ID != 0",
+      whereArgs: [id],
+    );
+    await dbClient.delete(
+      TABLE,
+      where: "$CHAPTER_ID != ? AND $CHAPTER_ID != 0",
+      whereArgs: [id],
+    );
+  }
 
   Future close() async {
     var dbClient = await db;

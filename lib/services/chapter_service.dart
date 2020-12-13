@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:disk_space/disk_space.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +15,6 @@ import 'package:lastochki/models/entities/Question.dart';
 import 'package:lastochki/models/entities/Story.dart';
 import 'package:lastochki/models/entities/Test.dart';
 import 'package:lastochki/services/chapter_repository.dart';
-import 'package:lastochki/utils/utility.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/translation.dart';
 import 'package:lastochki/views/ui/l_button.dart';
@@ -133,6 +130,12 @@ class ChapterService {
       double freeSpaceMB = await DiskSpace.getFreeDiskSpace;
       print(freeSpaceMB);
       print(await DiskSpace.getTotalDiskSpace);
+      if (currentChapter.mBytes >= freeSpaceMB) {
+        // try to clean all except base data
+        await dbHelper.cleanChapterExcept(0);
+      }
+      freeSpaceMB = await DiskSpace.getFreeDiskSpace;
+      print(freeSpaceMB);
       if (currentChapter.mBytes >= freeSpaceMB) {
         RM.navigate.toDialog(
           LInfoPopup(
