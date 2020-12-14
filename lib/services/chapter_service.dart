@@ -1,7 +1,6 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
+import 'package:disk_space/disk_space.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:lastochki/models/entities/Chapter.dart';
@@ -16,7 +15,6 @@ import 'package:lastochki/models/entities/Question.dart';
 import 'package:lastochki/models/entities/Story.dart';
 import 'package:lastochki/models/entities/Test.dart';
 import 'package:lastochki/services/chapter_repository.dart';
-import 'package:lastochki/utils/utility.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/translation.dart';
 import 'package:lastochki/views/ui/l_button.dart';
@@ -51,7 +49,7 @@ class ChapterService {
   List<Note> notes = [];
   List<Question> questionBase = [];
   DBHelper dbHelper = DBHelper();
-  Map<String, MemoryImage> images = {};
+  Map<String, ImageProvider> images = {};
   String previousBgName;
 
   void onReceive(int loaded, int info, {double total}) {
@@ -59,9 +57,9 @@ class ChapterService {
     // RM
     //     .get<ChapterService>()
     //     .setState((s) => s.loadingPercent = loaded / (total ?? loaded));
-    // loadingPercent = loaded / (total ?? loaded);
+    loadingPercent = loaded / (total ?? loaded);
     // print('loadingPercent $loadingPercent');
-    // print('$loaded  $info $total $loadingPercent');
+    print('$loaded  $info $total $loadingPercent');
   }
 
   Chapter getCurrentChapter() {
@@ -78,8 +76,9 @@ class ChapterService {
   }
 
   get bgPreviousImage {
-    return images['$previousBgName.jpg'] ??
-        AssetImage('assets/backgrounds/loading_background.jpg');
+    return images['$previousBgName.jpg'];
+    //  ??
+    //     AssetImage('assets/backgrounds/loading_background.jpg');
   }
 
   loadNotes() async {
@@ -101,13 +100,10 @@ class ChapterService {
     final SharedPreferences prefs = values[0];
 
     final gameString = prefs.getString(gameInfoName);
-    if (gameInfo == null) {
-      // TODO
-      if (gameString == null) {
-        gameInfo = GameInfo();
-      } else {
-        gameInfo = GameInfo.fromJson(gameString);
-      }
+    if (gameString == null) {
+      gameInfo = GameInfo();
+    } else {
+      gameInfo = GameInfo.fromJson(gameString);
     }
     // TODO rewrite to bd
     final List<String> notesStrings = prefs.getStringList('notes');
@@ -123,23 +119,52 @@ class ChapterService {
   }
 
   loadChapter({int id}) async {
-    // TODO check free space
     int currentChapterId = id ??
         (gameInfo.currentPassage == null
             ? gameInfo.currentChapterId + 1
             : gameInfo.currentChapterId);
     currentChapter =
-        chapters.firstWhere((element) => element.number == currentChapterId);
+        chapters.firstWhere((element) => element?.number == currentChapterId);
     if (currentChapter?.number != currentChapterId ||
         currentChapter?.version != gameInfo.currentChapterVersion ||
         dbHelper.version != gameInfo.currentDBVersion) {
-      await loadChapterInfo(currentChapterId: currentChapterId);
+      double freeSpaceMB = await DiskSpace.getFreeDiskSpace;
+      print(freeSpaceMB);
+      print(await DiskSpace.getTotalDiskSpace);
+      if (currentChapter.mBytes >= freeSpaceMB) {
+        // try to clean all except base data
+        await dbHelper.cleanChapterExcept(0);
+      }
+      freeSpaceMB = await DiskSpace.getFreeDiskSpace;
+      print(freeSpaceMB);
+      if (currentChapter.mBytes >= freeSpaceMB) {
+        RM.navigate.toDialog(
+          LInfoPopup(
+              isCloseEnable: false,
+              image: alertImg,
+              title: noPlace.toString(),
+              content: noPlaceText.toString(),
+              actions: Column(
+                children: [
+                  LButton(
+                      buttonColor: whiteColor,
+                      text: understood.toString(),
+                      func: () {
+                        RM.navigate.back();
+                      }),
+                ],
+              )),
+        );
+        print('no enought memory');
+      } else {
+        await loadChapterInfo(currentChapterId: currentChapterId);
+      }
     }
 
     List<Photo> p = await dbHelper.getPhotos();
-    var pairs = p.map((e) {
-      Uint8List bytes = base64.decode(e.base64);
-      var image = MemoryImage(bytes);
+    Iterable<MapEntry<String, ImageProvider>> pairs = p.map((e) {
+      File photoFile = File(e.imgPath);
+      var image = FileImage(photoFile);
       return MapEntry(e.photoName, image);
     });
     images.addEntries(pairs);
@@ -149,8 +174,6 @@ class ChapterService {
     gameInfo.currentDBVersion = dbHelper.version;
     loadingPercent = null;
     saveGameInfo();
-    // TODO clean logic
-    initGame();
   }
 
   Future<void> loadChapterInfo({int currentChapterId}) async {
@@ -159,9 +182,18 @@ class ChapterService {
         (i, j) =>
             this.onReceive(i, j, total: currentChapter.mBytes * 1024 * 1024));
     final zipFile = File(data['zipPath']);
-    final Directory tempDir = await getTemporaryDirectory();
-    final Directory destinationDir = await tempDir.createTemp();
-    print('destinationDir $destinationDir');
+    final Directory dir = await getApplicationDocumentsDirectory();
+
+    Directory destinationDir;
+    final Directory probablyDir = Directory('${dir.path}/Base');
+    if (!await probablyDir.exists()) {
+      destinationDir = await probablyDir.create();
+    } else {
+      destinationDir = probablyDir;
+    }
+
+    await dir.create();
+    print('destinationChapterDir $destinationDir');
     try {
       await ZipFile.extractToDirectory(
           zipFile: zipFile,
@@ -183,12 +215,9 @@ class ChapterService {
         if (element is File) {
           String name = element.path.split("/")?.last;
           int photoChapterId = name.contains('Base_') ? 0 : currentChapterId;
-          // if (!name.contains('Base_')) {
-          // // we saved base photo on build dir
-          String imgString = Utility.base64String(element.readAsBytesSync());
-          Photo photo = Photo(0, photoChapterId, name, imgString);
+          String imgPath = element.path;
+          Photo photo = Photo(0, photoChapterId, name, imgPath);
           await dbHelper.save(photo);
-          // }
         }
       });
     } catch (e) {
@@ -362,6 +391,8 @@ class ChapterService {
         switch (setting[0]) {
           case 'SetAccessToNote':
             gameInfo.accessNoteId = int.parse(setting[1]);
+            showFirstNotePopup();
+
             break;
           case 'SetIntVar':
             gameInfo.gameVariables[setting[1]] = int.parse(setting[2]);
@@ -380,10 +411,40 @@ class ChapterService {
     saveGameInfo();
   }
 
+  void showFirstNotePopup() {
+    // first note
+    RM.navigate.toDialog(
+      LInfoPopup(
+          isCloseEnable: true,
+          image: noteImg,
+          title: firstNoteTitle.toString(),
+          content: firstNoteContent.toString(),
+          actions: Column(
+            children: [
+              LButton(
+                  text: readNote.toString(),
+                  fontSize: 10,
+                  height: 30,
+                  func: () {
+                    RM.navigate.toNamed('/notes');
+                  }),
+              LButton(
+                  buttonColor: whiteColor,
+                  text: backToChapter.toString(),
+                  fontSize: 10,
+                  height: 30,
+                  func: () {
+                    RM.navigate.back();
+                  }),
+            ],
+          )),
+    );
+  }
+
   void initGame() {
     if (gameInfo.currentPassage == null) {
-      String pid = currentChapter.story.firstPid;
-      gameInfo.currentPassage = currentChapter.story.script[pid];
+      String pid = currentChapter?.story?.firstPid;
+      goNext(pid);
     }
     saveGameInfo();
   }
@@ -392,6 +453,16 @@ class ChapterService {
     return notes
         .takeWhile((value) => value.id <= gameInfo.accessNoteId)
         .toList();
+  }
+
+  int getUnreadNotesCount() {
+    int result = 0;
+    notes.forEach((element) {
+      if (element.id <= gameInfo.accessNoteId && !(element.isRead ?? false)) {
+        result++;
+      }
+    });
+    return result;
   }
 
   bool _isAllRead() {
@@ -469,9 +540,9 @@ class ChapterService {
     return Test(questions: testQuestion);
   }
 
-  getGameVariable(String name) async {
-    if (chapters == null) {
-      await loadGame();
+  dynamic getGameVariable(String name) {
+    if (gameInfo == null) {
+      gameInfo = GameInfo();
     }
     return gameInfo.gameVariables[name];
   }

@@ -3,6 +3,8 @@ import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/ui/l_text_field.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
+const int nameMaxLength = 24;
+
 class LCharacterNameInput extends StatefulWidget {
   final TextEditingController controller;
   final Function(String) onChanged;
@@ -14,22 +16,15 @@ class LCharacterNameInput extends StatefulWidget {
 }
 
 class _LCharacterNameInputState extends State<LCharacterNameInput> {
-  final int nameMaxLength = 24;
-  String currentName;
+  @override
+  void initState() {
+    widget.controller.text =
+        RM.get<ChapterService>().state.getGameVariable('Main') ?? 'Бегайым';
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return StateBuilder(
-        observe: () => RM.get<ChapterService>(),
-        initState: (context, model) async {
-          var name = await model.state.getGameVariable('Main');
-          setState(() {
-            currentName = name ?? 'Бегайым';
-          });
-        },
-        builder: (context, ReactiveModel<ChapterService> chapterRM) {
-          return LTextField(
-              widget.controller, currentName, nameMaxLength, widget.onChanged);
-        });
+    return LTextField(widget.controller, nameMaxLength, widget.onChanged);
   }
 }

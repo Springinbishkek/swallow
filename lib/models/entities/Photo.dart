@@ -4,13 +4,13 @@ class Photo {
   int id;
   int chapterId;
   String photoName;
-  String base64;
+  String imgPath;
 
   Photo(
     this.id,
     this.chapterId,
     this.photoName,
-    this.base64,
+    this.imgPath,
   );
 
   Map<String, dynamic> toMap() {
@@ -18,7 +18,7 @@ class Photo {
       'id': id,
       'chapterId': chapterId,
       'photoName': photoName,
-      'base64': base64,
+      'imgPath': imgPath,
     };
   }
 
@@ -26,13 +26,13 @@ class Photo {
     int id,
     int chapterId,
     String photoName,
-    String base64,
+    String imgPath,
   }) {
     return Photo(
       id ?? this.id,
       chapterId ?? this.chapterId,
       photoName ?? this.photoName,
-      base64 ?? this.base64,
+      imgPath ?? this.imgPath,
     );
   }
 
@@ -43,7 +43,7 @@ class Photo {
       map['id'],
       map['chapterId'],
       map['photoName'],
-      map['base64'],
+      map['imgPath'],
     );
   }
 
@@ -53,7 +53,7 @@ class Photo {
 
   @override
   String toString() {
-    return 'Photo(id: $id, chapterId: $chapterId, photoName: $photoName, base64: $base64)';
+    return 'Photo(id: $id, chapterId: $chapterId, photoName: $photoName, imgPath: $imgPath)';
   }
 
   @override
@@ -64,7 +64,7 @@ class Photo {
         o.id == id &&
         o.chapterId == chapterId &&
         o.photoName == photoName &&
-        o.base64 == base64;
+        o.imgPath == imgPath;
   }
 
   @override
@@ -72,6 +72,6 @@ class Photo {
     return id.hashCode ^
         chapterId.hashCode ^
         photoName.hashCode ^
-        base64.hashCode;
+        imgPath.hashCode;
   }
 }

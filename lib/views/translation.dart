@@ -12,6 +12,11 @@ final Name noInternet =
 final Name noInternetText = Name(
     ru: 'Проверь подключение и попробуй снова!',
     kg: 'Туташууну текшерип, дагы бир жолу аракет кылып көр!');
+final Name noPlace =
+    Name(ru: 'Не хватает свободной памяти', kg: 'Эстутум жетишсиз');
+final Name noPlaceText = Name(
+    ru: 'Освободи место и попробуй снова!',
+    kg: 'Орун бошотуп, дагы бир жолу аракет кылып көрүңүз!');
 final Name tryMsg = Name(ru: 'Попробовать', kg: 'Аракет кылуу');
 final Name aboutGame = Name(ru: 'Об игре', kg: 'Оюн жөнүндө');
 final Name titleChapter =

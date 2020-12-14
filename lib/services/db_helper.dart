@@ -10,13 +10,13 @@ class DBHelper {
   static Database _db;
   static const String ID = 'id';
   static const String NAME = 'photoName';
-  static const String DATA = 'base64';
+  static const String DATA = 'imgPath';
   static const String STORY_DATA = 'story';
   static const String CHAPTER_ID = 'chapterId';
   static const String TABLE = 'PhotosTable';
   static const String TABLE_STORY = 'StoriesTable';
   static const String DB_NAME = 'photos.db';
-  int _version = 6;
+  int _version = 7;
 
   Future<Database> get db async {
     if (null != _db) {
@@ -46,9 +46,9 @@ class DBHelper {
 
   _onCreate(Database db, int version) async {
     await db.execute(
-        "CREATE TABLE $TABLE ($ID INTEGER, $NAME TEXT NOT NULL UNIQUE, $CHAPTER_ID INTEGER, $DATA TEXT)");
+        "CREATE TABLE $TABLE ($ID INTEGER, $NAME TEXT NOT NULL UNIQUE ON CONFLICT REPLACE, $CHAPTER_ID INTEGER, $DATA TEXT)");
     await db.execute(
-        "CREATE TABLE $TABLE_STORY ($ID INTEGER, $CHAPTER_ID INTEGER NOT NULL UNIQUE, $STORY_DATA TEXT)");
+        "CREATE TABLE $TABLE_STORY ($ID INTEGER, $CHAPTER_ID INTEGER NOT NULL UNIQUE ON CONFLICT REPLACE, $STORY_DATA TEXT)");
   }
 
   Future<Photo> save(Photo employee) async {
@@ -102,7 +102,33 @@ class DBHelper {
     return result;
   }
 
-  // TODO clean db
+  Future<void> cleanChapterData(int id) async {
+    var dbClient = await db;
+    await dbClient.delete(
+      TABLE_STORY,
+      where: "$CHAPTER_ID = ?",
+      whereArgs: [id],
+    );
+    await dbClient.delete(
+      TABLE,
+      where: "$CHAPTER_ID = ?",
+      whereArgs: [id],
+    );
+  }
+
+  Future<void> cleanChapterExcept(int id) async {
+    var dbClient = await db;
+    await dbClient.delete(
+      TABLE_STORY,
+      where: "$CHAPTER_ID != ? AND $CHAPTER_ID != 0",
+      whereArgs: [id],
+    );
+    await dbClient.delete(
+      TABLE,
+      where: "$CHAPTER_ID != ? AND $CHAPTER_ID != 0",
+      whereArgs: [id],
+    );
+  }
 
   Future close() async {
     var dbClient = await db;
