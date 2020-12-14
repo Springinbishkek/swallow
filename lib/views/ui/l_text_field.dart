@@ -4,17 +4,14 @@ import 'package:lastochki/views/theme.dart';
 
 class LTextField extends StatelessWidget {
   final TextEditingController controller;
-  final String initialValue;
   final int maxLength;
   final Function(String) onChanged;
 
-  LTextField(
-      this.controller, this.initialValue, this.maxLength, this.onChanged);
+  LTextField(this.controller, this.maxLength, this.onChanged);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      initialValue: initialValue,
       decoration: InputDecoration(
         enabledBorder: OutlineInputBorder(
             borderRadius: boxBorderRadius,
@@ -24,7 +21,6 @@ class LTextField extends StatelessWidget {
         ),
         filled: true,
         fillColor: menuBgColor,
-        hintText: initialValue,
       ),
       maxLength: maxLength,
       autofocus: false,

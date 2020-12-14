@@ -58,8 +58,8 @@ class ChapterService {
     //     .get<ChapterService>()
     //     .setState((s) => s.loadingPercent = loaded / (total ?? loaded));
     loadingPercent = loaded / (total ?? loaded);
-    print('loadingPercent $loadingPercent');
-    // print('$loaded  $info $total $loadingPercent');
+    // print('loadingPercent $loadingPercent');
+    print('$loaded  $info $total $loadingPercent');
   }
 
   Chapter getCurrentChapter() {
@@ -76,8 +76,9 @@ class ChapterService {
   }
 
   get bgPreviousImage {
-    return images['$previousBgName.jpg'] ??
-        AssetImage('assets/backgrounds/loading_background.jpg');
+    return images['$previousBgName.jpg'];
+    //  ??
+    //     AssetImage('assets/backgrounds/loading_background.jpg');
   }
 
   loadNotes() async {
@@ -123,7 +124,7 @@ class ChapterService {
             ? gameInfo.currentChapterId + 1
             : gameInfo.currentChapterId);
     currentChapter =
-        chapters.firstWhere((element) => element.number == currentChapterId);
+        chapters.firstWhere((element) => element?.number == currentChapterId);
     if (currentChapter?.number != currentChapterId ||
         currentChapter?.version != gameInfo.currentChapterVersion ||
         dbHelper.version != gameInfo.currentDBVersion) {
@@ -148,7 +149,6 @@ class ChapterService {
                   LButton(
                       buttonColor: whiteColor,
                       text: understood.toString(),
-                      icon: refreshIcon,
                       func: () {
                         RM.navigate.back();
                       }),
@@ -174,8 +174,6 @@ class ChapterService {
     gameInfo.currentDBVersion = dbHelper.version;
     loadingPercent = null;
     saveGameInfo();
-    // TODO clean logic
-    initGame();
   }
 
   Future<void> loadChapterInfo({int currentChapterId}) async {
@@ -393,6 +391,8 @@ class ChapterService {
         switch (setting[0]) {
           case 'SetAccessToNote':
             gameInfo.accessNoteId = int.parse(setting[1]);
+            showFirstNotePopup();
+
             break;
           case 'SetIntVar':
             gameInfo.gameVariables[setting[1]] = int.parse(setting[2]);
@@ -411,10 +411,40 @@ class ChapterService {
     saveGameInfo();
   }
 
+  void showFirstNotePopup() {
+    // first note
+    RM.navigate.toDialog(
+      LInfoPopup(
+          isCloseEnable: true,
+          image: noteImg,
+          title: firstNoteTitle.toString(),
+          content: firstNoteContent.toString(),
+          actions: Column(
+            children: [
+              LButton(
+                  text: readNote.toString(),
+                  fontSize: 10,
+                  height: 30,
+                  func: () {
+                    RM.navigate.toNamed('/notes');
+                  }),
+              LButton(
+                  buttonColor: whiteColor,
+                  text: backToChapter.toString(),
+                  fontSize: 10,
+                  height: 30,
+                  func: () {
+                    RM.navigate.back();
+                  }),
+            ],
+          )),
+    );
+  }
+
   void initGame() {
     if (gameInfo.currentPassage == null) {
       String pid = currentChapter?.story?.firstPid;
-      gameInfo.currentPassage = currentChapter.story.script[pid];
+      goNext(pid);
     }
     saveGameInfo();
   }
@@ -423,6 +453,16 @@ class ChapterService {
     return notes
         .takeWhile((value) => value.id <= gameInfo.accessNoteId)
         .toList();
+  }
+
+  int getUnreadNotesCount() {
+    int result = 0;
+    notes.forEach((element) {
+      if (element.id <= gameInfo.accessNoteId && !(element.isRead ?? false)) {
+        result++;
+      }
+    });
+    return result;
   }
 
   bool _isAllRead() {

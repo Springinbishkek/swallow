@@ -1,11 +1,9 @@
 import 'dart:ui';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Chapter.dart';
 import 'package:lastochki/models/entities/GameInfo.dart';
 import 'package:lastochki/models/entities/Name.dart';
-import 'package:lastochki/models/entities/Story.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/ui/l_action.dart';
 import 'package:lastochki/views/ui/l_button.dart';
@@ -37,7 +35,8 @@ class _HomePageState extends State<HomePage> {
         builder: (context, chapterRM) {
           print('rebuild');
           return (chapterRM.state.loadingPercent != null ||
-                  chapterRM.state.gameInfo == null)
+                  chapterRM.state.gameInfo == null ||
+                  chapterRM.state.currentChapter == null)
               ? LLoading(percent: chapterRM.state.getLoadingPercent())
               : buildChapter(
                   chapterRM.state.currentChapter, chapterRM.state.gameInfo);
@@ -158,7 +157,9 @@ class _HomePageState extends State<HomePage> {
 
     return Column(
       children: [
-        Text(numberChapter.toStringWithVar(variables: {'number': ch.number}),
+        Text(
+            numberChapter
+                .toStringWithVar(variables: {'number': ch?.number ?? 0}),
             style: subtitleTextStyle),
         SizedBox(height: 10),
         Text(ch.title.toString(), style: titleLightTextStyle),

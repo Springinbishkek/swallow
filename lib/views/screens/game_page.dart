@@ -39,7 +39,7 @@ class _GamePageState extends State<GamePage> {
         observe: () => RM.get<ChapterService>(),
         onRebuildState: (context, model) async {
           debugPrint('onrebuild');
-          var popup = model.state.gameInfo.currentPassage?.popup;
+          var popup = model?.state?.gameInfo?.currentPassage?.popup;
           if (popup != null &&
               currentPassagePid != model.state.gameInfo.currentPassage.pid) {
             Future.delayed(
@@ -86,8 +86,10 @@ class _GamePageState extends State<GamePage> {
       return LLoading(percent: null);
     }
     ImageProvider bgImage = RM.get<ChapterService>().state.bgImage;
+    precacheImage(bgImage, context);
     ImageProvider bgPreviousImage =
         RM.get<ChapterService>().state.bgPreviousImage;
+    int unreadNotes = RM.get<ChapterService>().state.getUnreadNotesCount();
 
     return GestureDetector(
       onTapUp: getTapHandler(g.currentPassage),
@@ -95,17 +97,24 @@ class _GamePageState extends State<GamePage> {
         Container(
           height: double.infinity,
           child: FadeInImage(
-            placeholder: bgPreviousImage,
+            placeholder: bgPreviousImage ?? bgImage,
             image: bgImage,
             fit: BoxFit.cover,
           ),
         ),
+        // Container(
+        //   height: double.infinity,
+        //   child: Image(
+        //     image: bgImage,
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
         Scaffold(
           backgroundColor: Colors.transparent,
           bottomNavigationBar: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              buildNotes(),
+              buildNotes(unreadCount: unreadNotes),
             ],
           ),
           appBar: AppBar(
@@ -198,10 +207,6 @@ class _GamePageState extends State<GamePage> {
         case 'CharacterImage':
           {
             characterImages = t.skip(1).map((e) {
-              // if (e.startsWith('Base_')) {
-              //   return 'assets/Base/$e.png';
-              // }
-              //  TODO
               return images['$e.png'];
             }).toList();
             break;
@@ -245,8 +250,8 @@ class _GamePageState extends State<GamePage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 LButton(
-                  text: takeTest.toString(),
-                  func: () => Navigator.pushNamed(context, '/test'),
+                  text: toNotes.toString(),
+                  func: () => Navigator.pushNamed(context, '/notes'),
                 ),
                 LButton(
                   text: backToChapter.toString(),
@@ -331,12 +336,41 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
-  Widget buildNotes() {
+  Widget buildNotes({int unreadCount}) {
     return FlatButton.icon(
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
       onPressed: () => Navigator.of(context).pushNamed('/notes'),
-      icon: SizedBox(height: 44, child: Image.asset(notesIcon)),
+      icon: SizedBox(
+        height: 44,
+        width: 36,
+        child: Stack(
+          children: [
+            Image.asset(notesIcon),
+            if (unreadCount > 0)
+              Align(
+                alignment: Alignment(2, -1.8),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(19),
+                    color: Color(0xFFEB3748),
+                  ),
+                  width: 19,
+                  height: 19,
+                  child: Center(
+                    child: Text(
+                      unreadCount.toString(),
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle1
+                          .copyWith(color: Colors.white, height: 1),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
       label: Text(''),
     );
   }
