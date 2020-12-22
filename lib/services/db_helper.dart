@@ -16,7 +16,7 @@ class DBHelper {
   static const String TABLE = 'PhotosTable';
   static const String TABLE_STORY = 'StoriesTable';
   static const String DB_NAME = 'photos.db';
-  int _version = 7;
+  int _version = 10;
 
   Future<Database> get db async {
     if (null != _db) {
@@ -40,8 +40,15 @@ class DBHelper {
 
   _onUpgrade(Database db, int oldVersion, int newVersion) async {
     // TODO
-    await db.delete('$TABLE');
-    await db.delete('$TABLE_STORY');
+    // await db.delete('$TABLE');
+    // await db.delete('$TABLE_STORY');
+    if (oldVersion != newVersion) {
+      print('drop tables');
+      // TODO delete photos from memory
+      await db.execute("DROP TABLE IF EXISTS $TABLE");
+      await db.execute("DROP TABLE IF EXISTS $TABLE_STORY");
+      await _onCreate(db, newVersion);
+    }
   }
 
   _onCreate(Database db, int version) async {

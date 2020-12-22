@@ -59,7 +59,7 @@ class ChapterService {
     //     .setState((s) => s.loadingPercent = loaded / (total ?? loaded));
     loadingPercent = loaded / (total ?? loaded);
     // print('loadingPercent $loadingPercent');
-    print('$loaded  $info $total $loadingPercent');
+    debugPrint('$loaded  $info $total $loadingPercent');
   }
 
   Chapter getCurrentChapter() {
@@ -101,7 +101,7 @@ class ChapterService {
 
     final gameString = prefs.getString(gameInfoName);
     if (gameString == null) {
-      gameInfo = GameInfo();
+      gameInfo = GameInfo(currentChapterId: 1);
     } else {
       gameInfo = GameInfo.fromJson(gameString);
     }
@@ -119,10 +119,7 @@ class ChapterService {
   }
 
   loadChapter({int id}) async {
-    int currentChapterId = id ??
-        (gameInfo.currentPassage == null
-            ? gameInfo.currentChapterId + 1
-            : gameInfo.currentChapterId);
+    int currentChapterId = id ?? gameInfo.currentChapterId;
     currentChapter =
         chapters.firstWhere((element) => element?.number == currentChapterId);
     if (currentChapter?.number != currentChapterId ||
@@ -199,15 +196,15 @@ class ChapterService {
           zipFile: zipFile,
           destinationDir: destinationDir,
           onExtracting: (zipEntry, progress) {
-            print('progress: ${progress.toStringAsFixed(1)}%');
-            print('name: ${zipEntry.name}');
-            print('isDirectory: ${zipEntry.isDirectory}');
-            print(
+            debugPrint('progress: ${progress.toStringAsFixed(1)}%');
+            debugPrint('name: ${zipEntry.name}');
+            debugPrint('isDirectory: ${zipEntry.isDirectory}');
+            debugPrint(
                 'modificationDate: ${zipEntry.modificationDate.toLocal().toIso8601String()}');
-            print('uncompressedSize: ${zipEntry.uncompressedSize}');
-            print('compressedSize: ${zipEntry.compressedSize}');
-            print('compressionMethod: ${zipEntry.compressionMethod}');
-            print('crc: ${zipEntry.crc}');
+            debugPrint('uncompressedSize: ${zipEntry.uncompressedSize}');
+            debugPrint('compressedSize: ${zipEntry.compressedSize}');
+            debugPrint('compressionMethod: ${zipEntry.compressionMethod}');
+            debugPrint('crc: ${zipEntry.crc}');
             return ExtractOperation.extract;
           });
       List<FileSystemEntity> files = destinationDir.listSync();
@@ -232,7 +229,7 @@ class ChapterService {
   }
 
   void goNext(String step) {
-    if (step != null || gameInfo.currentPassage.links.length == 1) {
+    if (step != null || gameInfo.currentPassage?.links.length == 1) {
       int nextPid = int.parse(step ?? gameInfo.currentPassage.links[0].pid);
       Passage p;
       while (p == null) {
@@ -353,7 +350,8 @@ class ChapterService {
                               s.gameInfo.swallowCount += END_SWALLOW_BONUS;
                             });
                             RM.get<ChapterService>().setState((s) async {
-                              await s.loadChapter();
+                              await s.loadChapter(
+                                  id: s.gameInfo.currentChapterId + 1);
                             });
                             RM.navigate.back();
                           })),
@@ -366,7 +364,7 @@ class ChapterService {
                       icon: refreshIcon,
                       func: () {
                         RM.get<ChapterService>().setState((s) {
-                          s.gameInfo.currentPassage = null;
+                          goNext(currentChapter?.story?.firstPid);
                           s.initGame();
                         });
                         RM.navigate.back();
