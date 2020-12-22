@@ -41,7 +41,7 @@ class _GamePageState extends State<GamePage> {
           debugPrint('onrebuild');
           var popup = model?.state?.gameInfo?.currentPassage?.popup;
           if (popup != null &&
-              currentPassagePid != model.state.gameInfo.currentPassage.pid) {
+              currentPassagePid != model.state.gameInfo.currentPassage?.pid) {
             Future.delayed(
               Duration(milliseconds: 500),
               () => showDialog(
@@ -56,7 +56,7 @@ class _GamePageState extends State<GamePage> {
                           func: () => Navigator.pop(context)))),
             );
           }
-          currentPassagePid = model.state.gameInfo.currentPassage.pid;
+          currentPassagePid = model.state.gameInfo.currentPassage?.pid;
         },
         builder: (context, chapterRM) {
           debugPrint('rebuild');
