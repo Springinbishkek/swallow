@@ -1,4 +1,6 @@
 PODS:
+  - disk_space (0.0.1):
+    - Flutter
   - Flutter (1.0.0)
   - flutter_archive (0.0.1):
     - Flutter
@@ -24,6 +26,7 @@ PODS:
   - ZIPFoundation (0.9.11)
 
 DEPENDENCIES:
+  - disk_space (from `.symlinks/plugins/disk_space/ios`)
   - Flutter (from `Flutter`)
   - flutter_archive (from `.symlinks/plugins/flutter_archive/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -40,6 +43,8 @@ SPEC REPOS:
     - ZIPFoundation
 
 EXTERNAL SOURCES:
+  disk_space:
+    :path: ".symlinks/plugins/disk_space/ios"
   Flutter:
     :path: Flutter
   flutter_archive:
@@ -60,6 +65,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
+  disk_space: e94d34bbdf77954adfb39e60bde9cc5c7233eda6
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_archive: 47fe3c4d4c74c5fb58196c44d5e6369b37acd1dd
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
@@ -72,6 +78,6 @@ SPEC CHECKSUMS:
   webview_flutter: d2b4d6c66968ad042ad94cbb791f5b72b4678a96
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+PODFILE CHECKSUM: a75497545d4391e2d394c3668e20cfb1c2bbd4aa
 
 COCOAPODS: 1.10.0
