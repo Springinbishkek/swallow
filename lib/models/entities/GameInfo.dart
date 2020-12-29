@@ -18,7 +18,7 @@ class GameInfo {
 
   String currentBg;
   GameInfo({
-    this.currentChapterId = 0,
+    this.currentChapterId = 1,
     this.currentDBVersion = 0,
     this.currentChapterVersion = 0,
     this.currentBgName,
