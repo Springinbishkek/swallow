@@ -51,7 +51,6 @@ class ChapterService {
   List<Question> questionBase = [];
   DBHelper dbHelper = DBHelper();
   Map<String, ImageProvider> images = {};
-  String previousBgName;
 
   void onReceive(int loaded, int info, {double total}) {
     // TODO
@@ -74,12 +73,6 @@ class ChapterService {
   get bgImage {
     return images['${gameInfo.currentBgName}.jpg'] ??
         AssetImage('assets/backgrounds/loading_background.jpg');
-  }
-
-  get bgPreviousImage {
-    return images['$previousBgName.jpg'];
-    //  ??
-    //     AssetImage('assets/backgrounds/loading_background.jpg');
   }
 
   loadNotes() async {
@@ -402,7 +395,6 @@ class ChapterService {
             gameInfo.gameVariables[setting[1]] = setting[2];
             break;
           case 'SceneImage':
-            previousBgName = gameInfo.currentBgName;
             gameInfo.currentBgName = setting[1];
             break;
           default:
