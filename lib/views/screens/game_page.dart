@@ -87,28 +87,22 @@ class _GamePageState extends State<GamePage> {
     }
     ImageProvider bgImage = RM.get<ChapterService>().state.bgImage;
     precacheImage(bgImage, context);
-    ImageProvider bgPreviousImage =
-        RM.get<ChapterService>().state.bgPreviousImage;
     int unreadNotes = RM.get<ChapterService>().state.getUnreadNotesCount();
 
     return GestureDetector(
       onTapUp: getTapHandler(g.currentPassage),
       child: Stack(children: [
-        Container(
-          height: double.infinity,
-          child: FadeInImage(
-            placeholder: bgPreviousImage ?? bgImage,
-            image: bgImage,
-            fit: BoxFit.cover,
+        AnimatedSwitcher(
+          duration: Duration(milliseconds: 500),
+          child: Container(
+            key: UniqueKey(),
+            height: double.infinity,
+            child: Image(
+              image: bgImage,
+              fit: BoxFit.cover,
+            ),
           ),
         ),
-        // Container(
-        //   height: double.infinity,
-        //   child: Image(
-        //     image: bgImage,
-        //     fit: BoxFit.cover,
-        //   ),
-        // ),
         Scaffold(
           backgroundColor: Colors.transparent,
           bottomNavigationBar: Row(

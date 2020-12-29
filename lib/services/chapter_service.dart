@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:disk_space/disk_space.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,6 @@ class ChapterService {
   List<Question> questionBase = [];
   DBHelper dbHelper = DBHelper();
   Map<String, ImageProvider> images = {};
-  String previousBgName;
 
   void onReceive(int loaded, int info, {double total}) {
     // TODO
@@ -73,12 +73,6 @@ class ChapterService {
   get bgImage {
     return images['${gameInfo.currentBgName}.jpg'] ??
         AssetImage('assets/backgrounds/loading_background.jpg');
-  }
-
-  get bgPreviousImage {
-    return images['$previousBgName.jpg'];
-    //  ??
-    //     AssetImage('assets/backgrounds/loading_background.jpg');
   }
 
   loadNotes() async {
@@ -120,21 +114,23 @@ class ChapterService {
 
   loadChapter({int id}) async {
     int currentChapterId = id ?? gameInfo.currentChapterId;
-    currentChapter =
-        chapters.firstWhere((element) => element?.number == currentChapterId);
+    currentChapterId = max(1, currentChapterId);
+    currentChapter = chapters.firstWhere(
+        (element) => element?.number == currentChapterId,
+        orElse: () => null);
     if (currentChapter?.number != currentChapterId ||
         currentChapter?.version != gameInfo.currentChapterVersion ||
         dbHelper.version != gameInfo.currentDBVersion) {
       double freeSpaceMB = await DiskSpace.getFreeDiskSpace;
       print(freeSpaceMB);
       print(await DiskSpace.getTotalDiskSpace);
-      if (currentChapter.mBytes >= freeSpaceMB) {
+      if (currentChapter != null && currentChapter.mBytes >= freeSpaceMB) {
         // try to clean all except base data
         await dbHelper.cleanChapterExcept(0);
       }
       freeSpaceMB = await DiskSpace.getFreeDiskSpace;
       print(freeSpaceMB);
-      if (currentChapter.mBytes >= freeSpaceMB) {
+      if (currentChapter != null && currentChapter.mBytes >= freeSpaceMB) {
         RM.navigate.toDialog(
           LInfoPopup(
               isCloseEnable: false,
@@ -399,7 +395,6 @@ class ChapterService {
             gameInfo.gameVariables[setting[1]] = setting[2];
             break;
           case 'SceneImage':
-            previousBgName = gameInfo.currentBgName;
             gameInfo.currentBgName = setting[1];
             break;
           default:
