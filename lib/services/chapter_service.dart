@@ -419,7 +419,7 @@ class ChapterService {
                   fontSize: 10,
                   height: 30,
                   func: () {
-                    RM.navigate.toNamed('/notes');
+                    RM.navigate.backAndToNamed('/notes');
                   }),
               LButton(
                   buttonColor: whiteColor,
