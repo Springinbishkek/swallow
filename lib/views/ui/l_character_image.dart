@@ -72,7 +72,7 @@ class AnimatedPhoto extends AnimatedWidget {
   Widget build(BuildContext context) {
     final animation = listenable as Animation<double>;
     var opacity = _opacityTween.evaluate(animation);
-    debugPrint('$opacity');
+    // debugPrint('$opacity');
 
     return Stack(
       children: [
@@ -89,15 +89,22 @@ class AnimatedPhoto extends AnimatedWidget {
   }
 
   Image buildImage(ImageProvider photo) {
+    if (photo == null) {
+      return photoPlaceholder;
+    }
     return Image(
       image: photo,
       width: 220,
       height: 205,
-      errorBuilder: (context, error, stackTrace) => SizedBox(
-        width: 220,
-        height: 205,
-        child: Placeholder(),
-      ),
+      errorBuilder: (context, error, stackTrace) => photoPlaceholder,
+    );
+  }
+
+  Widget get photoPlaceholder {
+    return SizedBox(
+      width: 220,
+      height: 205,
+      child: Placeholder(),
     );
   }
 }

@@ -45,7 +45,7 @@ class ChapterService {
   Chapter currentChapter;
   GameInfo gameInfo;
   double loadingPercent;
-  Stream loadingPercentStream;
+  String loadingTitle;
   int lastChapterNumber = 0;
   List<Note> notes = [];
   List<Question> questionBase = [];
@@ -53,13 +53,11 @@ class ChapterService {
   Map<String, ImageProvider> images = {};
 
   void onReceive(int loaded, int info, {double total}) {
-    // TODO
-    // RM
-    //     .get<ChapterService>()
-    //     .setState((s) => s.loadingPercent = loaded / (total ?? loaded));
-    loadingPercent = loaded / (total ?? loaded);
+    loadingPercent = loaded / (info ?? total);
     // print('loadingPercent $loadingPercent');
     debugPrint('$loaded  $info $total $loadingPercent');
+    // TODO
+    RM.get<ChapterService>(name: 'ChapterService').setState((s) {});
   }
 
   Chapter getCurrentChapter() {
@@ -68,6 +66,13 @@ class ChapterService {
 
   double getLoadingPercent() {
     return loadingPercent;
+  }
+
+  bool isNeedLoader() {
+    return (loadingTitle != null ||
+        loadingPercent != null ||
+        gameInfo == null ||
+        currentChapter == null);
   }
 
   get bgImage {
@@ -118,9 +123,13 @@ class ChapterService {
     currentChapter = chapters.firstWhere(
         (element) => element?.number == currentChapterId,
         orElse: () => null);
-    if (currentChapter?.number != currentChapterId ||
+    Story currentStory = await dbHelper.getStory(currentChapterId);
+
+    bool isNeedReload = (currentStory == null ||
+        currentChapter?.number != currentChapterId ||
         currentChapter?.version != gameInfo.currentChapterVersion ||
-        dbHelper.version != gameInfo.currentDBVersion) {
+        dbHelper.version != gameInfo.currentDBVersion);
+    if (isNeedReload) {
       double freeSpaceMB = await DiskSpace.getFreeDiskSpace;
       print(freeSpaceMB);
       print(await DiskSpace.getTotalDiskSpace);
@@ -161,7 +170,7 @@ class ChapterService {
       return MapEntry(e.photoName, image);
     });
     images.addEntries(pairs);
-    currentChapter.story = await dbHelper.getStory(currentChapterId);
+    currentChapter.story = currentStory;
     gameInfo.currentChapterId = currentChapterId;
     gameInfo.currentChapterVersion = currentChapter.version;
     gameInfo.currentDBVersion = dbHelper.version;
@@ -174,14 +183,22 @@ class ChapterService {
         currentChapter,
         (i, j) =>
             this.onReceive(i, j, total: currentChapter.mBytes * 1024 * 1024));
+
+    RM.get<ChapterService>(name: 'ChapterService').setState((s) {
+      loadingPercent = null;
+      loadingTitle = 'Подготовка главы...'; // TODO translation
+    });
+
     final zipFile = File(data['zipPath']);
     final Directory dir = await getApplicationDocumentsDirectory();
 
     Directory destinationDir;
-    final Directory probablyDir = Directory('${dir.path}/Base');
+    final Directory probablyDir =
+        Directory('${dir.path}/Chapter$currentChapterId');
     if (!await probablyDir.exists()) {
       destinationDir = await probablyDir.create();
     } else {
+      // probablyDir.c
       destinationDir = probablyDir;
     }
 
@@ -222,10 +239,14 @@ class ChapterService {
     uniqNotes.addAll(data['notes']);
     notes = uniqNotes.toList();
     notes.sort((Note a, Note b) => a.id.compareTo(b.id));
+    RM.get<ChapterService>(name: 'ChapterService').setState((s) {
+      loadingPercent = null;
+      loadingTitle = null; // TODO translation
+    });
   }
 
   void goNext(String step) {
-    if (step != null || gameInfo.currentPassage?.links.length == 1) {
+    if (step != null || gameInfo.currentPassage?.links?.length == 1) {
       int nextPid = int.parse(step ?? gameInfo.currentPassage.links[0].pid);
       Passage p;
       while (p == null) {

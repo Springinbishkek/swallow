@@ -34,10 +34,9 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Injector(
-        //Inject Model instance into the widget tree.
         inject: [
-          // Inject(() => NoteService(repository: apiClient)),
-          Inject(() => ChapterService(repository: ChapterRepository())),
+          Inject(() => ChapterService(repository: ChapterRepository()),
+              name: 'ChapterService'),
         ],
         builder: (context) => MaterialApp(
               navigatorKey: RM.navigate.navigatorKey,

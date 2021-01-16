@@ -22,23 +22,20 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    RM.get<ChapterService>().setState((s) => s.loadGame());
+    RM
+        .get<ChapterService>(name: 'ChapterService')
+        .setState((s) => s.loadGame());
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO
     return StateBuilder(
-        observe: () => RM.get<ChapterService>(),
-        onSetState: (context, model) {
-          print('reset');
-        },
+        observe: () => RM.get<ChapterService>(name: 'ChapterService'),
         builder: (context, chapterRM) {
-          print('rebuild');
-          return (chapterRM.state.loadingPercent != null ||
-                  chapterRM.state.gameInfo == null ||
-                  chapterRM.state.currentChapter == null)
-              ? LLoading(percent: chapterRM.state.getLoadingPercent())
+          return (chapterRM.state.isNeedLoader())
+              ? LLoading(
+                  percent: chapterRM.state.getLoadingPercent(),
+                  title: chapterRM.state.loadingTitle)
               : buildChapter(
                   chapterRM.state.currentChapter, chapterRM.state.gameInfo);
         });
