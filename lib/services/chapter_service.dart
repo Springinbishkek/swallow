@@ -56,7 +56,7 @@ class ChapterService {
     loadingPercent = loaded / (info ?? total);
     // print('loadingPercent $loadingPercent');
     debugPrint('$loaded  $info $total $loadingPercent');
-    // TODO
+    // TODO try dont use yourself for rerender
     RM.get<ChapterService>(name: 'ChapterService').setState((s) {});
   }
 
@@ -96,14 +96,12 @@ class ChapterService {
     futureChapterText = values[1]['futureChapterText'];
     // TODO calc last
     lastChapterNumber = chapters.length;
-    final SharedPreferences prefs = values[0];
 
+    final SharedPreferences prefs = values[0];
     final gameString = prefs.getString(gameInfoName);
-    if (gameString == null) {
-      gameInfo = GameInfo(currentChapterId: 1);
-    } else {
-      gameInfo = GameInfo.fromJson(gameString);
-    }
+    gameInfo = (gameString == null)
+        ? GameInfo(currentChapterId: 1)
+        : GameInfo.fromJson(gameString);
     // TODO rewrite to bd
     final List<String> notesStrings = prefs.getStringList('notes');
     if (notesStrings != null && notesStrings.length > 0) {
@@ -114,22 +112,27 @@ class ChapterService {
       questionBase =
           questionsStrings.map<Question>((e) => Question.fromJson(e)).toList();
     }
-    await loadChapter();
+    await prepareChapter();
   }
 
-  loadChapter({int id}) async {
-    int currentChapterId = id ?? gameInfo.currentChapterId;
-    currentChapterId = max(1, currentChapterId);
+  prepareChapter({int id}) async {
+    int currentChapterId = max(1, id ?? gameInfo.currentChapterId ?? 1);
+
     currentChapter = chapters.firstWhere(
         (element) => element?.number == currentChapterId,
         orElse: () => null);
-    Story currentStory = await dbHelper.getStory(currentChapterId);
+    // TODO show error if null
 
+    Story currentStory = await dbHelper.getStory(currentChapterId);
+    List<Photo> currentChapterPhotoes = await dbHelper.getPhotos();
     bool isNeedReload = (currentStory == null ||
+        currentChapterPhotoes == null ||
         currentChapter?.number != currentChapterId ||
         currentChapter?.version != gameInfo.currentChapterVersion ||
         dbHelper.version != gameInfo.currentDBVersion);
+
     if (isNeedReload) {
+      //  check free space
       double freeSpaceMB = await DiskSpace.getFreeDiskSpace;
       print(freeSpaceMB);
       print(await DiskSpace.getTotalDiskSpace);
@@ -162,12 +165,15 @@ class ChapterService {
         await loadChapterInfo(currentChapterId: currentChapterId);
       }
     }
-
-    List<Photo> p = await dbHelper.getPhotos();
-    Iterable<MapEntry<String, ImageProvider>> pairs = p.map((e) {
-      File photoFile = File(e.imgPath);
+    if (isNeedReload) {
+      currentStory = await dbHelper.getStory(currentChapterId);
+      currentChapterPhotoes = await dbHelper.getPhotos();
+    }
+    Iterable<MapEntry<String, ImageProvider>> pairs =
+        currentChapterPhotoes.map((photo) {
+      File photoFile = File(photo.imgPath);
       var image = FileImage(photoFile);
-      return MapEntry(e.photoName, image);
+      return MapEntry(photo.photoName, image);
     });
     images.addEntries(pairs);
     currentChapter.story = currentStory;
@@ -195,14 +201,13 @@ class ChapterService {
     Directory destinationDir;
     final Directory probablyDir =
         Directory('${dir.path}/Chapter$currentChapterId');
-    if (!await probablyDir.exists()) {
-      destinationDir = await probablyDir.create();
-    } else {
-      // probablyDir.c
-      destinationDir = probablyDir;
+    if (await probablyDir.exists()) {
+      await probablyDir.delete();
     }
+    // clean all folder because we will catch error if try rewrite exist file
+    destinationDir = await probablyDir.create();
 
-    await dir.create();
+    await dir.create(); // TODO check and cut unneed
     print('destinationChapterDir $destinationDir');
     try {
       await ZipFile.extractToDirectory(
@@ -246,6 +251,7 @@ class ChapterService {
   }
 
   void goNext(String step) {
+    print('gonext $step');
     if (step != null || gameInfo.currentPassage?.links?.length == 1) {
       int nextPid = int.parse(step ?? gameInfo.currentPassage.links[0].pid);
       Passage p;
@@ -338,6 +344,12 @@ class ChapterService {
       }).toList();
       gameInfo.currentPassage = p.copyWith(links: availableLinks);
     }
+
+    if (gameInfo.currentPassage == null) {
+      gameInfo.currentPassage =
+          currentChapter.story.script[currentChapter.story.firstPid];
+    }
+
     if (gameInfo.currentPassage.links.length == 0) {
       final bool isLast = lastChapterNumber == currentChapter.number;
       String contentText =
@@ -367,7 +379,7 @@ class ChapterService {
                               s.gameInfo.swallowCount += END_SWALLOW_BONUS;
                             });
                             RM.get<ChapterService>().setState((s) async {
-                              await s.loadChapter(
+                              await s.prepareChapter(
                                   id: s.gameInfo.currentChapterId + 1);
                             });
                             RM.navigate.back();
@@ -381,7 +393,7 @@ class ChapterService {
                       icon: refreshIcon,
                       func: () {
                         RM.get<ChapterService>().setState((s) {
-                          goNext(currentChapter?.story?.firstPid);
+                          gameInfo.currentPassage = null;
                           s.initGame();
                         });
                         RM.navigate.back();
@@ -456,6 +468,7 @@ class ChapterService {
   }
 
   void initGame() {
+    // print('initGame ${gameInfo.currentPassage}');
     if (gameInfo.currentPassage == null) {
       String pid = currentChapter?.story?.firstPid;
       goNext(pid);

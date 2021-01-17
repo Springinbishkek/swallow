@@ -9,40 +9,42 @@ import 'package:states_rebuilder/states_rebuilder.dart';
 
 import '../translation.dart';
 
+Name aboutGame = Name(
+    ru: 'Это игра про девчонок, дружбу, любовь и свободу. '
+        'Главная героиня игры — это ты.',
+    kg: 'Бул кыздар жөнүндө оюн, анда достук, сүйүү жана эркиндик жөнүндө айтылат.'
+        ' Оюндун башкы каарманы - сенсиң!');
+Name aboutDecisions = Name(
+    ru: 'Именно от твоих решений зависит, как будет меняться жизнь героев, и чем всё закончится. \n'
+        'Обещаем: будет интересно и очень волнительно!',
+    kg: 'Каармандардын жашоосу кандайча өзгөрүп, кандайча аяктаганы сенин чечимиңден көз каранды.'
+        ' Бул оюн кызыктуу жана абдан толкунданткан болот деп, убада беребиз!');
+Name askLanguage = Name(
+    ru: 'На каком языке ты хочешь играть?',
+    kg: 'Кайсы тилде ойногонду каалайсың?');
+Name askName = Name(
+    ru: 'Как тебя зовут?',
+    kg: 'Сенин атың ким болсо, башкы каармандын да\nаты ошондой болот');
+Name aboutName = Name(ru: 'Так же будут звать главную героиню игры', kg: '');
+Name greetingName = Name(ru: 'Отлично, \$name!', kg: 'Абдан жакшы, \$name!');
+Name aboutSettings = Name(
+    ru: 'Поменять имя, язык или начать игру заново можно в разделе «Настройки» с таким значком: ',
+    kg: 'Төмөнкү белги менен "Баптоолор" бөлүмүндө атын, тилин өзгөртүп жана оюнду кайрадан баштаса болот: ');
+Name letsStart =
+    Name(ru: 'А теперь давай начнём игру!', kg: 'Эми оюнду баштайлы!');
+Name nextFirstPage = Name(ru: 'Далее', kg: 'Андан ары');
+final String _onboardingBG = 'assets/backgrounds/onboarding_background.png';
+
 class OnboardingPage extends StatefulWidget {
   @override
   _OnboardingPageState createState() => _OnboardingPageState();
 }
 
 class _OnboardingPageState extends State<OnboardingPage> {
-  Name aboutGame = Name(
-      ru: 'Это игра про девчонок, дружбу, любовь и свободу. '
-          'Главная героиня игры — это ты.',
-      kg: 'Бул кыздар жөнүндө оюн, анда достук, сүйүү жана эркиндик жөнүндө айтылат.'
-          ' Оюндун башкы каарманы - сенсиң!');
-  Name aboutDecisions = Name(
-      ru: 'Именно от твоих решений зависит, как будет меняться жизнь героев, и чем всё закончится. \n'
-          'Обещаем: будет интересно и очень волнительно!',
-      kg: 'Каармандардын жашоосу кандайча өзгөрүп, кандайча аяктаганы сенин чечимиңден көз каранды.'
-          ' Бул оюн кызыктуу жана абдан толкунданткан болот деп, убада беребиз!');
-  Name askLanguage = Name(
-      ru: 'На каком языке ты хочешь играть?',
-      kg: 'Кайсы тилде ойногонду каалайсың?');
-  Name askName = Name(
-      ru: 'Как тебя зовут?',
-      kg: 'Сенин атың ким болсо, башкы каармандын да\nаты ошондой болот');
-  Name aboutName = Name(ru: 'Так же будут звать главную героиню игры', kg: '');
-  Name greetingName = Name(ru: 'Отлично, \$name!', kg: 'Абдан жакшы, \$name!');
-  Name aboutSettings = Name(
-      ru: 'Поменять имя, язык или начать игру заново можно в разделе «Настройки» с таким значком: ',
-      kg: 'Төмөнкү белги менен "Баптоолор" бөлүмүндө атын, тилин өзгөртүп жана оюнду кайрадан баштаса болот: ');
-  Name letsStart =
-      Name(ru: 'А теперь давай начнём игру!', kg: 'Эми оюнду баштайлы!');
-  Name nextFirstPage = Name(ru: 'Далее', kg: 'Андан ары');
+  bool needCheckTrim = false;
 
   final PageController _pageStateController = PageController(initialPage: 0);
   final TextEditingController _textNameController = TextEditingController();
-  final String _onboardingBG = 'assets/backgrounds/onboarding_background.png';
 
   String name = 'Бегайым';
   String languageCode;
@@ -141,7 +143,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 24.0),
           child: LCharacterNameInput(_textNameController,
-              onChanged: (v) => setState(() {})),
+              onChanged: (v) => setState(() {
+                    needCheckTrim = true;
+                  })),
         ),
         Expanded(child: Container()),
         _getButton(next.toString(), getNameSettingHandler())
@@ -150,7 +154,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Function getNameSettingHandler() {
-    if (_textNameController.text.trim() == '') {
+    if (needCheckTrim && _textNameController.text.trim() == '') {
       return null;
     }
     return () {
