@@ -53,28 +53,35 @@ class _SettingBodyState extends State<SettingBody> {
     });
   }
 
-  void onSaveSettingsTap() async {
+  Function getOnSaveSettingsTap(context) {
+    if (_textNameController.text.trim() == '') {
+      return null;
+    }
+    return () => onSaveSettingsTap(context);
+  }
+
+  void onSaveSettingsTap(context) async {
     setState(() {
       Name.curLocale = Locale(languageCode);
     });
     String name = _textNameController.text;
     RM
-        .get<ChapterService>()
+        .get<ChapterService>(name: 'ChapterService')
         .setState((s) => s.setGameParam(name: 'Main', value: name));
-    if (name.startsWith('#')) {
-      ReactiveModel chapterService = RM.get<ChapterService>();
-      var cheat = name.substring(1).split(' ');
-      if (cheat.length == 2) {
-        await chapterService.state.loadChapter(id: int.parse(cheat[1]));
-      }
-      chapterService.state.goNext(cheat[0]);
-    }
-
     Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Text(confirmChange.toString()),
       ),
     );
+    if (name.startsWith('#')) {
+      ReactiveModel<ChapterService> chapterService =
+          RM.get<ChapterService>(name: 'ChapterService');
+      var cheat = name.substring(1).split(' ');
+      if (cheat.length == 2) {
+        await chapterService.state.prepareChapter(id: int.parse(cheat[1]));
+      }
+      chapterService.state.goNext(cheat[0]);
+    }
   }
 
   @override
@@ -111,7 +118,10 @@ class _SettingBodyState extends State<SettingBody> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0, bottom: 36.0),
-                    child: LCharacterNameInput(_textNameController),
+                    child: LCharacterNameInput(
+                      _textNameController,
+                      onChanged: (v) => setState(() {}),
+                    ),
                   ),
                 ],
               ),
@@ -124,7 +134,7 @@ class _SettingBodyState extends State<SettingBody> {
           child: Center(
             child: LButton(
               text: saveSettings.toString(),
-              func: onSaveSettingsTap,
+              func: getOnSaveSettingsTap(context),
               icon: checkIcon,
             ),
           ),

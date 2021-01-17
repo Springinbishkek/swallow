@@ -27,61 +27,75 @@ class _NotePageState extends State<NotePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Scrollbar(
-          child: ListView(
-        padding: EdgeInsets.only(top: 0.0),
-        children: <Widget>[
-          Container(
-            height: 180.0,
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(topBG), fit: BoxFit.cover)),
-            child: Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                  icon: Image.asset(
-                    closeIcon,
-                    height: 14.0,
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              expandedHeight: 180.0,
+              floating: true,
+              automaticallyImplyLeading: false,
+              pinned: true,
+              actions: [
+                IconButton(
+                    icon: Image.asset(
+                      closeIcon,
+                      height: 14.0,
+                    ),
+                    onPressed: navigateBack),
+              ],
+              flexibleSpace: FlexibleSpaceBar(
+                  background: Image.asset(
+                topBG,
+                fit: BoxFit.cover,
+              )),
+            ),
+          ];
+        },
+        body: Scrollbar(
+            child: ListView(
+          padding: EdgeInsets.only(top: 0.0),
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Text(
+                    widget.note.title.toString(),
+                    style: titleTextStyle,
                   ),
-                  onPressed: navigateBack),
-            ),
-          ),
-          Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Text(
-                  widget.note.title.toString(),
-                  style: titleTextStyle,
                 ),
-              ),
-              Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  // TODO make text selectable!
-                  child: Html(
-                    data: widget.note.text.toString().replaceAll('\n', '<br>'),
-                    style: {
-                      "body": Style(color: textColor, fontSize: FontSize(17.0))
-                    },
-                  ))
-            ],
-          ),
-          Container(
-            height: 175,
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(bottomBG), fit: BoxFit.cover)),
-            child: Center(
-              child: LButton(
-                  text: understood.toString(),
-                  func: () {
-                    widget.onRead();
-                    navigateBack();
-                  }),
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    // TODO make text selectable!
+                    child: Html(
+                      data:
+                          widget.note.text.toString().replaceAll('\n', '<br>'),
+                      style: {
+                        "body":
+                            Style(color: textColor, fontSize: FontSize(17.0))
+                      },
+                    ))
+              ],
             ),
-          )
-        ],
-      )),
+            Container(
+              height: 175,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(bottomBG), fit: BoxFit.cover)),
+              child: Center(
+                child: LButton(
+                    text: understood.toString(),
+                    func: () {
+                      widget.onRead();
+                      navigateBack();
+                    }),
+              ),
+            )
+          ],
+        )),
+      ),
     );
   }
 }

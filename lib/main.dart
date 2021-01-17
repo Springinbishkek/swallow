@@ -5,6 +5,7 @@ import 'package:lastochki/models/route_arguments.dart';
 import 'package:lastochki/services/api_client.dart';
 import 'package:lastochki/services/chapter_repository.dart';
 import 'package:lastochki/services/chapter_service.dart';
+import 'package:lastochki/views/screens/about_page.dart';
 import 'package:lastochki/views/screens/game_page.dart';
 import 'package:lastochki/views/screens/home_page.dart';
 import 'package:lastochki/views/screens/note_page.dart';
@@ -34,10 +35,9 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Injector(
-        //Inject Model instance into the widget tree.
         inject: [
-          // Inject(() => NoteService(repository: apiClient)),
-          Inject(() => ChapterService(repository: ChapterRepository())),
+          Inject(() => ChapterService(repository: ChapterRepository()),
+              name: 'ChapterService'),
         ],
         builder: (context) => MaterialApp(
               navigatorKey: RM.navigate.navigatorKey,
@@ -59,6 +59,12 @@ class App extends StatelessWidget {
           return MaterialPageRoute(
               settings: settings,
               builder: (BuildContext context) => OnboardingPage());
+        }
+      case '/about':
+        {
+          return MaterialPageRoute(
+              settings: settings,
+              builder: (BuildContext context) => AboutPage());
         }
       case '/home':
         {

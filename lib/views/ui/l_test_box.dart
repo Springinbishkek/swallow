@@ -82,13 +82,14 @@ class _LTestBoxState extends State<LTestBox> {
         margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         child: Row(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             widget.isResult
                 ? _buildAnswerIcon(val)
                 : _buildRadioButton(val, _onAnswerTap),
             Flexible(
                 child: Text(
-              answer,
+              answer.trim(),
               style: noteTextStyle,
             ))
           ],
@@ -111,7 +112,7 @@ class _LTestBoxState extends State<LTestBox> {
                 borderRadius: boxBorderRadius, color: scaffoldBgColor),
             child: Center(
               child: Text(
-                widget.question.title.toString(),
+                widget.question.title.toString().trim(),
                 style: appbarTextStyle,
               ),
             ),
@@ -121,7 +122,8 @@ class _LTestBoxState extends State<LTestBox> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: widget.question.answers
                 .map((answer) => _buildCheckBox(
-                    widget.question.answers.indexOf(answer), answer.title.toString()))
+                    widget.question.answers.indexOf(answer),
+                    answer.title.toString()))
                 .toList(),
           )
         ],
