@@ -43,7 +43,6 @@ class ChapterRepository {
         _apiClient.downloadFiles(
             chapter.mediaUri, tempFilePath, onReceiveProgress),
       ]);
-      // onReceiveProgress(1, 1, total: 1);
       Map story = response[0].data;
       story['chapterId'] = chapter.number;
 

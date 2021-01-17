@@ -88,7 +88,7 @@ class AnimatedPhoto extends AnimatedWidget {
     );
   }
 
-  Image buildImage(ImageProvider photo) {
+  Widget buildImage(ImageProvider photo) {
     if (photo == null) {
       return photoPlaceholder;
     }

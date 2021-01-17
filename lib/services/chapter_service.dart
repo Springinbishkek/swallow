@@ -54,6 +54,12 @@ class ChapterService {
 
   void onReceive(int loaded, int info, {double total}) {
     loadingPercent = loaded / (info ?? total);
+    loadingTitle = loadingChapter.toStringWithVar(
+        variables: {'percent': (loadingPercent * 100).floor()});
+    if (loadingPercent >= 1) {
+      loadingPercent = null;
+      loadingTitle = loading.toString();
+    }
     // print('loadingPercent $loadingPercent');
     debugPrint('$loaded  $info $total $loadingPercent');
     // TODO try dont use yourself for rerender
@@ -180,7 +186,7 @@ class ChapterService {
     gameInfo.currentChapterId = currentChapterId;
     gameInfo.currentChapterVersion = currentChapter.version;
     gameInfo.currentDBVersion = dbHelper.version;
-    loadingPercent = null;
+    // loadingPercent = null;
     saveGameInfo();
   }
 
@@ -190,10 +196,10 @@ class ChapterService {
         (i, j) =>
             this.onReceive(i, j, total: currentChapter.mBytes * 1024 * 1024));
 
-    RM.get<ChapterService>(name: 'ChapterService').setState((s) {
-      loadingPercent = null;
-      loadingTitle = 'Подготовка главы...'; // TODO translation
-    });
+    // RM.get<ChapterService>(name: 'ChapterService').setState((s) {
+    //   loadingPercent = null;
+    //   loadingTitle = 'Подготовка главы...'; // TODO translation
+    // });
 
     final zipFile = File(data['zipPath']);
     final Directory dir = await getApplicationDocumentsDirectory();
