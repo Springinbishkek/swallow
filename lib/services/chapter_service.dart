@@ -61,7 +61,7 @@ class ChapterService {
       loadingTitle = loading.toString();
     }
     // print('loadingPercent $loadingPercent');
-    debugPrint('$loaded  $info $total $loadingPercent');
+    // debugPrint('$loaded  $info $total $loadingPercent');
     // TODO try dont use yourself for rerender
     RM.get<ChapterService>(name: 'ChapterService').setState((s) {});
   }
@@ -207,10 +207,10 @@ class ChapterService {
     Directory destinationDir;
     final Directory probablyDir =
         Directory('${dir.path}/Chapter$currentChapterId');
-    if (await probablyDir.exists()) {
-      await probablyDir.delete();
-    }
     // clean all folder because we will catch error if try rewrite exist file
+    if (await probablyDir.exists()) {
+      await probablyDir.delete(recursive: true);
+    }
     destinationDir = await probablyDir.create();
 
     await dir.create(); // TODO check and cut unneed

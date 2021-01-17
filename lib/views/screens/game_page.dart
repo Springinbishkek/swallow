@@ -89,8 +89,10 @@ class _GamePageState extends State<GamePage> {
     if (g.currentPassage == null) {
       return LLoading(percent: null);
     }
-    ImageProvider bgImage =
-        RM.get<ChapterService>(name: 'ChapterService').state.bgImage;
+    var chapterServiceState =
+        RM.get<ChapterService>(name: 'ChapterService').state;
+    ImageProvider bgImage = chapterServiceState.bgImage;
+    var firstPid = chapterServiceState.currentChapter.story.firstPid;
     precacheImage(bgImage, context);
     int unreadNotes = RM
         .get<ChapterService>(name: 'ChapterService')
@@ -166,6 +168,28 @@ class _GamePageState extends State<GamePage> {
               ]),
           body: buildBody(),
         ),
+        // TODO clean condition
+        if (g.currentChapterId == 1 && g.currentPassage.pid == firstPid)
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                Image.asset('assets/icons/tap.png', height: 52),
+                SizedBox(
+                  width: 200,
+                  child: Text(
+                    tapOnScreen.toString(),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline5.copyWith(
+                        color: Colors.white,
+                        fontSize: 21,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ]),
+            ),
+          )
       ]),
     );
   }

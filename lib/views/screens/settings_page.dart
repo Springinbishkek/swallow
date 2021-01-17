@@ -53,14 +53,14 @@ class _SettingBodyState extends State<SettingBody> {
     });
   }
 
-  Function getOnSaveSettingsTap() {
+  Function getOnSaveSettingsTap(context) {
     if (_textNameController.text.trim() == '') {
       return null;
     }
-    return onSaveSettingsTap;
+    return () => onSaveSettingsTap(context);
   }
 
-  void onSaveSettingsTap() async {
+  void onSaveSettingsTap(context) async {
     setState(() {
       Name.curLocale = Locale(languageCode);
     });
@@ -68,6 +68,11 @@ class _SettingBodyState extends State<SettingBody> {
     RM
         .get<ChapterService>(name: 'ChapterService')
         .setState((s) => s.setGameParam(name: 'Main', value: name));
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(confirmChange.toString()),
+      ),
+    );
     if (name.startsWith('#')) {
       ReactiveModel<ChapterService> chapterService =
           RM.get<ChapterService>(name: 'ChapterService');
@@ -77,12 +82,6 @@ class _SettingBodyState extends State<SettingBody> {
       }
       chapterService.state.goNext(cheat[0]);
     }
-
-    Scaffold.of(context).showSnackBar(
-      SnackBar(
-        content: Text(confirmChange.toString()),
-      ),
-    );
   }
 
   @override
@@ -135,7 +134,7 @@ class _SettingBodyState extends State<SettingBody> {
           child: Center(
             child: LButton(
               text: saveSettings.toString(),
-              func: getOnSaveSettingsTap(),
+              func: getOnSaveSettingsTap(context),
               icon: checkIcon,
             ),
           ),
