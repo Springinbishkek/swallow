@@ -22,25 +22,25 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    RM.get<ChapterService>().setState((s) => s.loadGame());
+    RM
+        .get<ChapterService>(name: 'ChapterService')
+        .setState((s) => s.loadGame());
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO
     return StateBuilder(
-        observe: () => RM.get<ChapterService>(),
-        onSetState: (context, model) {
-          print('reset');
-        },
+        observe: () => RM.get<ChapterService>(name: 'ChapterService'),
         builder: (context, chapterRM) {
-          print('rebuild');
-          return (chapterRM.state.loadingPercent != null ||
-                  chapterRM.state.gameInfo == null ||
-                  chapterRM.state.currentChapter == null)
-              ? LLoading(percent: chapterRM.state.getLoadingPercent())
-              : buildChapter(
-                  chapterRM.state.currentChapter, chapterRM.state.gameInfo);
+          return AnimatedSwitcher(
+              duration: Duration(milliseconds: 600),
+              child: (chapterRM.state.isNeedLoader())
+                  ? LLoading(
+                      key: Key('loading home page'),
+                      percent: chapterRM.state.getLoadingPercent(),
+                      title: chapterRM.state.loadingTitle)
+                  : buildChapter(chapterRM.state.currentChapter,
+                      chapterRM.state.gameInfo));
         });
   }
 
@@ -50,10 +50,11 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildChapter(Chapter ch, GameInfo g) {
     return Container(
+      key: Key(ch.number.toString()),
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/backgrounds/loading_background.jpg'),
-          fit: BoxFit.cover,
+          image: AssetImage('assets/backgrounds/chapter_home_background.jpg'),
+          fit: BoxFit.fill,
         ),
       ),
       child: Scaffold(
@@ -92,16 +93,20 @@ class _HomePageState extends State<HomePage> {
             // mainAxisSize: MainAxisSize.min,
             children: [
               Flexible(
-                flex: 7,
+                flex: 2,
                 child: Center(),
               ),
               Flexible(
-                flex: 8,
+                flex: 7,
+                child: Image.asset('assets/backgrounds/chapter_book.png'),
+              ),
+              Flexible(
+                flex: 6,
                 child: Container(
                   height: double.infinity,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: menuBgColor,
+                    // color: menuBgColor,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20),
@@ -111,7 +116,7 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
-                        padding: EdgeInsets.fromLTRB(48, 90, 48, 20),
+                        padding: EdgeInsets.fromLTRB(48, 40, 48, 20),
                         child: buildChapterInfo(ch, g),
                       ),
                       Padding(
@@ -121,7 +126,7 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             buildItem(aboutGame.toString(), () {
-                              // TODO
+                              Navigator.of(context).pushNamed('/about');
                             }, Image.asset(aboutIcon)),
                             buildItem(settings.toString(), () async {
                               await Navigator.of(context)

@@ -7,7 +7,7 @@ class Name {
   final String ru;
   final String kg;
 
-  Name({
+  const Name({
     this.ru,
     this.kg,
   });
