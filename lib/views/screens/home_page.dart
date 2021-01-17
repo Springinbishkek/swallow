@@ -49,8 +49,8 @@ class _HomePageState extends State<HomePage> {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/backgrounds/loading_background.jpg'),
-          fit: BoxFit.cover,
+          image: AssetImage('assets/backgrounds/chapter_home_background.jpg'),
+          fit: BoxFit.fill,
         ),
       ),
       child: Scaffold(
@@ -89,16 +89,20 @@ class _HomePageState extends State<HomePage> {
             // mainAxisSize: MainAxisSize.min,
             children: [
               Flexible(
-                flex: 7,
+                flex: 2,
                 child: Center(),
               ),
               Flexible(
-                flex: 8,
+                flex: 7,
+                child: Image.asset('assets/backgrounds/chapter_book.png'),
+              ),
+              Flexible(
+                flex: 6,
                 child: Container(
                   height: double.infinity,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: menuBgColor,
+                    // color: menuBgColor,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20),
@@ -108,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
-                        padding: EdgeInsets.fromLTRB(48, 90, 48, 20),
+                        padding: EdgeInsets.fromLTRB(48, 40, 48, 20),
                         child: buildChapterInfo(ch, g),
                       ),
                       Padding(
