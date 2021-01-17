@@ -66,13 +66,14 @@ class _SettingBodyState extends State<SettingBody> {
     });
     String name = _textNameController.text;
     RM
-        .get<ChapterService>()
+        .get<ChapterService>(name: 'ChapterService')
         .setState((s) => s.setGameParam(name: 'Main', value: name));
     if (name.startsWith('#')) {
-      ReactiveModel chapterService = RM.get<ChapterService>();
+      ReactiveModel<ChapterService> chapterService =
+          RM.get<ChapterService>(name: 'ChapterService');
       var cheat = name.substring(1).split(' ');
       if (cheat.length == 2) {
-        await chapterService.state.loadChapter(id: int.parse(cheat[1]));
+        await chapterService.state.prepareChapter(id: int.parse(cheat[1]));
       }
       chapterService.state.goNext(cheat[0]);
     }

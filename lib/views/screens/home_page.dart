@@ -32,12 +32,15 @@ class _HomePageState extends State<HomePage> {
     return StateBuilder(
         observe: () => RM.get<ChapterService>(name: 'ChapterService'),
         builder: (context, chapterRM) {
-          return (chapterRM.state.isNeedLoader())
-              ? LLoading(
-                  percent: chapterRM.state.getLoadingPercent(),
-                  title: chapterRM.state.loadingTitle)
-              : buildChapter(
-                  chapterRM.state.currentChapter, chapterRM.state.gameInfo);
+          return AnimatedSwitcher(
+              duration: Duration(milliseconds: 600),
+              child: (chapterRM.state.isNeedLoader())
+                  ? LLoading(
+                      key: Key('loading home page'),
+                      percent: chapterRM.state.getLoadingPercent(),
+                      title: chapterRM.state.loadingTitle)
+                  : buildChapter(chapterRM.state.currentChapter,
+                      chapterRM.state.gameInfo));
         });
   }
 
@@ -47,6 +50,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildChapter(Chapter ch, GameInfo g) {
     return Container(
+      key: Key(ch.number.toString()),
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/backgrounds/chapter_home_background.jpg'),
