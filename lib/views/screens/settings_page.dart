@@ -118,7 +118,10 @@ class _SettingBodyState extends State<SettingBody> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0, bottom: 36.0),
-                    child: LCharacterNameInput(_textNameController),
+                    child: LCharacterNameInput(
+                      _textNameController,
+                      onChanged: (v) => setState(() {}),
+                    ),
                   ),
                 ],
               ),

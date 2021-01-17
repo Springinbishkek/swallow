@@ -140,7 +140,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 24.0),
-          child: LCharacterNameInput(_textNameController),
+          child: LCharacterNameInput(_textNameController,
+              onChanged: (v) => setState(() {})),
         ),
         Expanded(child: Container()),
         _getButton(next.toString(), getNameSettingHandler())
