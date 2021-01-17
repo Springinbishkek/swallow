@@ -118,7 +118,7 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             buildItem(aboutGame.toString(), () {
-                              // TODO
+                              Navigator.of(context).pushNamed('/about');
                             }, Image.asset(aboutIcon)),
                             buildItem(settings.toString(), () async {
                               await Navigator.of(context)
