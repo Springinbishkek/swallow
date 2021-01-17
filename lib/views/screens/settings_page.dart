@@ -53,6 +53,13 @@ class _SettingBodyState extends State<SettingBody> {
     });
   }
 
+  Function getOnSaveSettingsTap() {
+    if (_textNameController.text.trim() == '') {
+      return null;
+    }
+    return onSaveSettingsTap;
+  }
+
   void onSaveSettingsTap() async {
     setState(() {
       Name.curLocale = Locale(languageCode);
@@ -124,7 +131,7 @@ class _SettingBodyState extends State<SettingBody> {
           child: Center(
             child: LButton(
               text: saveSettings.toString(),
-              func: onSaveSettingsTap,
+              func: getOnSaveSettingsTap(),
               icon: checkIcon,
             ),
           ),

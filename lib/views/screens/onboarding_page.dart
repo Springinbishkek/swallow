@@ -143,19 +143,24 @@ class _OnboardingPageState extends State<OnboardingPage> {
           child: LCharacterNameInput(_textNameController),
         ),
         Expanded(child: Container()),
-        _getButton(next.toString(), () {
-          if (_textNameController.text != '') {
-            setState(() {
-              name = _textNameController.text;
-              RM
-                  .get<ChapterService>()
-                  .setState((s) => s.setGameParam(name: 'Main', value: name));
-            });
-          }
-          _navigateToNextPage();
-        })
+        _getButton(next.toString(), getNameSettingHandler())
       ],
     ));
+  }
+
+  Function getNameSettingHandler() {
+    if (_textNameController.text.trim() == '') {
+      return null;
+    }
+    return () {
+      setState(() {
+        name = _textNameController.text;
+        RM
+            .get<ChapterService>()
+            .setState((s) => s.setGameParam(name: 'Main', value: name));
+      });
+      _navigateToNextPage();
+    };
   }
 
   Widget fourthPage() {
