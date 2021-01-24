@@ -409,8 +409,8 @@ class ChapterService {
                     icon: homeIcon,
                     buttonColor: whiteColor,
                     text: toHomePage.toString(),
-                    fontSize: 10,
-                    height: 30,
+                    // fontSize: 10,
+                    // height: 30,
                     func: () {
                       RM.navigate.toReplacementNamed('/home');
                     }),
