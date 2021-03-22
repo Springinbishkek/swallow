@@ -141,5 +141,7 @@ const Name haveUnreadNote = Name(
 
 const Name loading = Name(
   ru: 'Загрузка',
-  kg: 'Бөлүмдү',
+  kg: 'Жүктөө',
 );
+const Name chapterPreparing =
+    Name(ru: 'Подготовка главы...', kg: 'Бөлүмдү даярдоо...');
