@@ -33,6 +33,10 @@ const int minQuestionBaseLength = 15;
 const int maxNumberOfAttempt = 3;
 const int numberOfTestQuestion = 10;
 
+bool isBaseImage(String name) {
+  return name.contains('Base_');
+}
+
 class ChapterService {
   final ChapterRepository _repository;
 
@@ -52,16 +56,14 @@ class ChapterService {
   DBHelper dbHelper = DBHelper();
   Map<String, ImageProvider> images = {};
 
-  void onReceive(int loaded, int info, {double total}) {
-    loadingPercent = loaded / (info ?? total);
+  void onReceive(int loaded, int total, {double expextedTotal}) {
+    loadingPercent = loaded / (total ?? expextedTotal);
     loadingTitle = loadingChapter.toStringWithVar(
         variables: {'percent': (loadingPercent * 100).floor()});
     if (loadingPercent >= 1) {
       loadingPercent = null;
       loadingTitle = loading.toString();
     }
-    // print('loadingPercent $loadingPercent');
-    // debugPrint('$loaded  $info $total $loadingPercent');
     // TODO try dont use yourself for rerender
     RM.get<ChapterService>(name: 'ChapterService').setState((s) {});
   }
@@ -181,6 +183,8 @@ class ChapterService {
       var image = FileImage(photoFile);
       return MapEntry(photo.photoName, image);
     });
+    // clean saved images cause it eat memory
+    images.removeWhere((fileName, image) => !isBaseImage(fileName));
     images.addEntries(pairs);
     currentChapter.story = currentStory;
     gameInfo.currentChapterId = currentChapterId;
@@ -193,13 +197,8 @@ class ChapterService {
   Future<void> loadChapterInfo({int currentChapterId}) async {
     Map data = await _repository.getStory(
         currentChapter,
-        (i, j) =>
-            this.onReceive(i, j, total: currentChapter.mBytes * 1024 * 1024));
-
-    // RM.get<ChapterService>(name: 'ChapterService').setState((s) {
-    //   loadingPercent = null;
-    //   loadingTitle = 'Подготовка главы...'; // TODO translation
-    // });
+        (i, j) => this.onReceive(i, j,
+            expextedTotal: currentChapter.mBytes * 1024 * 1024));
 
     final zipFile = File(data['zipPath']);
     final Directory dir = await getApplicationDocumentsDirectory();
@@ -213,29 +212,29 @@ class ChapterService {
     }
     destinationDir = await probablyDir.create();
 
-    await dir.create(); // TODO check and cut unneed
+    // await dir.create(); // TODO check and cut unneed
+    RM.get<ChapterService>(name: 'ChapterService').setState((s) {
+      loadingPercent = null;
+      loadingTitle = chapterPreparing.toString();
+    });
     print('destinationChapterDir $destinationDir');
     try {
       await ZipFile.extractToDirectory(
           zipFile: zipFile,
           destinationDir: destinationDir,
-          onExtracting: (zipEntry, progress) {
+          onExtracting: (ZipEntry zipEntry, double progress) {
+            onReceive(progress.floor(), 100);
             debugPrint('progress: ${progress.toStringAsFixed(1)}%');
             debugPrint('name: ${zipEntry.name}');
-            debugPrint('isDirectory: ${zipEntry.isDirectory}');
-            debugPrint(
-                'modificationDate: ${zipEntry.modificationDate.toLocal().toIso8601String()}');
             debugPrint('uncompressedSize: ${zipEntry.uncompressedSize}');
             debugPrint('compressedSize: ${zipEntry.compressedSize}');
-            debugPrint('compressionMethod: ${zipEntry.compressionMethod}');
-            debugPrint('crc: ${zipEntry.crc}');
             return ExtractOperation.extract;
           });
       List<FileSystemEntity> files = destinationDir.listSync();
       await Future.forEach(files, (element) async {
         if (element is File) {
           String name = element.path.split("/")?.last;
-          int photoChapterId = name.contains('Base_') ? 0 : currentChapterId;
+          int photoChapterId = isBaseImage(name) ? 0 : currentChapterId;
           String imgPath = element.path;
           Photo photo = Photo(0, photoChapterId, name, imgPath);
           await dbHelper.save(photo);
@@ -455,16 +454,12 @@ class ChapterService {
             children: [
               LButton(
                   text: readNote.toString(),
-                  fontSize: 10,
-                  height: 30,
                   func: () {
                     RM.navigate.backAndToNamed('/notes');
                   }),
               LButton(
                   buttonColor: whiteColor,
                   text: backToChapter.toString(),
-                  fontSize: 10,
-                  height: 30,
                   func: () {
                     RM.navigate.back();
                   }),

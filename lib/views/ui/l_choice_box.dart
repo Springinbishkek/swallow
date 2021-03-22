@@ -151,6 +151,7 @@ class LChoiceBox extends StatelessWidget {
               child: buildOption(o, width),
             ));
           });
+
           return Column(
             children: children,
           );
@@ -171,9 +172,13 @@ class LChoiceBox extends StatelessWidget {
             isThinking: isThinking),
         if (options != null)
           Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              transform: Matrix4.translationValues(0.0, -7, 0.0),
-              child: _buildButtons(width))
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            transform: Matrix4.translationValues(0.0, -7, 0.0),
+            child: SingleChildScrollView(
+              // TODO pass size to this widget container to calc scroll window, now dont work
+              child: _buildButtons(width),
+            ),
+          )
       ],
     );
   }
