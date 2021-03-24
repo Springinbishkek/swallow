@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:lastochki/models/route_arguments.dart';
 import 'package:lastochki/services/api_client.dart';
 import 'package:lastochki/services/chapter_repository.dart';
@@ -25,7 +25,8 @@ void main() async {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  await DotEnv().load('.env.development'); // TODO
+  // TODO realize env changes
+  await DotEnv.load(fileName: '.env.development');
   runApp(App());
 }
 
@@ -44,7 +45,7 @@ class App extends StatelessWidget {
               title: 'Ласточки. Весна в Бишкеке',
               theme: ThemeData(
                 fontFamily: 'SourceSansPro',
-                primarySwatch: Colors.blue,
+                // primarySwatch:  MaterialColor(),
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
               home: OpenlineLogoPage(),

@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:lastochki/models/entities/Name.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:lastochki/models/entities/Chapter.dart';
 import 'package:lastochki/models/entities/Note.dart';
 import 'package:lastochki/models/entities/Story.dart';
@@ -73,7 +72,7 @@ class ChapterRepository {
 
   Future<void> loadChapter(String path, Function onReceiveProgress) async {
     try {
-      final response = await _apiClient.loadSource(path, onReceiveProgress);
+      await _apiClient.loadSource(path, onReceiveProgress);
     } catch (e) {
       throw PersistanceException(e);
     }

@@ -25,13 +25,13 @@ class LButton extends StatelessWidget {
 
   Widget _buildButton() {
     if (icon == null) {
-      return RaisedButton(child: _buildText(), onPressed: func);
+      return ElevatedButton(child: _buildText(), onPressed: func);
     } else {
       if (iconOnRightSide) {
-        return RaisedButton.icon(
+        return ElevatedButton.icon(
             onPressed: func, icon: _buildText(), label: _buildIcon());
       } else {
-        return RaisedButton.icon(
+        return ElevatedButton.icon(
             onPressed: func, icon: _buildIcon(), label: _buildText());
       }
     }

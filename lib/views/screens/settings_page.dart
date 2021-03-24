@@ -51,16 +51,16 @@ class _SettingsPageState extends State<SettingsPage> {
     });
     String name = _textNameController.text;
     RM
-        .get<ChapterService>(name: 'ChapterService')
+        .get<ChapterService>('ChapterService')
         .setState((s) => s.setGameParam(name: 'Main', value: name));
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(confirmChange.toString()),
       ),
     );
     if (name.startsWith('#')) {
       ReactiveModel<ChapterService> chapterService =
-          RM.get<ChapterService>(name: 'ChapterService');
+          RM.get<ChapterService>('ChapterService');
       var cheat = name.substring(1).split(' ');
       if (cheat.length == 2) {
         await chapterService.state.prepareChapter(id: int.parse(cheat[1]));
@@ -74,7 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: scaffoldBgColor,
-      appBar: LAppbar(
+      appBar: lAppbar(
           title: settings.toString(),
           func: () {
             Navigator.pop(context);

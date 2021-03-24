@@ -174,7 +174,7 @@ class LSpeechPanel extends StatelessWidget {
           side: side,
         ),
         child: Stack(
-          overflow: Overflow.visible,
+          clipBehavior: Clip.none,
           children: [
             if (isThinking)
               Positioned(

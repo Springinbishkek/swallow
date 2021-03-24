@@ -65,7 +65,7 @@ class ChapterService {
       loadingTitle = loading.toString();
     }
     // TODO try dont use yourself for rerender
-    RM.get<ChapterService>(name: 'ChapterService').setState((s) {});
+    RM.get<ChapterService>('ChapterService').setState((s) {});
   }
 
   Chapter getCurrentChapter() {
@@ -213,7 +213,7 @@ class ChapterService {
     destinationDir = await probablyDir.create();
 
     // await dir.create(); // TODO check and cut unneed
-    RM.get<ChapterService>(name: 'ChapterService').setState((s) {
+    RM.get<ChapterService>('ChapterService').setState((s) {
       loadingPercent = null;
       loadingTitle = chapterPreparing.toString();
     });
@@ -249,7 +249,7 @@ class ChapterService {
     uniqNotes.addAll(data['notes']);
     notes = uniqNotes.toList();
     notes.sort((Note a, Note b) => a.id.compareTo(b.id));
-    RM.get<ChapterService>(name: 'ChapterService').setState((s) {
+    RM.get<ChapterService>('ChapterService').setState((s) {
       loadingPercent = null;
       loadingTitle = null; // TODO translation
     });
