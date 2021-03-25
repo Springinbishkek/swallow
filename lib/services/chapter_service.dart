@@ -140,8 +140,9 @@ class ChapterService {
         dbHelper.version != gameInfo.currentDBVersion);
 
     if (isNeedReload) {
-      // double freeSpaceMB = await DiskSpace.getFreeDiskSpace;
+      // TODO
       // ! bring back feature
+      // double freeSpaceMB = await DiskSpace.getFreeDiskSpace;
       double freeSpaceMB = double.infinity;
       print(freeSpaceMB);
       // print(await DiskSpace.getTotalDiskSpace);

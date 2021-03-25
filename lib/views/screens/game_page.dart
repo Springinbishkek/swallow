@@ -26,6 +26,7 @@ class GamePage extends StatefulWidget {
 class _GamePageState extends State<GamePage> {
   bool isStepDisabled = false;
   String currentPassagePid = '';
+  String previousCharacterName;
 
   @override
   Widget build(BuildContext context) {
@@ -133,28 +134,30 @@ class _GamePageState extends State<GamePage> {
                 FittedBox(
                   fit: BoxFit.none,
                   child: LAction(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            swallowIcon,
-                            height: 18,
-                            color: whiteColor,
-                          ),
-                          SizedBox(width: 5),
-                          Text(
-                            g.swallowCount.toString(), // TODO
-                            style: TextStyle(
-                                color: whiteColor,
-                                fontSize: 18,
-                                height: 1,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      onTap: () {
-                        // TODO
-                      }),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          swallowIcon,
+                          height: 18,
+                          color: whiteColor,
+                        ),
+                        SizedBox(width: 5),
+                        Text(
+                          g.swallowCount.toString(), // TODO
+                          style: TextStyle(
+                              color: whiteColor,
+                              fontSize: 18,
+                              height: 1,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    onTap: null,
+                    // () {
+                    //   // TODO
+                    // }
+                  ),
                 ),
               ]),
           body: buildBody(),
@@ -240,6 +243,8 @@ class _GamePageState extends State<GamePage> {
       }
     });
 
+    bool isCharacterChanged = previousCharacterName != characterName;
+    previousCharacterName = characterName;
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: buildScene(
@@ -248,6 +253,7 @@ class _GamePageState extends State<GamePage> {
           pid: p.pid,
           characterImages: characterImages,
           characterName: characterName,
+          isCharacterChanged: isCharacterChanged,
           speech: p.text.toStringWithVar(variables: variables),
           options: p.links.length > 1 ? p.links : null,
         ));
@@ -292,6 +298,7 @@ class _GamePageState extends State<GamePage> {
   Widget buildScene({
     bool isThinking,
     bool isMain,
+    bool isCharacterChanged,
     List<ImageProvider> characterImages,
     String speech,
     String pid,
@@ -331,6 +338,7 @@ class _GamePageState extends State<GamePage> {
                         photoImages: characterImages,
                         key: Key(pid.toString()),
                         isMain: isMain,
+                        needTransition: isCharacterChanged,
                       ),
                     Container(
                       width: double.infinity,
