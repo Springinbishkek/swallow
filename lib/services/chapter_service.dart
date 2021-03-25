@@ -182,7 +182,11 @@ class ChapterService {
         currentChapterPhotoes.map((photo) {
       File photoFile = File(photo.imgPath);
       var image = FileImage(photoFile);
-      return MapEntry(photo.photoName, image);
+      String fileName = photo.photoName;
+
+      String fileNameWOExtention =
+          fileName.substring(0, fileName.lastIndexOf('.'));
+      return MapEntry(fileNameWOExtention, image);
     });
     // clean saved images cause it eat memory
     images.removeWhere((fileName, image) => !isBaseImage(fileName));

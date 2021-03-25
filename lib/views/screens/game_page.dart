@@ -227,7 +227,7 @@ class _GamePageState extends State<GamePage> {
         case 'CharacterImage':
           {
             characterImages = t.skip(1).map((e) {
-              return images['$e.png'];
+              return images['$e'];
             }).toList();
             break;
           }
