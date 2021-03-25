@@ -28,16 +28,12 @@ class _GamePageState extends State<GamePage> {
   String currentPassagePid = '';
 
   @override
-  void initState() {
-    super.initState();
-    RM.get<ChapterService>('ChapterService').setState((s) => s.initGame());
-  }
-
-  @override
   Widget build(BuildContext context) {
     return StateBuilder(
         observe: () => RM.get<ChapterService>('ChapterService'),
-        onRebuildState: (context, model) async {
+        initState: (context, ReactiveModel<ChapterService> model) =>
+            model.state.initGame(),
+        onRebuildState: (context, ReactiveModel<ChapterService> model) async {
           debugPrint('onrebuild');
           var popup = model?.state?.gameInfo?.currentPassage?.popup;
           if (popup != null &&
@@ -65,10 +61,10 @@ class _GamePageState extends State<GamePage> {
   }
 
   void goNext(String step) {
-    RM.get<ChapterService>('ChapterService').setState((s) => s.goNext(step));
     setState(() {
       isStepDisabled = true;
     });
+    RM.get<ChapterService>('ChapterService').setState((s) => s.goNext(step));
     Future.delayed(Duration(milliseconds: 800), () {
       setState(() {
         isStepDisabled = false;
@@ -76,9 +72,11 @@ class _GamePageState extends State<GamePage> {
     }); //TODO bring deeper
   }
 
-  Function getTapHandler(Passage p) {
-    if (isStepDisabled) return null;
-    return p.links.length <= 1 ? (details) => goNext(null) : null;
+  void tapHandler(Passage p) {
+    if (isStepDisabled) return;
+    if (p.links.length <= 1) {
+      goNext(null);
+    }
   }
 
   Widget buildChapter(GameInfo g) {
@@ -93,7 +91,7 @@ class _GamePageState extends State<GamePage> {
         RM.get<ChapterService>('ChapterService').state.getUnreadNotesCount();
 
     return GestureDetector(
-      onTapUp: getTapHandler(g.currentPassage),
+      onTapUp: (d) => tapHandler(g.currentPassage),
       child: Stack(children: [
         AnimatedSwitcher(
           duration: Duration(milliseconds: 500),
