@@ -23,7 +23,7 @@ class LTextField extends StatelessWidget {
         fillColor: menuBgColor,
       ),
       maxLength: maxLength,
-      maxLengthEnforced: true,
+      maxLengthEnforcement: MaxLengthEnforcement.enforced,
       autofocus: false,
       autovalidateMode: AutovalidateMode.always,
       textCapitalization: TextCapitalization.words,

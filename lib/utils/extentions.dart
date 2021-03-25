@@ -4,20 +4,20 @@ import 'package:lastochki/models/entities/Name.dart';
 extension NameTransform on String {
   Name toName() {
     Map<String, dynamic> name = {};
-    var r = RegExp(r"\(\w\w\)");
-    var matches = r.allMatches(this);
-    int startValueIndex;
-    String lang;
-    matches.forEach((el) {
-      if (startValueIndex != null) {
-        String value = this.substring(startValueIndex, el.start);
-        name[lang] = value;
-      }
-      lang = this.substring(el.start + 1, el.end - 1);
-      startValueIndex = el.end;
-    });
-    name[lang] = this.substring(startValueIndex);
+    var languagesRegex = RegExp(r"\(\w\w\)");
+    var languagesMatch = languagesRegex.allMatches(this);
 
+    int startValueIndex;
+    String currentLang;
+    languagesMatch.forEach((langMatch) {
+      if (startValueIndex != null) {
+        name[currentLang] =
+            this.substring(startValueIndex, langMatch.start).trim();
+      }
+      currentLang = this.substring(langMatch.start + 1, langMatch.end - 1);
+      startValueIndex = langMatch.end;
+    });
+    name[currentLang] = this.substring(startValueIndex).trim();
     return Name.fromMap(name);
   }
 }

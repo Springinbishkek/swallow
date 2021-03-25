@@ -59,7 +59,7 @@ class _AboutPageState extends State<AboutPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: scaffoldBgColor,
-      appBar: LAppbar(
+      appBar: lAppbar(
           title: aboutGame.toString(),
           func: () {
             Navigator.pop(context);

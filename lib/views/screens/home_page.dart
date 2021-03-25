@@ -22,15 +22,13 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    RM
-        .get<ChapterService>(name: 'ChapterService')
-        .setState((s) => s.loadGame());
+    RM.get<ChapterService>('ChapterService').setState((s) => s.loadGame());
   }
 
   @override
   Widget build(BuildContext context) {
     return StateBuilder(
-        observe: () => RM.get<ChapterService>(name: 'ChapterService'),
+        observe: () => RM.get<ChapterService>('ChapterService'),
         builder: (context, chapterRM) {
           return AnimatedSwitcher(
               duration: Duration(milliseconds: 600),
@@ -181,9 +179,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildItem(String text, Function onTap, Widget icon) {
-    return FlatButton.icon(
-      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+    return TextButton.icon(
+      style: ButtonStyle(
+        padding: MaterialStateProperty.all(
+            EdgeInsets.symmetric(horizontal: 5, vertical: 10)),
+        shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(25))),
+      ),
       onPressed: onTap,
       icon: SizedBox(height: 14, child: icon),
       label: Text(

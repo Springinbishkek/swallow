@@ -23,28 +23,10 @@ class ApiClient {
     }, onResponse: (Response response) async {
       return response;
     }, onError: (DioError e) async {
-      // TODO show error popup
       print(e.response);
-      var options = e.request;
-
+      RequestOptions options = e.request;
       var result = await RM.navigate.toDialog(
-        LInfoPopup(
-          isCloseEnable: true,
-          image: alertImg,
-          title: noInternet.toString(),
-          content: noInternetText.toString(),
-          actions: LButton(
-              icon: refreshIcon,
-              buttonColor: whiteColor,
-              text: tryMsg.toString(),
-              fontSize: 10,
-              height: 30,
-              func: () async {
-                var response =
-                    await dio.request(options.path, options: options);
-                RM.navigate.back(response);
-              }),
-        ),
+        getErrorDialog(options: options, error: e),
       );
       return result ?? e;
     }));
@@ -53,12 +35,27 @@ class ApiClient {
     dio.options.headers['Accept'] = 'application/json';
   }
 
-  // TODO
+  Widget getErrorDialog({RequestOptions options, DioError error}) {
+    return LInfoPopup(
+      isCloseEnable: true,
+      image: alertImg,
+      title: noInternet.toString(),
+      content: noInternetText.toString(),
+      actions: LButton(
+          icon: refreshIcon,
+          buttonColor: whiteColor,
+          text: tryMsg.toString(),
+          func: () async {
+            Response response =
+                await dio.request(options.path, options: options);
+            RM.navigate.back(response);
+          }),
+    );
+  }
 
   Future<Response> getChapters() async {
     Response response = await dio.get('/info.json');
     return response;
-    // response;
   }
 
   Future<Response> loadSource(String path, Function onReceiveProgress) async {

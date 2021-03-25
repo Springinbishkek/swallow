@@ -6,11 +6,13 @@ class LCharacterImage extends StatefulWidget {
   final List<String> images;
   final List<ImageProvider> photoImages;
   final double sign;
+  final bool needTransition;
   const LCharacterImage({
     Key key,
+    bool isMain = false,
     this.images,
     this.photoImages,
-    bool isMain = false,
+    this.needTransition,
   })  : sign = isMain ? 1 : -1,
         super(key: key);
 
@@ -39,15 +41,16 @@ class _LCharacterImageState extends State<LCharacterImage>
 
   @override
   Widget build(BuildContext context) {
-    // debugPrint(widget.images.toString());
+    double begin = widget.sign * 2;
+    double end = widget.sign * 1;
     return TweenAnimationBuilder(
-        tween: Tween<double>(begin: widget.sign * 2, end: widget.sign * 1),
+        tween: Tween<double>(begin: begin, end: end),
         duration: Duration(milliseconds: 300),
         onEnd: () => controller.forward(),
         builder: (BuildContext context, double size, Widget child) {
-          // debugPrint('$size');
+          double position = widget.needTransition ? -size : -end;
           return Align(
-            alignment: Alignment(-size, 0),
+            alignment: Alignment(position, 0),
             child: child,
           );
         },

@@ -10,33 +10,18 @@ import 'package:states_rebuilder/states_rebuilder.dart';
 
 import '../translation.dart';
 
-class SettingsPage extends StatelessWidget {
+Name changeLanguage = Name(ru: 'Сменить язык', kg: 'Тилди өзгөртүү');
+Name changeName =
+    Name(ru: 'Сменить имя героини', kg: 'Каармандын атын өзгөртүү');
+Name saveSettings = Name(ru: 'Сохранить настройки', kg: 'Баптоолорду сактоо');
+
+class SettingsPage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: scaffoldBgColor,
-      appBar: LAppbar(
-          title: settings.toString(),
-          func: () {
-            Navigator.pop(context);
-          }),
-      body: SettingBody(),
-    );
-  }
+  _SettingsPageState createState() => _SettingsPageState();
 }
 
-class SettingBody extends StatefulWidget {
-  @override
-  _SettingBodyState createState() => _SettingBodyState();
-}
-
-class _SettingBodyState extends State<SettingBody> {
+class _SettingsPageState extends State<SettingsPage> {
   String languageCode = Name.curLocale.toString();
-  Name changeLanguage = Name(ru: 'Сменить язык', kg: 'Тилди өзгөртүү');
-  Name changeName =
-      Name(ru: 'Сменить имя героини', kg: 'Каармандын атын өзгөртүү');
-  Name saveSettings = Name(ru: 'Сохранить настройки', kg: 'Баптоолорду сактоо');
 
   TextEditingController _textNameController = TextEditingController();
 
@@ -60,22 +45,22 @@ class _SettingBodyState extends State<SettingBody> {
     return () => onSaveSettingsTap(context);
   }
 
-  void onSaveSettingsTap(context) async {
+  void onSaveSettingsTap(BuildContext context) async {
     setState(() {
       Name.curLocale = Locale(languageCode);
     });
     String name = _textNameController.text;
     RM
-        .get<ChapterService>(name: 'ChapterService')
+        .get<ChapterService>('ChapterService')
         .setState((s) => s.setGameParam(name: 'Main', value: name));
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(confirmChange.toString()),
       ),
     );
     if (name.startsWith('#')) {
       ReactiveModel<ChapterService> chapterService =
-          RM.get<ChapterService>(name: 'ChapterService');
+          RM.get<ChapterService>('ChapterService');
       var cheat = name.substring(1).split(' ');
       if (cheat.length == 2) {
         await chapterService.state.prepareChapter(id: int.parse(cheat[1]));
@@ -86,60 +71,71 @@ class _SettingBodyState extends State<SettingBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Expanded(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16.0),
-                    child: Text(
-                      changeLanguage.toString(),
-                      style: subtitleTextStyle,
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: scaffoldBgColor,
+      appBar: lAppbar(
+          title: settings.toString(),
+          func: () {
+            Navigator.pop(context);
+          }),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Text(
+                        changeLanguage.toString(),
+                        style: subtitleTextStyle,
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0, bottom: 36.0),
-                    child: LLanguageCheckbox(
-                      onChanged: onChangeLanguageCode,
-                      isColumn: false,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0, bottom: 36.0),
+                      child: LLanguageCheckbox(
+                        onChanged: onChangeLanguageCode,
+                        isColumn: false,
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16.0),
-                    child: Text(
-                      changeName.toString(),
-                      style: subtitleTextStyle,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Text(
+                        changeName.toString(),
+                        style: subtitleTextStyle,
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0, bottom: 36.0),
-                    child: LCharacterNameInput(
-                      _textNameController,
-                      onChanged: (v) => setState(() {}),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0, bottom: 36.0),
+                      child: LCharacterNameInput(
+                        _textNameController,
+                        onChanged: (v) => setState(() {}),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        Container(
-          height: 145.0,
-          color: whiteColor,
-          child: Center(
-            child: LButton(
-              text: saveSettings.toString(),
-              func: getOnSaveSettingsTap(context),
-              icon: checkIcon,
+          Container(
+            height: 145.0,
+            color: whiteColor,
+            child: Center(
+              child: Builder(
+                builder: (context) => LButton(
+                  text: saveSettings.toString(),
+                  func: getOnSaveSettingsTap(context),
+                  icon: checkIcon,
+                ),
+              ),
             ),
-          ),
-        )
-      ],
+          )
+        ],
+      ),
     );
   }
 }
