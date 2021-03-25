@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:disk_space/disk_space.dart';
+// import 'package:disk_space_ns/disk_space_ns.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:lastochki/models/entities/Chapter.dart';
@@ -140,15 +140,16 @@ class ChapterService {
         dbHelper.version != gameInfo.currentDBVersion);
 
     if (isNeedReload) {
-      //  check free space
-      double freeSpaceMB = await DiskSpace.getFreeDiskSpace;
+      // double freeSpaceMB = await DiskSpace.getFreeDiskSpace;
+      // ! bring back feature
+      double freeSpaceMB = double.infinity;
       print(freeSpaceMB);
-      print(await DiskSpace.getTotalDiskSpace);
+      // print(await DiskSpace.getTotalDiskSpace);
       if (currentChapter != null && currentChapter.mBytes >= freeSpaceMB) {
         // try to clean all except base data
         await dbHelper.cleanChapterExcept(0);
       }
-      freeSpaceMB = await DiskSpace.getFreeDiskSpace;
+      // freeSpaceMB = await DiskSpace.getFreeDiskSpace;
       print(freeSpaceMB);
       if (currentChapter != null && currentChapter.mBytes >= freeSpaceMB) {
         RM.navigate.toDialog(
