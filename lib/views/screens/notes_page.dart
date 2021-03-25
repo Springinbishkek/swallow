@@ -139,7 +139,7 @@ class _NotesPageState extends State<NotesPage> {
         bool isOneNote = chapterService.state.getNotes().length == 1;
         return Scaffold(
           backgroundColor: scaffoldBgColor,
-          appBar: LAppbar(title: notes.toString(), func: _navigateBack),
+          appBar: lAppbar(title: notes.toString(), func: _navigateBack),
           body: Stack(
             children: [
               if (isOneNote)

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:disk_space/disk_space.dart';
+// import 'package:disk_space_ns/disk_space_ns.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:lastochki/models/entities/Chapter.dart';
@@ -65,7 +65,7 @@ class ChapterService {
       loadingTitle = loading.toString();
     }
     // TODO try dont use yourself for rerender
-    RM.get<ChapterService>(name: 'ChapterService').setState((s) {});
+    RM.get<ChapterService>('ChapterService').setState((s) {});
   }
 
   Chapter getCurrentChapter() {
@@ -140,15 +140,17 @@ class ChapterService {
         dbHelper.version != gameInfo.currentDBVersion);
 
     if (isNeedReload) {
-      //  check free space
-      double freeSpaceMB = await DiskSpace.getFreeDiskSpace;
+      // TODO
+      // ! bring back feature
+      // double freeSpaceMB = await DiskSpace.getFreeDiskSpace;
+      double freeSpaceMB = double.infinity;
       print(freeSpaceMB);
-      print(await DiskSpace.getTotalDiskSpace);
+      // print(await DiskSpace.getTotalDiskSpace);
       if (currentChapter != null && currentChapter.mBytes >= freeSpaceMB) {
         // try to clean all except base data
         await dbHelper.cleanChapterExcept(0);
       }
-      freeSpaceMB = await DiskSpace.getFreeDiskSpace;
+      // freeSpaceMB = await DiskSpace.getFreeDiskSpace;
       print(freeSpaceMB);
       if (currentChapter != null && currentChapter.mBytes >= freeSpaceMB) {
         RM.navigate.toDialog(
@@ -181,7 +183,11 @@ class ChapterService {
         currentChapterPhotoes.map((photo) {
       File photoFile = File(photo.imgPath);
       var image = FileImage(photoFile);
-      return MapEntry(photo.photoName, image);
+      String fileName = photo.photoName;
+
+      String fileNameWOExtention =
+          fileName.substring(0, fileName.lastIndexOf('.'));
+      return MapEntry(fileNameWOExtention, image);
     });
     // clean saved images cause it eat memory
     images.removeWhere((fileName, image) => !isBaseImage(fileName));
@@ -213,7 +219,7 @@ class ChapterService {
     destinationDir = await probablyDir.create();
 
     // await dir.create(); // TODO check and cut unneed
-    RM.get<ChapterService>(name: 'ChapterService').setState((s) {
+    RM.get<ChapterService>('ChapterService').setState((s) {
       loadingPercent = null;
       loadingTitle = chapterPreparing.toString();
     });
@@ -249,7 +255,7 @@ class ChapterService {
     uniqNotes.addAll(data['notes']);
     notes = uniqNotes.toList();
     notes.sort((Note a, Note b) => a.id.compareTo(b.id));
-    RM.get<ChapterService>(name: 'ChapterService').setState((s) {
+    RM.get<ChapterService>('ChapterService').setState((s) {
       loadingPercent = null;
       loadingTitle = null; // TODO translation
     });

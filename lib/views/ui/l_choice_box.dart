@@ -31,7 +31,7 @@ class LChoiceBox extends StatelessWidget {
     bool isPremium = option.swallow != null && option.swallow > 0;
     var variables = RM.get<ChapterService>().state.gameInfo.gameVariables;
     return Stack(
-      overflow: Overflow.visible,
+      clipBehavior: Clip.none,
       children: [
         Container(
           width: width,

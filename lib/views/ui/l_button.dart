@@ -25,13 +25,13 @@ class LButton extends StatelessWidget {
 
   Widget _buildButton() {
     if (icon == null) {
-      return RaisedButton(child: _buildText(), onPressed: func);
+      return ElevatedButton(child: _buildText(), onPressed: func);
     } else {
       if (iconOnRightSide) {
-        return RaisedButton.icon(
+        return ElevatedButton.icon(
             onPressed: func, icon: _buildText(), label: _buildIcon());
       } else {
-        return RaisedButton.icon(
+        return ElevatedButton.icon(
             onPressed: func, icon: _buildIcon(), label: _buildText());
       }
     }
@@ -98,14 +98,23 @@ class LButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ButtonTheme(
-      height: height,
-      minWidth: 127.0,
-      buttonColor: buttonColor,
-      disabledColor: buttonColor.withOpacity(0.6),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(22.5)),
-        side: BorderSide(color: borderColor, width: 2.0),
+    return ElevatedButtonTheme(
+      data: ElevatedButtonThemeData(
+        style: ButtonStyle(
+          minimumSize: MaterialStateProperty.all(Size(127, height)),
+          backgroundColor:
+              MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled))
+              return buttonColor.withOpacity(0.6);
+            return buttonColor;
+          }),
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(22.5)),
+              side: BorderSide(color: borderColor, width: 2.0),
+            ),
+          ),
+        ),
       ),
       child: _buildButton(),
     );

@@ -26,20 +26,15 @@ class GamePage extends StatefulWidget {
 class _GamePageState extends State<GamePage> {
   bool isStepDisabled = false;
   String currentPassagePid = '';
-
-  @override
-  void initState() {
-    super.initState();
-    RM
-        .get<ChapterService>(name: 'ChapterService')
-        .setState((s) => s.initGame());
-  }
+  String previousCharacterName;
 
   @override
   Widget build(BuildContext context) {
     return StateBuilder(
-        observe: () => RM.get<ChapterService>(name: 'ChapterService'),
-        onRebuildState: (context, model) async {
+        observe: () => RM.get<ChapterService>('ChapterService'),
+        initState: (context, ReactiveModel<ChapterService> model) =>
+            model.state.initGame(),
+        onRebuildState: (context, ReactiveModel<ChapterService> model) async {
           debugPrint('onrebuild');
           var popup = model?.state?.gameInfo?.currentPassage?.popup;
           if (popup != null &&
@@ -67,12 +62,10 @@ class _GamePageState extends State<GamePage> {
   }
 
   void goNext(String step) {
-    RM
-        .get<ChapterService>(name: 'ChapterService')
-        .setState((s) => s.goNext(step));
     setState(() {
       isStepDisabled = true;
     });
+    RM.get<ChapterService>('ChapterService').setState((s) => s.goNext(step));
     Future.delayed(Duration(milliseconds: 800), () {
       setState(() {
         isStepDisabled = false;
@@ -80,27 +73,26 @@ class _GamePageState extends State<GamePage> {
     }); //TODO bring deeper
   }
 
-  Function getTapHandler(Passage p) {
-    if (isStepDisabled) return null;
-    return p.links.length <= 1 ? (details) => goNext(null) : null;
+  void tapHandler(Passage p) {
+    if (isStepDisabled) return;
+    if (p.links.length <= 1) {
+      goNext(null);
+    }
   }
 
   Widget buildChapter(GameInfo g) {
     if (g.currentPassage == null) {
       return LLoading(percent: null);
     }
-    var chapterServiceState =
-        RM.get<ChapterService>(name: 'ChapterService').state;
+    var chapterServiceState = RM.get<ChapterService>('ChapterService').state;
     ImageProvider bgImage = chapterServiceState.bgImage;
     var firstPid = chapterServiceState.currentChapter.story.firstPid;
     precacheImage(bgImage, context);
-    int unreadNotes = RM
-        .get<ChapterService>(name: 'ChapterService')
-        .state
-        .getUnreadNotesCount();
+    int unreadNotes =
+        RM.get<ChapterService>('ChapterService').state.getUnreadNotesCount();
 
     return GestureDetector(
-      onTapUp: getTapHandler(g.currentPassage),
+      onTapUp: (d) => tapHandler(g.currentPassage),
       child: Stack(children: [
         AnimatedSwitcher(
           duration: Duration(milliseconds: 500),
@@ -142,28 +134,30 @@ class _GamePageState extends State<GamePage> {
                 FittedBox(
                   fit: BoxFit.none,
                   child: LAction(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            swallowIcon,
-                            height: 18,
-                            color: whiteColor,
-                          ),
-                          SizedBox(width: 5),
-                          Text(
-                            g.swallowCount.toString(), // TODO
-                            style: TextStyle(
-                                color: whiteColor,
-                                fontSize: 18,
-                                height: 1,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      onTap: () {
-                        // TODO
-                      }),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          swallowIcon,
+                          height: 18,
+                          color: whiteColor,
+                        ),
+                        SizedBox(width: 5),
+                        Text(
+                          g.swallowCount.toString(), // TODO
+                          style: TextStyle(
+                              color: whiteColor,
+                              fontSize: 18,
+                              height: 1,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    onTap: null,
+                    // () {
+                    //   // TODO
+                    // }
+                  ),
                 ),
               ]),
           body: buildBody(),
@@ -195,19 +189,13 @@ class _GamePageState extends State<GamePage> {
   }
 
   Widget buildBody() {
-    Passage p = RM
-        .get<ChapterService>(name: 'ChapterService')
-        .state
-        .gameInfo
-        .currentPassage;
-    Map<String, dynamic> variables = RM
-            .get<ChapterService>(name: 'ChapterService')
-            .state
-            .gameInfo
-            .gameVariables ??
-        {'': ''};
+    Passage p =
+        RM.get<ChapterService>('ChapterService').state.gameInfo.currentPassage;
+    Map<String, dynamic> variables =
+        RM.get<ChapterService>('ChapterService').state.gameInfo.gameVariables ??
+            {'': ''};
     Map<String, ImageProvider> images =
-        RM.get<ChapterService>(name: 'ChapterService').state.images;
+        RM.get<ChapterService>('ChapterService').state.images;
     List<ImageProvider> characterImages;
     bool isThinking = false;
     bool isMain = false;
@@ -242,7 +230,7 @@ class _GamePageState extends State<GamePage> {
         case 'CharacterImage':
           {
             characterImages = t.skip(1).map((e) {
-              return images['$e.png'];
+              return images['$e'];
             }).toList();
             break;
           }
@@ -255,6 +243,8 @@ class _GamePageState extends State<GamePage> {
       }
     });
 
+    bool isCharacterChanged = previousCharacterName != characterName;
+    previousCharacterName = characterName;
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: buildScene(
@@ -263,14 +253,14 @@ class _GamePageState extends State<GamePage> {
           pid: p.pid,
           characterImages: characterImages,
           characterName: characterName,
+          isCharacterChanged: isCharacterChanged,
           speech: p.text.toStringWithVar(variables: variables),
           options: p.links.length > 1 ? p.links : null,
         ));
   }
 
   void chooseOption(Choice o) {
-    ReactiveModel chapterService =
-        RM.get<ChapterService>(name: 'ChapterService');
+    ReactiveModel chapterService = RM.get<ChapterService>('ChapterService');
     print(o.pid);
     if (chapterService.state.gameInfo.swallowCount < o.swallow) {
       showDialog(
@@ -308,6 +298,7 @@ class _GamePageState extends State<GamePage> {
   Widget buildScene({
     bool isThinking,
     bool isMain,
+    bool isCharacterChanged,
     List<ImageProvider> characterImages,
     String speech,
     String pid,
@@ -347,6 +338,7 @@ class _GamePageState extends State<GamePage> {
                         photoImages: characterImages,
                         key: Key(pid.toString()),
                         isMain: isMain,
+                        needTransition: isCharacterChanged,
                       ),
                     Container(
                       width: double.infinity,
@@ -373,9 +365,13 @@ class _GamePageState extends State<GamePage> {
   }
 
   Widget buildNotes({int unreadCount}) {
-    return FlatButton.icon(
-      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+    return TextButton.icon(
+      style: ButtonStyle(
+        padding: MaterialStateProperty.all(
+            EdgeInsets.symmetric(horizontal: 5, vertical: 10)),
+        shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(25))),
+      ),
       onPressed: () => Navigator.of(context).pushNamed('/notes'),
       icon: SizedBox(
         height: 44,
