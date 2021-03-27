@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Choice.dart';
 import 'package:lastochki/models/entities/GameInfo.dart';
+import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/utils/extentions.dart';
 
 import 'package:lastochki/models/entities/Passage.dart';
@@ -217,20 +218,24 @@ class _GamePageState extends State<GamePage> {
         case 'CharacterName':
           {
             // vars contain name
-            if (!(t[1].contains('\$'))) {
-              String nameStr = t[1];
-
+            String nameStr = t[1];
+            if (!(nameStr.contains('\$'))) {
               characterName = nameStr.toName().toString();
             } else {
-              characterName = variables['Main']; // TODO
-
+              Name name = Name(ru: nameStr, kg: nameStr);
+              characterName = name.toStringWithVar(variables: variables);
             }
             break;
           }
         case 'CharacterImage':
           {
             characterImages = t.skip(1).map((e) {
-              return images['$e'];
+              String imgName = e;
+              if (e.contains('\$')) {
+                Name name = Name(ru: e, kg: e);
+                imgName = name.toStringWithVar(variables: variables);
+              }
+              return images['$imgName'];
             }).toList();
             break;
           }

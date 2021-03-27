@@ -84,7 +84,7 @@ class ChapterService {
   }
 
   get bgImage {
-    return images['${gameInfo.currentBgName}.jpg'] ??
+    return images['${gameInfo.currentBgName}'] ??
         AssetImage('assets/backgrounds/loading_background.jpg');
   }
 
@@ -279,7 +279,9 @@ class ChapterService {
               .firstWhere((tag) => tag.startsWith('Hide:'), orElse: () => null);
           if (hideCommand != null) {
             List<String> hideCommandParsed = hideCommand.split(':');
-            var variableHide = gameInfo.gameVariables[hideCommandParsed[1]];
+            // set default 0, cause int can be unset
+            var variableHide =
+                gameInfo.gameVariables[hideCommandParsed[1]] ?? 0;
             if (variableHide != null) {
               String sign = hideCommandParsed[2];
               String value = hideCommandParsed[3];

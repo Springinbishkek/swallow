@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/views/theme.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LLanguageCheckbox extends StatefulWidget {
   final bool isColumn;
@@ -26,11 +25,9 @@ class _LLanguageCheckboxState extends State<LLanguageCheckbox> {
   }
 
   void _onCheckboxTap(int val, String language) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _radioVal = val;
       currentLanguageCode = val == 0 ? 'ru' : 'kg';
-      prefs.setString('languageCode', currentLanguageCode);
       widget.onChanged(currentLanguageCode);
     });
   }
