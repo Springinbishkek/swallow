@@ -65,7 +65,8 @@ class _NotesPageState extends State<NotesPage> {
             ));
   }
 
-  Function _getPopupToOpen(ReactiveModel<ChapterService> service) {
+  Function _getPopupToOpen() {
+    var service = RM.get<ChapterService>('ChapterService');
     Test test = service.state.getTest();
     if (test == null) {
       return () => _openNoTestPopup(service.state.getPopupText());
@@ -100,7 +101,7 @@ class _NotesPageState extends State<NotesPage> {
               ),
               LButton(
                   text: takeTest.toString(),
-                  func: _getPopupToOpen(RM.get<ChapterService>()),
+                  func: _getPopupToOpen(),
                   icon: forwardIcon)
             ],
           ),

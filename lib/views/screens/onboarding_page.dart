@@ -5,6 +5,7 @@ import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_character_name_input.dart';
 import 'package:lastochki/views/ui/l_language_checkbox.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
 import '../translation.dart';
@@ -57,6 +58,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
   void onChangeLanguageCode(String code) {
     setState(() {
       languageCode = code;
+      SharedPreferences.getInstance()
+          .then((prefs) => prefs.setString('languageCode', code));
     });
   }
 
