@@ -9,7 +9,8 @@ set -e
 set -x
 
 # accept all android licences
-yes | sdkmanager --licenses
+echo $ANDROID_HOME
+yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 
 cd ..
 git clone -b beta https://github.com/flutter/flutter.git
