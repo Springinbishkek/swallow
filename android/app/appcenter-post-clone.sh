@@ -8,6 +8,9 @@ set -e
 # debug log
 set -x
 
+# accept all android licences
+yes | sdkmanager --licenses
+
 cd ..
 git clone -b beta https://github.com/flutter/flutter.git
 export PATH=`pwd`/flutter/bin:$PATH
