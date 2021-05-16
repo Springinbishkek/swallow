@@ -55,6 +55,7 @@ class ChapterService {
   List<Question> questionBase = [];
   DBHelper dbHelper = DBHelper();
   Map<String, ImageProvider> images = {};
+  bool wasLoadingError = false;
 
   void onReceive(int loaded, int total, {double expextedTotal}) {
     loadingPercent = loaded / (total ?? expextedTotal);
@@ -94,11 +95,21 @@ class ChapterService {
 
   loadGame() async {
     if (chapters != null) return;
-    List values = await Future.wait([
-      SharedPreferences.getInstance(),
-      _repository.getChapters(),
-    ]);
+    wasLoadingError = false;
+    List values;
+    try {
+      values = await Future.wait([
+        SharedPreferences.getInstance(),
+        _repository.getChapters(),
+      ]);
+    } catch (e, stackTrace) {
+      print(stackTrace);
+      wasLoadingError = true;
+    } finally {
+      RM.get<ChapterService>('ChapterService').setState((s) {});
+    }
     print(values);
+    if (values == null) return;
 
     chapters = values[1]['chapters'];
     futureChapterText = values[1]['futureChapterText'];
@@ -200,12 +211,21 @@ class ChapterService {
     initGame(isPassageReqired: currentChapterId > 1);
   }
 
+  /* load new chapter data to device */
   Future<void> loadChapterInfo({int currentChapterId}) async {
-    Map data = await _repository.getStory(
-        currentChapter,
-        (i, j) => this.onReceive(i, j,
-            expextedTotal: currentChapter.mBytes * 1024 * 1024));
-
+    Map data;
+    try {
+      data = await _repository.getStory(
+          currentChapter,
+          (i, j) => this.onReceive(i, j,
+              expextedTotal: currentChapter.mBytes * 1024 * 1024));
+    } catch (e, stackTrace) {
+      print(stackTrace);
+      wasLoadingError = true;
+    } finally {
+      RM.get<ChapterService>('ChapterService').setState((s) {});
+    }
+    if (data == null) return;
     final zipFile = File(data['zipPath']);
     final Directory dir = await getApplicationDocumentsDirectory();
 
@@ -218,7 +238,6 @@ class ChapterService {
     }
     destinationDir = await probablyDir.create();
 
-    // await dir.create(); // TODO check and cut unneed
     RM.get<ChapterService>('ChapterService').setState((s) {
       loadingPercent = null;
       loadingTitle = chapterPreparing.toString();
