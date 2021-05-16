@@ -44,6 +44,7 @@ class LNoteCard extends StatelessWidget {
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
         children: <Widget>[
           Flexible(
             flex: 1,
