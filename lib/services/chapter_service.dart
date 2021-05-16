@@ -197,7 +197,7 @@ class ChapterService {
     gameInfo.currentChapterVersion = currentChapter.version;
     gameInfo.currentDBVersion = dbHelper.version;
     // loadingPercent = null;
-    saveGameInfo();
+    initGame(isPassageReqired: currentChapterId > 1);
   }
 
   Future<void> loadChapterInfo({int currentChapterId}) async {
@@ -476,9 +476,9 @@ class ChapterService {
     );
   }
 
-  void initGame() {
+  void initGame({isPassageReqired = true}) {
     // print('initGame ${gameInfo.currentPassage}');
-    if (gameInfo.currentPassage == null) {
+    if (gameInfo.currentPassage == null && isPassageReqired) {
       String pid = currentChapter?.story?.firstPid;
       goNext(pid);
     }
