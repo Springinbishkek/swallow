@@ -298,7 +298,7 @@ class ChapterService {
               .firstWhere((tag) => tag.startsWith('Hide:'), orElse: () => null);
           if (hideCommand != null) {
             List<String> hideCommandParsed = hideCommand.split(':');
-            // set default 0, cause int can be unset
+            // ! set default 0, cause int can be unset
             var variableHide =
                 gameInfo.gameVariables[hideCommandParsed[1]] ?? 0;
             if (variableHide != null) {
@@ -338,7 +338,9 @@ class ChapterService {
               orElse: () => null);
           if (showCommand != null) {
             List<String> showCommandParsed = showCommand.split(':');
-            var variableShow = gameInfo.gameVariables[showCommandParsed[1]];
+            // ! set default 0, cause int can be unset
+            var variableShow =
+                gameInfo.gameVariables[showCommandParsed[1]] ?? 0;
             if (variableShow != null) {
               String sign = gameInfo.gameVariables[showCommandParsed[2]];
               String value = gameInfo.gameVariables[showCommandParsed[3]];
