@@ -23,6 +23,8 @@ const Name noPlaceText = Name(
     ru: 'Освободи место и попробуй снова!',
     kg: 'Орун бошотуп, дагы бир жолу аракет кылып көрүңүз!');
 const Name tryMsg = Name(ru: 'Попробовать', kg: 'Аракет кылуу');
+const Name repeatLoading =
+    Name(ru: 'Повторить загрузку', kg: 'Кайталап жүктөө');
 const Name aboutGame = Name(ru: 'Об игре', kg: 'Оюн жөнүндө');
 const Name titleChapter =
     Name(ru: 'Глава \$number "\$title"', kg: '\$number-бөлүм "\$title"');

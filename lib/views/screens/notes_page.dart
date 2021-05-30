@@ -71,8 +71,9 @@ class _NotesPageState extends State<NotesPage> {
     if (test == null) {
       return () => _openNoTestPopup(service.state.getPopupText());
     }
-    return () => _openTestPopup(test, () {
-          service.setState((s) => s.onTestPassed());
+    return () => _openTestPopup(test, ({bool successful}) {
+          service
+              .setState((s) => s.onTestPassed(successful: successful ?? false));
         });
   }
 
@@ -99,10 +100,12 @@ class _NotesPageState extends State<NotesPage> {
                       fontWeight: FontWeight.bold),
                 ),
               ),
-              LButton(
-                  text: takeTest.toString(),
-                  func: _getPopupToOpen(),
-                  icon: forwardIcon)
+              Center(
+                child: LButton(
+                    text: takeTest.toString(),
+                    func: _getPopupToOpen(),
+                    icon: forwardIcon),
+              )
             ],
           ),
         ),

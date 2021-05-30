@@ -82,10 +82,25 @@ class _GamePageState extends State<GamePage> {
   }
 
   Widget buildChapter(GameInfo g) {
-    if (g.currentPassage == null) {
-      return LLoading(percent: null);
-    }
     var chapterServiceState = RM.get<ChapterService>('ChapterService').state;
+    if (chapterServiceState.wasLoadingError) {
+      return Container(
+          color: Colors.white,
+          child: Center(
+            child: LButton(
+              icon: refreshIcon,
+              buttonColor: whiteColor,
+              text: repeatLoading.toString(),
+              func: () => chapterServiceState.prepareChapter(),
+            ),
+          ));
+    }
+    if (g.currentPassage == null) {
+      return LLoading(
+          key: Key('loading game page'),
+          percent: chapterServiceState.getLoadingPercent(),
+          title: chapterServiceState.loadingTitle);
+    }
     ImageProvider bgImage = chapterServiceState.bgImage;
     var firstPid = chapterServiceState.currentChapter.story.firstPid;
     precacheImage(bgImage, context);

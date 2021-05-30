@@ -33,10 +33,22 @@ class _HomePageState extends State<HomePage> {
           return AnimatedSwitcher(
               duration: Duration(milliseconds: 600),
               child: (chapterRM.state.isNeedLoader())
-                  ? LLoading(
-                      key: Key('loading home page'),
-                      percent: chapterRM.state.getLoadingPercent(),
-                      title: chapterRM.state.loadingTitle)
+                  ? chapterRM.state.wasLoadingError
+                      ? Container(
+                          color: Colors.white,
+                          child: Center(
+                            child: LButton(
+                              icon: refreshIcon,
+                              buttonColor: whiteColor,
+                              text: repeatLoading.toString(),
+                              func: () => chapterRM.state.loadGame(),
+                            ),
+                          ),
+                        )
+                      : LLoading(
+                          key: Key('loading home page'),
+                          percent: chapterRM.state.getLoadingPercent(),
+                          title: chapterRM.state.loadingTitle)
                   : buildChapter(chapterRM.state.currentChapter,
                       chapterRM.state.gameInfo));
         });

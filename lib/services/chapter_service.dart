@@ -55,6 +55,7 @@ class ChapterService {
   List<Question> questionBase = [];
   DBHelper dbHelper = DBHelper();
   Map<String, ImageProvider> images = {};
+  bool wasLoadingError = false;
 
   void onReceive(int loaded, int total, {double expextedTotal}) {
     loadingPercent = loaded / (total ?? expextedTotal);
@@ -94,11 +95,21 @@ class ChapterService {
 
   loadGame() async {
     if (chapters != null) return;
-    List values = await Future.wait([
-      SharedPreferences.getInstance(),
-      _repository.getChapters(),
-    ]);
+    wasLoadingError = false;
+    List values;
+    try {
+      values = await Future.wait([
+        SharedPreferences.getInstance(),
+        _repository.getChapters(),
+      ]);
+    } catch (e, stackTrace) {
+      print(stackTrace);
+      wasLoadingError = true;
+    } finally {
+      RM.get<ChapterService>('ChapterService').setState((s) {});
+    }
     print(values);
+    if (values == null) return;
 
     chapters = values[1]['chapters'];
     futureChapterText = values[1]['futureChapterText'];
@@ -197,15 +208,24 @@ class ChapterService {
     gameInfo.currentChapterVersion = currentChapter.version;
     gameInfo.currentDBVersion = dbHelper.version;
     // loadingPercent = null;
-    saveGameInfo();
+    initGame(isPassageReqired: currentChapterId > 1);
   }
 
+  /* load new chapter data to device */
   Future<void> loadChapterInfo({int currentChapterId}) async {
-    Map data = await _repository.getStory(
-        currentChapter,
-        (i, j) => this.onReceive(i, j,
-            expextedTotal: currentChapter.mBytes * 1024 * 1024));
-
+    Map data;
+    try {
+      data = await _repository.getStory(
+          currentChapter,
+          (i, j) => this.onReceive(i, j,
+              expextedTotal: currentChapter.mBytes * 1024 * 1024));
+    } catch (e, stackTrace) {
+      print(stackTrace);
+      wasLoadingError = true;
+    } finally {
+      RM.get<ChapterService>('ChapterService').setState((s) {});
+    }
+    if (data == null) return;
     final zipFile = File(data['zipPath']);
     final Directory dir = await getApplicationDocumentsDirectory();
 
@@ -218,7 +238,6 @@ class ChapterService {
     }
     destinationDir = await probablyDir.create();
 
-    // await dir.create(); // TODO check and cut unneed
     RM.get<ChapterService>('ChapterService').setState((s) {
       loadingPercent = null;
       loadingTitle = chapterPreparing.toString();
@@ -279,7 +298,7 @@ class ChapterService {
               .firstWhere((tag) => tag.startsWith('Hide:'), orElse: () => null);
           if (hideCommand != null) {
             List<String> hideCommandParsed = hideCommand.split(':');
-            // set default 0, cause int can be unset
+            // ! set default 0, cause int can be unset
             var variableHide =
                 gameInfo.gameVariables[hideCommandParsed[1]] ?? 0;
             if (variableHide != null) {
@@ -319,7 +338,9 @@ class ChapterService {
               orElse: () => null);
           if (showCommand != null) {
             List<String> showCommandParsed = showCommand.split(':');
-            var variableShow = gameInfo.gameVariables[showCommandParsed[1]];
+            // ! set default 0, cause int can be unset
+            var variableShow =
+                gameInfo.gameVariables[showCommandParsed[1]] ?? 0;
             if (variableShow != null) {
               String sign = gameInfo.gameVariables[showCommandParsed[2]];
               String value = gameInfo.gameVariables[showCommandParsed[3]];
@@ -375,32 +396,29 @@ class ChapterService {
             title: chapterEnd
                 .toStringWithVar(variables: {'chapter': currentChapter.number}),
             content: contentText,
-            actions: Column(
-              children: [
-                if (!isLast)
-                  Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.only(
-                          bottom: 10, left: 20, right: 20, top: 20),
-                      child: LButton(
-                          text: continueGame.toString(),
-                          swallow: END_SWALLOW_BONUS, //TODO
-                          icon: swallowIcon,
-                          func: () {
-                            RM.get<ChapterService>().setState((s) {
-                              s.gameInfo.currentPassage = null;
-                              s.gameInfo.swallowCount += END_SWALLOW_BONUS;
-                            });
-                            RM.get<ChapterService>().setState((s) async {
-                              await s.prepareChapter(
-                                  id: s.gameInfo.currentChapterId + 1);
-                            });
-                            RM.navigate.back();
-                          })),
-                Container(
-                  width: double.infinity,
-                  margin: EdgeInsets.only(bottom: 0, left: 20, right: 20),
-                  child: LButton(
+            actions: Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (!isLast)
+                    LButton(
+                        text: continueGame.toString(),
+                        swallow: END_SWALLOW_BONUS, //TODO
+                        icon: swallowIcon,
+                        func: () {
+                          RM.get<ChapterService>().setState((s) {
+                            s.gameInfo.currentPassage = null;
+                            s.gameInfo.swallowCount += END_SWALLOW_BONUS;
+                          });
+                          RM.get<ChapterService>().setState((s) async {
+                            await s.prepareChapter(
+                                id: s.gameInfo.currentChapterId + 1);
+                          });
+                          RM.navigate.back();
+                        }),
+                  SizedBox(height: 10),
+                  LButton(
                       buttonColor: whiteColor,
                       text: replayChapter.toString(),
                       icon: refreshIcon,
@@ -411,17 +429,18 @@ class ChapterService {
                         });
                         RM.navigate.back();
                       }),
-                ),
-                LButton(
-                    icon: homeIcon,
-                    buttonColor: whiteColor,
-                    text: toHomePage.toString(),
-                    // fontSize: 10,
-                    // height: 30,
-                    func: () {
-                      RM.navigate.toReplacementNamed('/home');
-                    }),
-              ],
+                  SizedBox(height: 5),
+                  LButton(
+                      icon: homeIcon,
+                      buttonColor: whiteColor,
+                      text: toHomePage.toString(),
+                      // fontSize: 10,
+                      // height: 30,
+                      func: () {
+                        RM.navigate.toReplacementNamed('/home');
+                      }),
+                ],
+              ),
             )),
       );
     }
@@ -476,9 +495,9 @@ class ChapterService {
     );
   }
 
-  void initGame() {
+  void initGame({isPassageReqired = true}) {
     // print('initGame ${gameInfo.currentPassage}');
-    if (gameInfo.currentPassage == null) {
+    if (gameInfo.currentPassage == null && isPassageReqired) {
       String pid = currentChapter?.story?.firstPid;
       goNext(pid);
     }

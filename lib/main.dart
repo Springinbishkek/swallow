@@ -108,8 +108,9 @@ class App extends StatelessWidget {
               settings: settings,
               builder: (BuildContext context) => TestPage(
                     test: test,
-                    onTestPassed: () {
-                      service.setState((s) => s.onTestPassed());
+                    onTestPassed: ({bool successful}) {
+                      service.setState((s) =>
+                          s.onTestPassed(successful: successful ?? false));
                     },
                   ));
         }
