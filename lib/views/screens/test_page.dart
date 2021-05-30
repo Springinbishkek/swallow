@@ -173,6 +173,21 @@ class _TestPageState extends State<TestPage> {
     return Container(
       margin: EdgeInsets.only(top: 8.0),
       child: Stack(children: [
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              Text(
+                '${_currentPage + 1}/${test.questions.length}',
+                style: TextStyle(
+                    color: accentColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17.0),
+              ),
+              testBox,
+              SizedBox(height: bottomControlsHeight)
+            ],
+          ),
+        ),
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(
@@ -187,21 +202,6 @@ class _TestPageState extends State<TestPage> {
                 child: _buildButton(),
               ),
             ),
-          ),
-        ),
-        SingleChildScrollView(
-          child: Column(
-            children: [
-              Text(
-                '${_currentPage + 1}/${test.questions.length}',
-                style: TextStyle(
-                    color: accentColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 17.0),
-              ),
-              testBox,
-              SizedBox(height: bottomControlsHeight)
-            ],
           ),
         ),
       ]),
