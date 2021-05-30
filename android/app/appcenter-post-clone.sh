@@ -8,6 +8,10 @@ set -e
 # debug log
 set -x
 
+# accept all android licences
+echo $ANDROID_HOME
+yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+
 cd ..
 git clone -b beta https://github.com/flutter/flutter.git
 export PATH=`pwd`/flutter/bin:$PATH
