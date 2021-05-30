@@ -4,6 +4,8 @@ import 'package:lastochki/models/entities/Note.dart';
 import 'package:lastochki/models/entities/Question.dart';
 import 'package:lastochki/models/entities/Test.dart';
 
+typedef TestPassFunction = Function({bool successful});
+
 class ArgumentsNotePage {
   final Note note;
   final Function onRead;
@@ -13,7 +15,7 @@ class ArgumentsNotePage {
 
 class ArgumentsTestPage {
   final Test test;
-  final Function onTestPassed;
+  final TestPassFunction onTestPassed;
 
   ArgumentsTestPage({@required this.test, @required this.onTestPassed});
 }
