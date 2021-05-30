@@ -298,7 +298,7 @@ class ChapterService {
               .firstWhere((tag) => tag.startsWith('Hide:'), orElse: () => null);
           if (hideCommand != null) {
             List<String> hideCommandParsed = hideCommand.split(':');
-            // set default 0, cause int can be unset
+            // ! set default 0, cause int can be unset
             var variableHide =
                 gameInfo.gameVariables[hideCommandParsed[1]] ?? 0;
             if (variableHide != null) {
@@ -338,7 +338,9 @@ class ChapterService {
               orElse: () => null);
           if (showCommand != null) {
             List<String> showCommandParsed = showCommand.split(':');
-            var variableShow = gameInfo.gameVariables[showCommandParsed[1]];
+            // ! set default 0, cause int can be unset
+            var variableShow =
+                gameInfo.gameVariables[showCommandParsed[1]] ?? 0;
             if (variableShow != null) {
               String sign = gameInfo.gameVariables[showCommandParsed[2]];
               String value = gameInfo.gameVariables[showCommandParsed[3]];
@@ -394,32 +396,29 @@ class ChapterService {
             title: chapterEnd
                 .toStringWithVar(variables: {'chapter': currentChapter.number}),
             content: contentText,
-            actions: Column(
-              children: [
-                if (!isLast)
-                  Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.only(
-                          bottom: 10, left: 20, right: 20, top: 20),
-                      child: LButton(
-                          text: continueGame.toString(),
-                          swallow: END_SWALLOW_BONUS, //TODO
-                          icon: swallowIcon,
-                          func: () {
-                            RM.get<ChapterService>().setState((s) {
-                              s.gameInfo.currentPassage = null;
-                              s.gameInfo.swallowCount += END_SWALLOW_BONUS;
-                            });
-                            RM.get<ChapterService>().setState((s) async {
-                              await s.prepareChapter(
-                                  id: s.gameInfo.currentChapterId + 1);
-                            });
-                            RM.navigate.back();
-                          })),
-                Container(
-                  width: double.infinity,
-                  margin: EdgeInsets.only(bottom: 0, left: 20, right: 20),
-                  child: LButton(
+            actions: Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (!isLast)
+                    LButton(
+                        text: continueGame.toString(),
+                        swallow: END_SWALLOW_BONUS, //TODO
+                        icon: swallowIcon,
+                        func: () {
+                          RM.get<ChapterService>().setState((s) {
+                            s.gameInfo.currentPassage = null;
+                            s.gameInfo.swallowCount += END_SWALLOW_BONUS;
+                          });
+                          RM.get<ChapterService>().setState((s) async {
+                            await s.prepareChapter(
+                                id: s.gameInfo.currentChapterId + 1);
+                          });
+                          RM.navigate.back();
+                        }),
+                  SizedBox(height: 10),
+                  LButton(
                       buttonColor: whiteColor,
                       text: replayChapter.toString(),
                       icon: refreshIcon,
@@ -430,17 +429,18 @@ class ChapterService {
                         });
                         RM.navigate.back();
                       }),
-                ),
-                LButton(
-                    icon: homeIcon,
-                    buttonColor: whiteColor,
-                    text: toHomePage.toString(),
-                    // fontSize: 10,
-                    // height: 30,
-                    func: () {
-                      RM.navigate.toReplacementNamed('/home');
-                    }),
-              ],
+                  SizedBox(height: 5),
+                  LButton(
+                      icon: homeIcon,
+                      buttonColor: whiteColor,
+                      text: toHomePage.toString(),
+                      // fontSize: 10,
+                      // height: 30,
+                      func: () {
+                        RM.navigate.toReplacementNamed('/home');
+                      }),
+                ],
+              ),
             )),
       );
     }
