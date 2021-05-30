@@ -100,10 +100,12 @@ class _NotesPageState extends State<NotesPage> {
                       fontWeight: FontWeight.bold),
                 ),
               ),
-              LButton(
-                  text: takeTest.toString(),
-                  func: _getPopupToOpen(),
-                  icon: forwardIcon)
+              Center(
+                child: LButton(
+                    text: takeTest.toString(),
+                    func: _getPopupToOpen(),
+                    icon: forwardIcon),
+              )
             ],
           ),
         ),

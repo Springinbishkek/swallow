@@ -180,9 +180,9 @@ class _TestPageState extends State<TestPage> {
               image:
                   DecorationImage(image: AssetImage(testBG), fit: BoxFit.cover),
             ),
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 36.0),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 36.0),
+              child: Center(
                 child: _buildButton(),
               ),
             ),
