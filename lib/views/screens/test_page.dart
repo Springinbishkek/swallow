@@ -14,7 +14,7 @@ import '../translation.dart';
 
 class TestPage extends StatefulWidget {
   final Test test;
-  final Function onTestPassed;
+  final TestPassFunction onTestPassed;
 
   TestPage({@required this.test, @required this.onTestPassed});
 
@@ -25,7 +25,7 @@ class TestPage extends StatefulWidget {
 class _TestPageState extends State<TestPage> {
   final PageController _testPageController = PageController(initialPage: 0);
   final String rocketImg = 'assets/icons/mw_rocket.png';
-  final String cloverImg = 'assets/icons/mw_rocket.png';
+  final String cloverImg = 'assets/icons/mw_clover.png';
   Test test;
 
   int _currentPage = 0;
@@ -79,7 +79,8 @@ class _TestPageState extends State<TestPage> {
   void _onTestEnd() {
     _saveAnswer();
     int result = _chosenAnswers.where((a) => a.isRight).length;
-    if (result == test.questions.length) {
+    bool isSuccessful = result == test.questions.length;
+    if (isSuccessful) {
       _openWellDonePopup();
     } else {
       _openFailedPopup();
@@ -104,6 +105,8 @@ class _TestPageState extends State<TestPage> {
                       text: restartTest.toString(),
                       icon: refreshIcon,
                       func: () {
+                        // TODO unificate swallow logic, too long handlers chain
+                        widget.onTestPassed(successful: false);
                         Navigator.pop(context);
                         Navigator.pushReplacementNamed(context, '/test',
                             arguments: ArgumentsTestPage(
@@ -141,7 +144,7 @@ class _TestPageState extends State<TestPage> {
                 icon: swallowIcon,
                 swallow: swallowForTest,
                 func: () {
-                  widget.onTestPassed();
+                  widget.onTestPassed(successful: true);
                   Navigator.of(context).popUntil((route) {
                     return ModalRoute.withName('/notes')(route) ||
                         ModalRoute.withName('/home')(route) ||

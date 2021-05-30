@@ -71,8 +71,9 @@ class _NotesPageState extends State<NotesPage> {
     if (test == null) {
       return () => _openNoTestPopup(service.state.getPopupText());
     }
-    return () => _openTestPopup(test, () {
-          service.setState((s) => s.onTestPassed());
+    return () => _openTestPopup(test, ({bool successful}) {
+          service
+              .setState((s) => s.onTestPassed(successful: successful ?? false));
         });
   }
 
