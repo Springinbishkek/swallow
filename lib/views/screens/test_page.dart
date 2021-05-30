@@ -169,13 +169,14 @@ class _TestPageState extends State<TestPage> {
   }
 
   Widget _buildBody({Widget testBox}) {
+    const double bottomControlsHeight = 200;
     return Container(
       margin: EdgeInsets.only(top: 8.0),
       child: Stack(children: [
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(
-            height: 200,
+            height: bottomControlsHeight,
             decoration: BoxDecoration(
               image:
                   DecorationImage(image: AssetImage(testBG), fit: BoxFit.cover),
@@ -188,17 +189,20 @@ class _TestPageState extends State<TestPage> {
             ),
           ),
         ),
-        Column(
-          children: [
-            Text(
-              '${_currentPage + 1}/${test.questions.length}',
-              style: TextStyle(
-                  color: accentColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 17.0),
-            ),
-            testBox,
-          ],
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              Text(
+                '${_currentPage + 1}/${test.questions.length}',
+                style: TextStyle(
+                    color: accentColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17.0),
+              ),
+              testBox,
+              SizedBox(height: bottomControlsHeight)
+            ],
+          ),
         ),
       ]),
     );
