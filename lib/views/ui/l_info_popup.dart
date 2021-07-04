@@ -40,14 +40,15 @@ class LInfoPopup extends StatelessWidget {
                           image: AssetImage(image), fit: BoxFit.fitHeight)),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  title ?? '',
-                  style: titleTextStyle,
-                  textAlign: TextAlign.center,
+              if (title != null)
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    title ?? '',
+                    style: titleTextStyle,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
               Padding(
                 padding: const EdgeInsets.symmetric(
                     vertical: 16.0, horizontal: 24.0),

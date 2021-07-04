@@ -16,6 +16,7 @@ import 'package:lastochki/models/entities/Question.dart';
 import 'package:lastochki/models/entities/Story.dart';
 import 'package:lastochki/models/entities/Test.dart';
 import 'package:lastochki/services/chapter_repository.dart';
+import 'package:lastochki/views/screens/home_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/translation.dart';
 import 'package:lastochki/views/ui/l_button.dart';
@@ -26,7 +27,7 @@ import 'package:states_rebuilder/states_rebuilder.dart';
 
 import 'db_helper.dart';
 
-const gameInfoName = 'gameInfo';
+const SP_GAME_INFO_NAME = 'gameInfo';
 const int TEST_SWALLOW = 15;
 const int END_SWALLOW_BONUS = 2;
 const int minQuestionBaseLength = 15;
@@ -93,6 +94,13 @@ class ChapterService {
     // TODO load if need
   }
 
+  restartAllGame(context) async {
+    await SharedPreferences.getInstance()
+        .then((prefs) => prefs.remove(SP_GAME_INFO_NAME));
+    chapters = null;
+    RM.navigate.toAndRemoveUntil(HomePage());
+  }
+
   loadGame() async {
     if (chapters != null) return;
     wasLoadingError = false;
@@ -117,7 +125,7 @@ class ChapterService {
     lastChapterNumber = chapters.length;
 
     final SharedPreferences prefs = values[0];
-    final gameString = prefs.getString(gameInfoName);
+    final gameString = prefs.getString(SP_GAME_INFO_NAME);
     gameInfo = (gameString == null)
         ? GameInfo(currentChapterId: 1)
         : GameInfo.fromJson(gameString);
@@ -558,7 +566,7 @@ class ChapterService {
 
   saveGameInfo() {
     SharedPreferences.getInstance().then((value) {
-      value.setString(gameInfoName, gameInfo.toJson());
+      value.setString(SP_GAME_INFO_NAME, gameInfo.toJson());
       // TODO
       value.setStringList('notes', notes.map((e) => e.toJson()).toList());
       value.setStringList(
