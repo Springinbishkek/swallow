@@ -82,6 +82,7 @@ class _NotesPageState extends State<NotesPage> {
       color: scaffoldBgColor,
       child: SizedBox(
         height: 160,
+        width: MediaQuery.of(context).size.width,
         child: Container(
           decoration: BoxDecoration(
               image: DecorationImage(
@@ -100,7 +101,8 @@ class _NotesPageState extends State<NotesPage> {
                       fontWeight: FontWeight.bold),
                 ),
               ),
-              Center(
+              FittedBox(
+                fit: BoxFit.scaleDown,
                 child: LButton(
                     text: takeTest.toString(),
                     func: _getPopupToOpen(),

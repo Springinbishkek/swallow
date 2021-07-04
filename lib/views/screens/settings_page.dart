@@ -5,7 +5,9 @@ import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_appbar.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_character_name_input.dart';
+import 'package:lastochki/views/ui/l_info_popup.dart';
 import 'package:lastochki/views/ui/l_language_checkbox.dart';
+import 'package:lastochki/views/ui/l_loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
@@ -15,6 +17,8 @@ Name changeLanguage = Name(ru: 'Сменить язык', kg: 'Тилди өзг
 Name changeName =
     Name(ru: 'Сменить имя героини', kg: 'Каармандын атын өзгөртүү');
 Name saveSettings = Name(ru: 'Сохранить настройки', kg: 'Баптоолорду сактоо');
+Name restartGame =
+    Name(ru: 'Начать игру заново', kg: 'Оюнду өчүрүп-күйгүзүңүз');
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -23,7 +27,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   String languageCode = Name.curLocale.toString();
-
+  bool isLoading = false;
   TextEditingController _textNameController = TextEditingController();
 
   @override
@@ -37,6 +41,65 @@ class _SettingsPageState extends State<SettingsPage> {
     setState(() {
       languageCode = code;
     });
+  }
+
+  void onRestartGame() async {
+    bool isRestarting = await showDialog(
+        context: context,
+        builder: (context) {
+          return LInfoPopup(
+              isCloseEnable: true,
+              image: alertImg,
+              title: null,
+              content: restartGameContent.toString(),
+              actions: Column(
+                children: [
+                  LButton(
+                      text: letsPlay.toString(),
+                      func: () => Navigator.of(context).pop(true)),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  LButton(
+                      buttonColor: whiteColor,
+                      text: cancel.toString(),
+                      func: () => Navigator.of(context).pop()),
+                ],
+              ));
+        });
+    if (isRestarting != null && isRestarting) {
+      restartAllGame();
+    }
+  }
+
+  void restartAllGame() async {
+    isLoading = true;
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          child: Center(
+            child: LLoading(),
+          ),
+          onWillPop: _onBackButton,
+        );
+      },
+    );
+    print('shows');
+    try {
+      await RM.get<ChapterService>().state.restartAllGame(context);
+    } catch (e, stackTrace) {
+      print(stackTrace);
+      // TODO show errors
+    } finally {
+      isLoading = false;
+      Navigator.of(context, rootNavigator: true).maybePop();
+    }
+  }
+
+  Future<bool> _onBackButton() {
+    return Future.value(!isLoading);
   }
 
   Function getOnSaveSettingsTap(context) {
@@ -117,6 +180,16 @@ class _SettingsPageState extends State<SettingsPage> {
                       child: LCharacterNameInput(
                         _textNameController,
                         onChanged: (v) => setState(() {}),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: LButton(
+                        text: restartGame.toString(),
+                        func: () => onRestartGame(),
+                        icon: refreshIcon,
+                        buttonColor: Colors.white,
+                        borderColor: Colors.white,
                       ),
                     ),
                   ],
