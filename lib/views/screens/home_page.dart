@@ -67,95 +67,97 @@ class _HomePageState extends State<HomePage> {
           fit: BoxFit.fill,
         ),
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            actions: [
-              FittedBox(
-                fit: BoxFit.none,
-                child: LAction(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              actions: [
+                FittedBox(
+                  fit: BoxFit.none,
+                  child: LAction(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            swallowIcon,
+                            height: 18,
+                            color: whiteColor,
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            g.swallowCount.toString(),
+                            style: TextStyle(
+                                color: whiteColor,
+                                fontSize: 18,
+                                height: 1,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      onTap: null),
+                ),
+              ]),
+          body: Center(
+            child: Column(
+              // mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  flex: 2,
+                  child: Center(),
+                ),
+                Flexible(
+                  flex: 7,
+                  child: Image.asset('assets/backgrounds/chapter_book.png'),
+                ),
+                Flexible(
+                  flex: MediaQuery.of(context).size.height < 800 ? 7 : 6,
+                  child: Container(
+                    height: double.infinity,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      // color: menuBgColor,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Image.asset(
-                          swallowIcon,
-                          height: 18,
-                          color: whiteColor,
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(48, 40, 48, 20),
+                          child: buildChapterInfo(ch, g),
                         ),
-                        SizedBox(width: 5),
-                        Text(
-                          g.swallowCount.toString(),
-                          style: TextStyle(
-                              color: whiteColor,
-                              fontSize: 18,
-                              height: 1,
-                              fontWeight: FontWeight.bold),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: 15, left: 10, right: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              buildItem(aboutGame.toString(), () {
+                                Navigator.of(context).pushNamed('/about');
+                              }, Image.asset(aboutIcon)),
+                              buildItem(settings.toString(), () async {
+                                await Navigator.of(context)
+                                    .pushNamed('/settings');
+                                setState(() {
+                                  // TODO fix language update
+                                });
+                              }, Image.asset(settingsIcon)),
+                              buildItem(notes.toString(), () {
+                                Navigator.of(context).pushNamed('/notes');
+                              }, Image.asset(notesIcon)),
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                    onTap: null),
-              ),
-            ]),
-        body: Center(
-          child: Column(
-            // mainAxisSize: MainAxisSize.min,
-            children: [
-              Flexible(
-                flex: 2,
-                child: Center(),
-              ),
-              Flexible(
-                flex: 7,
-                child: Image.asset('assets/backgrounds/chapter_book.png'),
-              ),
-              Flexible(
-                flex: 6,
-                child: Container(
-                  height: double.infinity,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    // color: menuBgColor,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(48, 40, 48, 20),
-                        child: buildChapterInfo(ch, g),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            bottom: 15, left: 10, right: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            buildItem(aboutGame.toString(), () {
-                              Navigator.of(context).pushNamed('/about');
-                            }, Image.asset(aboutIcon)),
-                            buildItem(settings.toString(), () async {
-                              await Navigator.of(context)
-                                  .pushNamed('/settings');
-                              setState(() {
-                                // TODO fix language update
-                              });
-                            }, Image.asset(settingsIcon)),
-                            buildItem(notes.toString(), () {
-                              Navigator.of(context).pushNamed('/notes');
-                            }, Image.asset(notesIcon)),
-                          ],
-                        ),
-                      ),
-                    ],
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
