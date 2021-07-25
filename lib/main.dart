@@ -15,12 +15,25 @@ import 'package:lastochki/views/screens/openline_logo_page.dart';
 import 'package:lastochki/views/screens/settings_page.dart';
 import 'package:lastochki/views/screens/test_page.dart';
 import 'package:lastochki/views/screens/test_result_page.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
 import 'models/entities/Test.dart';
 
+const ONE_SIGNAL_APP_ID = 'cdd7a2c2-e220-4e44-a781-d87d48298aa3';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  //Remove this method to stop OneSignal Debugging
+  OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
+
+  OneSignal.shared.setAppId(ONE_SIGNAL_APP_ID);
+
+  // TODO
+  // The promptForPushNotificationsWithUserResponse function will show the iOS push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+  // OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
+  //     print("Accepted permission: $accepted");
+  // });
   SystemChrome.setEnabledSystemUIOverlays([]);
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
