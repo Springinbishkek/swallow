@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>945690898948-vp06ll0rkp4o74do1hj2uqnpcl08g0dp.apps.googleusercontent.com</string>
+	<string>945690898948-1t8oci174088kt9j553g9raugakubfuj.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.945690898948-vp06ll0rkp4o74do1hj2uqnpcl08g0dp</string>
+	<string>com.googleusercontent.apps.945690898948-1t8oci174088kt9j553g9raugakubfuj</string>
 	<key>API_KEY</key>
 	<string>AIzaSyABox58TZNiGWOaua-xw0wcajeTr8GRB_s</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.lastochki</string>
+	<string>info.scafandergames.lastochki-test</string>
 	<key>PROJECT_ID</key>
 	<string>lastochki-test</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:945690898948:ios:b4809d006ecd903fd87b51</string>
+	<string>1:945690898948:ios:27abdf05762e7921d87b51</string>
 </dict>
 </plist>
