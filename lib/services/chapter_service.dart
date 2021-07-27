@@ -51,6 +51,7 @@ class ChapterService {
   GameInfo gameInfo;
   double loadingPercent;
   String loadingTitle;
+  int totalChapterNumber = 12;
   int lastChapterNumber = 0;
   List<Note> notes = [];
   List<Question> questionBase = [];
@@ -121,9 +122,10 @@ class ChapterService {
 
     chapters = values[1]['chapters'];
     futureChapterText = values[1]['futureChapterText'];
-    // TODO calc last
-    lastChapterNumber = chapters.length;
+    totalChapterNumber = values[1]['totalChapterNumber'];
 
+    lastChapterNumber = chapters.length;
+    //totalChapterNumber = values[1]['total_chapter_number'];
     final SharedPreferences prefs = values[0];
     final gameString = prefs.getString(SP_GAME_INFO_NAME);
     gameInfo = (gameString == null)
@@ -394,6 +396,7 @@ class ChapterService {
 
     if (gameInfo.currentPassage.links.length == 0) {
       final bool isLast = lastChapterNumber == currentChapter.number;
+      final bool isLastTotal = totalChapterNumber == currentChapter.number;
       String contentText =
           !isLast ? chapterContinue.toString() : chapterNoContinue.toString();
       // story end

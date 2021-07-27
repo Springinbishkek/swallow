@@ -7,6 +7,7 @@ import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/ui/l_action.dart';
 import 'package:lastochki/views/ui/l_button.dart';
+import 'package:lastochki/views/ui/l_info_popup.dart';
 import 'package:lastochki/views/ui/l_loading.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
@@ -19,6 +20,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -166,13 +169,32 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildChapterInfo(Chapter ch, GameInfo g) {
     int lastChapterNumber = RM.get<ChapterService>().state.lastChapterNumber;
+    int totalChapterNumber = RM.get<ChapterService>().state.totalChapterNumber;
     Name futureChapterText = RM.get<ChapterService>().state.futureChapterText;
+    if (totalChapterNumber < g.currentChapterId)
+      return Column(
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              gameEndTitle.toString(),
+              style: titleTextStyle,
+            ),
+          ),
+          SizedBox(height: 10),
+          Text(restartGameText.toString(), style: subtitleLightTextStyle),
+          SizedBox(height: 34),
+          LButton(
+            text: restartGame.toString(),
+            func: onRestartGame,
+          )
+        ],
+      );
     if (lastChapterNumber < g.currentChapterId) {
       return Center(
           child:
               Text(futureChapterText.toString(), style: titleLightTextStyle));
     }
-
     return Column(
       children: [
         Text(
@@ -207,5 +229,64 @@ class _HomePageState extends State<HomePage> {
         style: TextStyle(fontSize: 13),
       ),
     );
+  }
+
+  void onRestartGame() async {
+    bool isRestarting = await showDialog(
+        context: context,
+        builder: (context) {
+          return LInfoPopup(
+              isCloseEnable: true,
+              image: alertImg,
+              title: null,
+              content: restartGameContent.toString(),
+              actions: Column(
+                children: [
+                  LButton(
+                      text: letsPlay.toString(),
+                      func: () => Navigator.of(context).pop(true)),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  LButton(
+                      buttonColor: whiteColor,
+                      text: cancel.toString(),
+                      func: () => Navigator.of(context).pop()),
+                ],
+              ));
+        });
+    if (isRestarting != null && isRestarting) {
+      restartAllGame();
+    }
+  }
+
+  void restartAllGame() async {
+    isLoading = true;
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          child: Center(
+            child: LLoading(),
+          ),
+          onWillPop: _onBackButton,
+        );
+      },
+    );
+    print('shows');
+    try {
+      await RM.get<ChapterService>().state.restartAllGame(context);
+    } catch (e, stackTrace) {
+      print(stackTrace);
+      // TODO show errors
+    } finally {
+      isLoading = false;
+      Navigator.of(context, rootNavigator: true).maybePop();
+    }
+  }
+
+  Future<bool> _onBackButton() {
+    return Future.value(!isLoading);
   }
 }
