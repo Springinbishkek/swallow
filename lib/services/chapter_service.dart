@@ -51,7 +51,7 @@ class ChapterService {
   GameInfo gameInfo;
   double loadingPercent;
   String loadingTitle;
-  int totalChapterNumber = 12;
+  int totalChapterNumber;
   int lastChapterNumber = 0;
   List<Note> notes = [];
   List<Question> questionBase = [];
@@ -395,12 +395,12 @@ class ChapterService {
     }
 
     if (gameInfo.currentPassage.links.length == 0) {
-      final bool isLast = lastChapterNumber == currentChapter.number;
-      final bool isLastTotal = totalChapterNumber == currentChapter.number;
+      final bool isLast = lastChapterNumber == currentChapter.number; //Является ли последней выпущенной главой
+      final bool isLastTotal = totalChapterNumber == currentChapter.number;// Является ли последней главой вообще (по сюжету)
       String contentText = !isLast
           ? chapterContinue.toString()
           : isLastTotal
-              ? gameEnd.toString()
+              ? chapterEndGame.toString()
               : chapterNoContinue.toString();
       // story end
       RM.navigate.toDialog(
