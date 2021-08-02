@@ -397,8 +397,11 @@ class ChapterService {
     if (gameInfo.currentPassage.links.length == 0) {
       final bool isLast = lastChapterNumber == currentChapter.number;
       final bool isLastTotal = totalChapterNumber == currentChapter.number;
-      String contentText =
-          !isLast ? chapterContinue.toString() : chapterNoContinue.toString();
+      String contentText = !isLast
+          ? chapterContinue.toString()
+          : isLastTotal
+              ? gameEnd.toString()
+              : chapterNoContinue.toString();
       // story end
       RM.navigate.toDialog(
         LInfoPopup(

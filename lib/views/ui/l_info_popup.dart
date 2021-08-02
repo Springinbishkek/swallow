@@ -55,7 +55,7 @@ class LInfoPopup extends StatelessWidget {
                 child: Text(
                   content ?? '',
                   style: noteTextStyle,
-                  textAlign: TextAlign.center,
+                  textAlign: TextAlign.left,
                 ),
               ),
               //Expanded(child: Container()),
