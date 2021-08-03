@@ -51,8 +51,8 @@ class ChapterService {
   GameInfo gameInfo;
   double loadingPercent;
   String loadingTitle;
-  int totalChapterNumber;
-  int lastChapterNumber = 0;
+  int totalChapterNumber = 1;//TODO For test
+  int lastChapterNumber = 1;//TODO For test
   List<Note> notes = [];
   List<Question> questionBase = [];
   DBHelper dbHelper = DBHelper();
@@ -122,9 +122,8 @@ class ChapterService {
 
     chapters = values[1]['chapters'];
     futureChapterText = values[1]['futureChapterText'];
-    totalChapterNumber = values[1]['totalChapterNumber'];
 
-    lastChapterNumber = chapters.length;
+    //lastChapterNumber = chapters.length;
     //totalChapterNumber = values[1]['total_chapter_number'];
     final SharedPreferences prefs = values[0];
     final gameString = prefs.getString(SP_GAME_INFO_NAME);
@@ -395,8 +394,11 @@ class ChapterService {
     }
 
     if (gameInfo.currentPassage.links.length == 0) {
-      final bool isLast = lastChapterNumber == currentChapter.number; //Является ли последней выпущенной главой
-      final bool isLastTotal = totalChapterNumber == currentChapter.number;// Является ли последней главой вообще (по сюжету)
+      final bool isLast = lastChapterNumber ==
+          currentChapter.number; //Является ли последней выпущенной главой
+      final bool isLastTotal = totalChapterNumber ==
+          currentChapter
+              .number; // Является ли последней главой вообще (по сюжету)
       String contentText = !isLast
           ? chapterContinue.toString()
           : isLastTotal
@@ -451,6 +453,11 @@ class ChapterService {
                       // fontSize: 10,
                       // height: 30,
                       func: () {
+                        RM.get<ChapterService>().setState((s) {
+                          s.gameInfo.currentChapterId += 1;
+                          s.gameInfo.currentPassage = null;
+                          s.gameInfo.swallowCount += END_SWALLOW_BONUS;
+                        });
                         RM.navigate.toReplacementNamed('/home');
                       }),
                 ],

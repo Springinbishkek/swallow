@@ -184,7 +184,7 @@ class _HomePageState extends State<HomePage> {
           SizedBox(height: 34),
           LButton(
             text: restartGame.toString(),
-            func: onRestartGame,
+            func: () => onRestartGame(context),
           )
         ],
       );
@@ -208,70 +208,7 @@ class _HomePageState extends State<HomePage> {
           text: g.currentPassage == null
               ? letsPlay.toString()
               : continueGame.toString(),
-          func: (){
-            final bool isLast = true;
-            final bool isLastTotal = true;
-            String contentText = !isLast
-                ? chapterContinue.toString()
-                : isLastTotal
-                ? chapterEndGame.toString()
-                : chapterNoContinue.toString();
-            // story end
-            RM.navigate.toDialog(
-              LInfoPopup(
-                  isCloseEnable: false,
-                  image: endImg,
-                  title: chapterEnd
-                      .toStringWithVar(variables: {'chapter': 5}),
-                  content: contentText,
-                  actions: Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        if (!isLast)
-                          LButton(
-                              text: continueGame.toString(),
-                              swallow: END_SWALLOW_BONUS, //TODO
-                              icon: swallowIcon,
-                              func: () {
-                                RM.get<ChapterService>().setState((s) {
-                                  s.gameInfo.currentPassage = null;
-                                  s.gameInfo.swallowCount += END_SWALLOW_BONUS;
-                                });
-                                RM.get<ChapterService>().setState((s) async {
-                                  await s.prepareChapter(
-                                      id: s.gameInfo.currentChapterId + 1);
-                                });
-                                RM.navigate.back();
-                              }),
-                        SizedBox(height: 10),
-                        LButton(
-                            buttonColor: whiteColor,
-                            text: replayChapter.toString(),
-                            icon: refreshIcon,
-                            func: () {
-                              RM.get<ChapterService>().setState((s) {
-                                s.initGame();
-                              });
-                              RM.navigate.back();
-                            }),
-                        SizedBox(height: 5),
-                        LButton(
-                            icon: homeIcon,
-                            buttonColor: whiteColor,
-                            text: toHomePage.toString(),
-                            // fontSize: 10,
-                            // height: 30,
-                            func: () {
-                              RM.navigate.toReplacementNamed('/home');
-                            }),
-                      ],
-                    ),
-                  )),
-            );
-          }
-          ,
+          func: startGame,
         )
       ],
     );
@@ -293,6 +230,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-
 }

@@ -126,7 +126,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       alignment: Alignment.center,
                       child: LButton(
                         text: restartGame.toString(),
-                        func: onRestartGame,
+                        func: ()=>onRestartGame(context),
                         icon: refreshIcon,
                         buttonColor: Colors.white,
                         borderColor: Colors.white,
