@@ -5,6 +5,7 @@ import 'package:lastochki/models/entities/Chapter.dart';
 import 'package:lastochki/models/entities/GameInfo.dart';
 import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/services/chapter_service.dart';
+import 'package:lastochki/utils/utility.dart';
 import 'package:lastochki/views/ui/l_action.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_loading.dart';
@@ -19,6 +20,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -166,19 +169,40 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildChapterInfo(Chapter ch, GameInfo g) {
     int lastChapterNumber = RM.get<ChapterService>().state.lastChapterNumber;
+    int totalChapterNumber = RM.get<ChapterService>().state.totalChapterNumber;
     Name futureChapterText = RM.get<ChapterService>().state.futureChapterText;
+    if (totalChapterNumber < g.currentChapterId) {
+      return Column(
+        children: [
+          Text(
+            gameEndTitle.toString(),
+            style: titleTextStyle,
+          ),
+          SizedBox(height: 10),
+          Text(restartGameText.toString(), style: subtitleLightTextStyle),
+          SizedBox(height: 34),
+          LButton(
+            text: restartGame.toString(),
+            func: () => onRestartGame(context),
+          )
+        ],
+      );
+    }
     if (lastChapterNumber < g.currentChapterId) {
       return Center(
-          child:
-              Text(futureChapterText.toString(), style: titleLightTextStyle));
+        child: Text(futureChapterText.toString(), style: titleLightTextStyle),
+      );
     }
-
     return Column(
       children: [
-        Text(
-            numberChapter
-                .toStringWithVar(variables: {'number': ch?.number ?? 0}),
-            style: subtitleTextStyle),
+        Align(
+          child: Text(
+            numberChapter.toStringWithVar(variables: {
+              'number': ch?.number ?? 0,
+            }),
+            style: subtitleTextStyle,
+          ),
+        ),
         SizedBox(height: 10),
         Text(ch.title.toString(), style: titleLightTextStyle),
         SizedBox(height: 34),
