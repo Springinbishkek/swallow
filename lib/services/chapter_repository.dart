@@ -25,8 +25,9 @@ class ChapterRepository {
         'chapters': chapters.map((e) => Chapter.fromBackendMap(e)).toList(),
         // TODO work with lang
         'futureChapterText': Name(
-            ru: data['future_chapter_text'],
-            kg: data['future_chapter_text_kg']),
+          ru: data['future_chapter_text'],
+          kg: data['future_chapter_text_kg'],
+        ),
         'totalChapterNumber': data['total_chapter_number'],
       };
     } catch (e) {
@@ -80,5 +81,4 @@ class ChapterRepository {
       throw PersistanceException(e);
     }
   }
-
 }

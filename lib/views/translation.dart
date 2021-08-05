@@ -59,7 +59,10 @@ const Name chapterContinue =
 const Name chapterNoContinue = Name(
     ru: 'Прямо сейчас мы работаем над следующей. А пока можешь обсудить жизнь героев с другими игроками в Instagram!',
     kg: 'Азыркы учурда биз кийинки бөлүмдүн үстүнөн иштеп жатабыз. Аңгыча Instagramда каармандардын жашоосун башка оюнчулар менен талкууласан болот!');
-const Name chapterEndGame = Name(ru:"Эта история закончилась. Но впереди много новых!", kg:"This story ended.");//TODO перевод на кыргызский
+const Name chapterEndGame = Name(
+  ru: 'Эта история закончилась. Но впереди много новых!',
+  kg: 'This story ended.', // TODO перевод на кыргызский
+);
 const Name continueGame = Name(ru: 'Играть дальше', kg: 'Оюнду улантуу');
 const Name replayChapter =
     Name(ru: 'Переиграть главу', kg: 'Бөлүмдү кайра ойноо');
@@ -151,5 +154,6 @@ const Name chapterPreparing =
 const Name gameEndTitle = Name(ru: "Конец истории", kg: "Окуянын аягы");
 const Name restartGame = Name(ru: "Играть заново", kg: "Кайрадан ойнотуу");
 const Name restartGameText = Name(
-    ru: "Можешь сыграть ещё раз с новыми выборами! ",
-    kg: "Жаны тандоо менен оюнду кайра өтүү!");
+  ru: "Можешь сыграть ещё раз с новыми выборами! ",
+  kg: "Жаны тандоо менен оюнду кайра өтүү!",
+);

@@ -26,30 +26,35 @@ class Utility {
     return base64Encode(data);
   }
 }
+
 void onRestartGame(BuildContext context) async {
   bool isRestarting = await showDialog(
-      context: context,
-      builder: (context) {
-        return LInfoPopup(
-            isCloseEnable: true,
-            image: alertImg,
-            title: null,
-            content: restartGameContent.toString(),
-            actions: Column(
-              children: [
-                LButton(
-                    text: letsPlay.toString(),
-                    func: () => Navigator.of(context).pop(true)),
-                SizedBox(
-                  height: 16,
-                ),
-                LButton(
-                    buttonColor: whiteColor,
-                    text: cancel.toString(),
-                    func: () => Navigator.of(context).pop()),
-              ],
-            ));
-      });
+    context: context,
+    builder: (context) {
+      return LInfoPopup(
+        isCloseEnable: true,
+        image: alertImg,
+        title: null,
+        content: restartGameContent.toString(),
+        actions: Column(
+          children: [
+            LButton(
+              text: letsPlay.toString(),
+              func: () => Navigator.of(context).pop(true),
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            LButton(
+              buttonColor: whiteColor,
+              text: cancel.toString(),
+              func: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      );
+    },
+  );
   if (isRestarting != null && isRestarting) {
     restartAllGame(context);
   }
@@ -69,11 +74,11 @@ void restartAllGame(BuildContext context) async {
       );
     },
   );
-  print('shows');
+  // print('shows');
   try {
     await RM.get<ChapterService>().state.restartAllGame(context);
   } catch (e, stackTrace) {
-    print(stackTrace);
+    Future.error(e, stackTrace);
     // TODO show errors
   } finally {
     isLoading = false;

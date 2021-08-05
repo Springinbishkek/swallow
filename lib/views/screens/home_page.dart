@@ -8,7 +8,6 @@ import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/utils/utility.dart';
 import 'package:lastochki/views/ui/l_action.dart';
 import 'package:lastochki/views/ui/l_button.dart';
-import 'package:lastochki/views/ui/l_info_popup.dart';
 import 'package:lastochki/views/ui/l_loading.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
@@ -172,7 +171,7 @@ class _HomePageState extends State<HomePage> {
     int lastChapterNumber = RM.get<ChapterService>().state.lastChapterNumber;
     int totalChapterNumber = RM.get<ChapterService>().state.totalChapterNumber;
     Name futureChapterText = RM.get<ChapterService>().state.futureChapterText;
-    if (totalChapterNumber < g.currentChapterId)
+    if (totalChapterNumber < g.currentChapterId) {
       return Column(
         children: [
           Text(
@@ -188,18 +187,21 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       );
+    }
     if (lastChapterNumber < g.currentChapterId) {
       return Center(
-          child:
-              Text(futureChapterText.toString(), style: titleLightTextStyle));
+        child: Text(futureChapterText.toString(), style: titleLightTextStyle),
+      );
     }
     return Column(
       children: [
         Align(
           child: Text(
-              numberChapter
-                  .toStringWithVar(variables: {'number': ch?.number ?? 0}),
-              style: subtitleTextStyle),
+            numberChapter.toStringWithVar(variables: {
+              'number': ch?.number ?? 0,
+            }),
+            style: subtitleTextStyle,
+          ),
         ),
         SizedBox(height: 10),
         Text(ch.title.toString(), style: titleLightTextStyle),

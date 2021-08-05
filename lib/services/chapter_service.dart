@@ -51,8 +51,13 @@ class ChapterService {
   GameInfo gameInfo;
   double loadingPercent;
   String loadingTitle;
-  int totalChapterNumber = 1;//TODO For test
-  int lastChapterNumber = 1;//TODO For test
+
+  /// Номер последней выпущенной главы
+  int lastChapterNumber;
+
+  /// Номер последней главы по сюжету, >= lastChapterNumber
+  int totalChapterNumber;
+
   List<Note> notes = [];
   List<Question> questionBase = [];
   DBHelper dbHelper = DBHelper();
@@ -123,8 +128,13 @@ class ChapterService {
     chapters = values[1]['chapters'];
     futureChapterText = values[1]['futureChapterText'];
 
-    //lastChapterNumber = chapters.length;
-    //totalChapterNumber = values[1]['total_chapter_number'];
+    lastChapterNumber = chapters.length;
+    totalChapterNumber = values[1]['total_chapter_number'];
+
+    // TODO remove (hardcoded for testing)
+    lastChapterNumber = 1;
+    totalChapterNumber = 1;
+
     final SharedPreferences prefs = values[0];
     final gameString = prefs.getString(SP_GAME_INFO_NAME);
     gameInfo = (gameString == null)
@@ -394,11 +404,10 @@ class ChapterService {
     }
 
     if (gameInfo.currentPassage.links.length == 0) {
-      final bool isLast = lastChapterNumber ==
-          currentChapter.number; //Является ли последней выпущенной главой
-      final bool isLastTotal = totalChapterNumber ==
-          currentChapter
-              .number; // Является ли последней главой вообще (по сюжету)
+      // Является ли последней выпущенной главой
+      final bool isLast = lastChapterNumber == currentChapter.number;
+      // Является ли последней главой вообще (по сюжету)
+      final bool isLastTotal = totalChapterNumber == currentChapter.number;
       String contentText = !isLast
           ? chapterContinue.toString()
           : isLastTotal
