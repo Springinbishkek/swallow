@@ -51,7 +51,13 @@ class ChapterService {
   GameInfo gameInfo;
   double loadingPercent;
   String loadingTitle;
-  int lastChapterNumber = 0;
+
+  /// Номер последней выпущенной главы
+  int lastChapterNumber;
+
+  /// Номер последней главы по сюжету, >= lastChapterNumber
+  int totalChapterNumber;
+
   List<Note> notes = [];
   List<Question> questionBase = [];
   DBHelper dbHelper = DBHelper();
@@ -121,8 +127,13 @@ class ChapterService {
 
     chapters = values[1]['chapters'];
     futureChapterText = values[1]['futureChapterText'];
-    // TODO calc last
+
     lastChapterNumber = chapters.length;
+    totalChapterNumber = values[1]['total_chapter_number'];
+
+    // TODO remove (hardcoded for testing)
+    lastChapterNumber = 1;
+    totalChapterNumber = 1;
 
     final SharedPreferences prefs = values[0];
     final gameString = prefs.getString(SP_GAME_INFO_NAME);
@@ -393,9 +404,15 @@ class ChapterService {
     }
 
     if (gameInfo.currentPassage.links.length == 0) {
+      // Является ли последней выпущенной главой
       final bool isLast = lastChapterNumber == currentChapter.number;
-      String contentText =
-          !isLast ? chapterContinue.toString() : chapterNoContinue.toString();
+      // Является ли последней главой вообще (по сюжету)
+      final bool isLastTotal = totalChapterNumber == currentChapter.number;
+      String contentText = !isLast
+          ? chapterContinue.toString()
+          : isLastTotal
+              ? chapterEndGame.toString()
+              : chapterNoContinue.toString();
       // story end
       RM.navigate.toDialog(
         LInfoPopup(
@@ -445,6 +462,11 @@ class ChapterService {
                       // fontSize: 10,
                       // height: 30,
                       func: () {
+                        RM.get<ChapterService>().setState((s) {
+                          s.gameInfo.currentChapterId += 1;
+                          s.gameInfo.currentPassage = null;
+                          s.gameInfo.swallowCount += END_SWALLOW_BONUS;
+                        });
                         RM.navigate.toReplacementNamed('/home');
                       }),
                 ],

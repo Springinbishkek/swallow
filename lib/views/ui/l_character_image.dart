@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 class LCharacterImage extends StatefulWidget {
@@ -7,6 +5,7 @@ class LCharacterImage extends StatefulWidget {
   final List<ImageProvider> photoImages;
   final double sign;
   final bool needTransition;
+
   const LCharacterImage({
     Key key,
     bool isMain = false,

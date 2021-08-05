@@ -1,18 +1,19 @@
 // load from db
 // TODO check ichapter changes
 import 'dart:io';
-import 'package:lastochki/models/entities/Name.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'package:lastochki/models/entities/Chapter.dart';
+import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/models/entities/Note.dart';
 import 'package:lastochki/models/entities/Story.dart';
+import 'package:path_provider/path_provider.dart';
 
-import 'persistance_exception.dart';
 import 'api_client.dart';
+import 'persistance_exception.dart';
 
 class ChapterRepository {
   final ApiClient _apiClient;
+
   ChapterRepository() : _apiClient = ApiClient();
 
   Future<Map> getChapters() async {
@@ -24,7 +25,10 @@ class ChapterRepository {
         'chapters': chapters.map((e) => Chapter.fromBackendMap(e)).toList(),
         // TODO work with lang
         'futureChapterText': Name(
-            ru: data['future_chapter_text'], kg: data['future_chapter_text_kg'])
+          ru: data['future_chapter_text'],
+          kg: data['future_chapter_text_kg'],
+        ),
+        'totalChapterNumber': data['total_chapter_number'],
       };
     } catch (e) {
       throw PersistanceException(e);
