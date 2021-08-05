@@ -131,10 +131,6 @@ class ChapterService {
     lastChapterNumber = chapters.length;
     totalChapterNumber = values[1]['total_chapter_number'];
 
-    // TODO remove (hardcoded for testing)
-    lastChapterNumber = 1;
-    totalChapterNumber = 1;
-
     final SharedPreferences prefs = values[0];
     final gameString = prefs.getString(SP_GAME_INFO_NAME);
     gameInfo = (gameString == null)
