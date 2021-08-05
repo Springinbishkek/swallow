@@ -129,7 +129,7 @@ class ChapterService {
     futureChapterText = values[1]['futureChapterText'];
 
     lastChapterNumber = chapters.length;
-    totalChapterNumber = values[1]['total_chapter_number'];
+    totalChapterNumber = values[1]['totalChapterNumber'];
 
     final SharedPreferences prefs = values[0];
     final gameString = prefs.getString(SP_GAME_INFO_NAME);
