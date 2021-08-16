@@ -164,7 +164,6 @@ class ChapterService {
         currentChapter?.number != currentChapterId ||
         currentChapter?.version != gameInfo.currentChapterVersion ||
         dbHelper.version != gameInfo.currentDBVersion);
-
     if (isNeedReload) {
       // TODO
       // ! bring back feature
@@ -215,6 +214,36 @@ class ChapterService {
           fileName.substring(0, fileName.lastIndexOf('.'));
       return MapEntry(fileNameWOExtention, image);
     });
+    if (gameInfo.currentChapterVersion != currentChapter.version)
+      RM.navigate.toDialog(
+        LInfoPopup(
+            isCloseEnable: false,
+            image: alertImg,
+            title: updateTitle
+                .toStringWithVar(variables: {'number': currentChapter.number}),
+            content: updateDescription.toString(),
+            actions: Column(
+              children: [
+                LButton(
+                    buttonColor: whiteColor,
+                    text: download.toString(),
+                    func: () {
+                      RM.navigate.back();
+                      loadChapterInfo(currentChapterId: currentChapterId);
+                      RM.get<ChapterService>().setState((s) {
+                        gameInfo.currentPassage = null;
+                        s.initGame();
+                      });
+                    }),
+                LButton(
+                    buttonColor: whiteColor,
+                    text: back.toString(),
+                    func: () {
+                      RM.navigate.back();
+                    }),
+              ],
+            )),
+      );
     // clean saved images cause it eat memory
     images.removeWhere((fileName, image) => !isBaseImage(fileName));
     images.addEntries(pairs);
@@ -226,6 +255,7 @@ class ChapterService {
     initGame(isPassageReqired: currentChapterId > 1);
   }
 
+// NOTE Загрузка главы
   /* load new chapter data to device */
   Future<void> loadChapterInfo({int currentChapterId}) async {
     Map data;
@@ -400,10 +430,12 @@ class ChapterService {
     }
 
     if (gameInfo.currentPassage.links.length == 0) {
-      // Является ли последней выпущенной главой
-      final bool isLast = lastChapterNumber == currentChapter.number;
-      // Является ли последней главой вообще (по сюжету)
-      final bool isLastTotal = totalChapterNumber == currentChapter.number;
+      final bool isLast = lastChapterNumber ==
+          currentChapter.number; //Является ли последней выпущенной главой
+      final bool isLastTotal = totalChapterNumber ==
+          currentChapter
+              .number; // Является ли последней главой вообще (по сюжету)
+
       String contentText = !isLast
           ? chapterContinue.toString()
           : isLastTotal
