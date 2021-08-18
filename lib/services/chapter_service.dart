@@ -214,7 +214,16 @@ class ChapterService {
           fileName.substring(0, fileName.lastIndexOf('.'));
       return MapEntry(fileNameWOExtention, image);
     });
-    if (gameInfo.currentChapterVersion != currentChapter.version)
+
+    // clean saved images cause it eat memory
+    images.removeWhere((fileName, image) => !isBaseImage(fileName));
+    images.addEntries(pairs);
+    currentChapter.story = currentStory;
+    gameInfo.currentChapterId = currentChapterId;
+    gameInfo.currentChapterVersion = currentChapter.version;
+    gameInfo.currentDBVersion = dbHelper.version;
+    if (gameInfo.currentChapterVersion != currentChapter.version &&
+        gameInfo.currentChapterVersion != 0)
       RM.navigate.toDialog(
         LInfoPopup(
             isCloseEnable: false,
@@ -244,13 +253,6 @@ class ChapterService {
               ],
             )),
       );
-    // clean saved images cause it eat memory
-    images.removeWhere((fileName, image) => !isBaseImage(fileName));
-    images.addEntries(pairs);
-    currentChapter.story = currentStory;
-    gameInfo.currentChapterId = currentChapterId;
-    gameInfo.currentChapterVersion = currentChapter.version;
-    gameInfo.currentDBVersion = dbHelper.version;
     // loadingPercent = null;
     initGame(isPassageReqired: currentChapterId > 1);
   }
@@ -508,7 +510,7 @@ class ChapterService {
         switch (setting[0]) {
           case 'SetAccessToNote':
             gameInfo.accessNoteId = int.parse(setting[1]);
-            showFirstNotePopup();
+            if (gameInfo.accessNoteId == 1) showFirstNotePopup();
 
             break;
           case 'SetIntVar':
