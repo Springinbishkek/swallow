@@ -77,6 +77,7 @@ class LButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: 8.0, left: 8.0),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           if (swallow != null)
             Text(
