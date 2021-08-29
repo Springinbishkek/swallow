@@ -168,16 +168,16 @@ class _TestPageState extends State<TestPage> {
         ],
       );
     }
-    return Row(children: [
-      Flexible(
+    return Center(
+      child: Flexible(
         fit: FlexFit.loose,
         child: LButton(
           text: next.toString(),
           func: _isAnswerChosen ? _navigateToNextPage : null,
           icon: forwardIcon,
         ),
-      )
-    ]);
+      ),
+    );
   }
 
   Widget _buildBody({Widget testBox}) {

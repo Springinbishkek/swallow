@@ -458,8 +458,10 @@ class ChapterService {
         switch (setting[0]) {
           case 'SetAccessToNote':
             gameInfo.accessNoteId = int.parse(setting[1]);
-            showFirstNotePopup();
-
+            if (gameInfo.accessNoteId == 1)
+              showFirstNotePopup();
+            else
+              showNewNotePopup();
             break;
           case 'SetIntVar':
             gameInfo.gameVariables[setting[1]] = int.parse(setting[2]);
@@ -485,6 +487,32 @@ class ChapterService {
           image: noteImg,
           title: firstNoteTitle.toString(),
           content: firstNoteContent.toString(),
+          actions: Column(
+            children: [
+              LButton(
+                  text: readNote.toString(),
+                  func: () {
+                    RM.navigate.backAndToNamed('/notes');
+                  }),
+              LButton(
+                  buttonColor: whiteColor,
+                  text: backToChapter.toString(),
+                  func: () {
+                    RM.navigate.back();
+                  }),
+            ],
+          )),
+    );
+  }
+
+  void showNewNotePopup() {
+    // first note
+    RM.navigate.toDialog(
+      LInfoPopup(
+          isCloseEnable: true,
+          image: noteImg,
+          title: newNoteTitle.toString(),
+          content: newNoteContent.toString(),
           actions: Column(
             children: [
               LButton(
