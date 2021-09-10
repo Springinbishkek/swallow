@@ -158,7 +158,7 @@ class _NotesPageState extends State<NotesPage> {
               _buildNotesBody()
             ],
           ),
-          bottomNavigationBar: !isOneNote ? _buildBottom() : null,
+          bottomNavigationBar: _buildBottom(),
         );
       },
     );
