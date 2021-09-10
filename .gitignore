@@ -22,6 +22,7 @@
 
 # Flutter/Dart/Pub related
 **/doc/api/
+**/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
@@ -39,9 +40,7 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-# Exceptions to above rules.
-!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
-
-# Remember to never publicly share your keystore.
-# See https://flutter.dev/docs/deployment/android#reference-the-keystore-from-the-app
-key.properties
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
