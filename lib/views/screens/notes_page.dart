@@ -144,21 +144,22 @@ class _NotesPageState extends State<NotesPage> {
       builder: (context, chapterService) {
         bool isOneNote = chapterService.state.getNotes().length == 1;
         return Scaffold(
-            backgroundColor: scaffoldBgColor,
-            appBar: lAppbar(title: notes.toString(), func: _navigateBack),
-            body: Stack(
-              children: [
-                if (isOneNote)
-                  Center(
-                      child: Text(
-                    noNotes.toString(),
-                    style: TextStyle(
-                        color: textColor.withOpacity(0.6), fontSize: 17.0),
-                  )),
-                _buildNotesBody()
-              ],
-            ),
-            bottomNavigationBar: _buildBottom());
+          backgroundColor: scaffoldBgColor,
+          appBar: lAppbar(title: notes.toString(), func: _navigateBack),
+          body: Stack(
+            children: [
+              if (isOneNote)
+                Center(
+                    child: Text(
+                  noNotes.toString(),
+                  style: TextStyle(
+                      color: textColor.withOpacity(0.6), fontSize: 17.0),
+                )),
+              _buildNotesBody()
+            ],
+          ),
+          bottomNavigationBar: _buildBottom(),
+        );
       },
     );
   }

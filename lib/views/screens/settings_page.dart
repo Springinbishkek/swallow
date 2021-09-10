@@ -77,7 +77,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context));
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: scaffoldBgColor,
