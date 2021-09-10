@@ -159,37 +159,6 @@ const Name restartGame = Name(
   ru: "Играть заново",
   kg: "Кайрадан ойнотуу",
 );
-const Name gameEndTitle = Name(
-  ru: "Конец истории",
-  kg: "Окуянын аягы",
-);
-const Name restartGame = Name(
-  ru: "Играть заново",
-  kg: "Кайрадан ойнотуу",
-);
-const Name restartGameText = Name(
-  ru: "Можешь сыграть ещё раз с новыми выборами! ",
-  kg: "Жаны тандоо менен оюнду кайра өтүү!",
-);
-const Name updateTitle = Name(
-  ru: "Глава \$number обновлена",
-  kg: "\$number-бөлүм жаңыланды",
-);
-const Name updateDescription = Name(
-  ru: "Мы сделали главу ещё лучше, скорее возвращайся к игре!",
-  kg: "Биз оюнду дагы кызыктуураак кылдык, андыктан тезирээк оюнга кайыт кел!",
-);
-const Name download = Name(
-  ru: "Скачать",
-  kg: "Жүктөө",
-);
-const Name back = Name(
-  ru: "Назад",
-  kg: "Артка",
-);
-
-const Name gameEndTitle = Name(ru: "Конец истории", kg: "Окуянын аягы");
-const Name restartGame = Name(ru: "Играть заново", kg: "Кайрадан ойнотуу");
 const Name restartGameText = Name(
   ru: "Можешь сыграть ещё раз с новыми выборами! ",
   kg: "Жаны тандоо менен оюнду кайра өтүү!",
