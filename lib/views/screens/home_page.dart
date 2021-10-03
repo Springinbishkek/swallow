@@ -6,6 +6,7 @@ import 'package:lastochki/models/entities/GameInfo.dart';
 import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/utils/utility.dart';
+import 'package:lastochki/views/screens/cover_page.dart';
 import 'package:lastochki/views/ui/l_action.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_loading.dart';
@@ -80,64 +81,35 @@ class _Chapter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return CoverPage(
       key: Key(chapter.number.toString()),
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/backgrounds/chapter_home_background.jpg'),
-          fit: BoxFit.fill,
-        ),
-      ),
-      child: SafeArea(
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            actions: [
-              FittedBox(
-                fit: BoxFit.none,
-                child: _SwallowCount(
-                  swallowCount: gameInfo.swallowCount,
-                ),
-              ),
-            ],
-          ),
-          body: Column(
-            children: [
-              Spacer(
-                flex: 2,
-              ),
-              Flexible(
-                flex: 7,
-                child: Image.asset('assets/backgrounds/chapter_book.png'),
-              ),
-              Flexible(
-                flex: MediaQuery.of(context).size.height < 800 ? 7 : 6,
-                child: Column(
-                  children: [
-                    Spacer(flex: 8),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 48),
-                      child: _ChapterInfo(
-                        chapter: chapter,
-                        gameInfo: gameInfo,
-                      ),
-                    ),
-                    Spacer(flex: 4),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: _GameActions(
-                        onSettingsClosed: onSettingsClosed,
-                      ),
-                    ),
-                    Spacer(flex: 3),
-                  ],
-                ),
-              ),
-            ],
+      appBarActions: [
+        FittedBox(
+          fit: BoxFit.none,
+          child: _SwallowCount(
+            swallowCount: gameInfo.swallowCount,
           ),
         ),
+      ],
+      bodyContent: Column(
+        children: [
+          Spacer(flex: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 48),
+            child: _ChapterInfo(
+              chapter: chapter,
+              gameInfo: gameInfo,
+            ),
+          ),
+          Spacer(flex: 4),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: _GameActions(
+              onSettingsClosed: onSettingsClosed,
+            ),
+          ),
+          Spacer(flex: 3),
+        ],
       ),
     );
   }

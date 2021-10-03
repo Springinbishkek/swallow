@@ -46,3 +46,5 @@ final String testBG = 'assets/backgrounds/test_bottom_background.png';
 final String bottomBanner = 'assets/backgrounds/note_bottom_banner.png';
 final String testImg = 'assets/icons/mw_test.png';
 final String noteImg = 'assets/icons/mw_note.png';
+final String swallowImg = 'assets/icons/mw_swallow.png';
+final String sponsoesImg = 'assets/icons/sponsors.png';
