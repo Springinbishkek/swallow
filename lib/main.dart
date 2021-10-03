@@ -11,7 +11,7 @@ import 'package:lastochki/views/screens/home_page.dart';
 import 'package:lastochki/views/screens/note_page.dart';
 import 'package:lastochki/views/screens/notes_page.dart';
 import 'package:lastochki/views/screens/onboarding_page.dart';
-import 'package:lastochki/views/screens/openline_logo_page.dart';
+import 'package:lastochki/views/screens/splash_page.dart';
 import 'package:lastochki/views/screens/settings_page.dart';
 import 'package:lastochki/views/screens/test_page.dart';
 import 'package:lastochki/views/screens/test_result_page.dart';
@@ -48,7 +48,7 @@ class App extends StatelessWidget {
                 // primarySwatch:  MaterialColor(),
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
-              home: OpenlineLogoPage(),
+              home: SplashPage(),
               onGenerateRoute: _routes,
             ));
   }

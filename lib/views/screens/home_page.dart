@@ -30,40 +30,58 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return StateBuilder(
-        observe: () => RM.get<ChapterService>('ChapterService'),
-        builder: (context, chapterRM) {
-          return AnimatedSwitcher(
-              duration: Duration(milliseconds: 600),
-              child: (chapterRM.state.isNeedLoader())
-                  ? chapterRM.state.wasLoadingError
-                      ? Container(
-                          color: Colors.white,
-                          child: Center(
-                            child: LButton(
-                              icon: refreshIcon,
-                              buttonColor: whiteColor,
-                              text: repeatLoading.toString(),
-                              func: () => chapterRM.state.loadGame(),
-                            ),
-                          ),
-                        )
-                      : LLoading(
-                          key: Key('loading home page'),
-                          percent: chapterRM.state.getLoadingPercent(),
-                          title: chapterRM.state.loadingTitle)
-                  : buildChapter(chapterRM.state.currentChapter,
-                      chapterRM.state.gameInfo));
-        });
+    return StateBuilder<ChapterService>(
+      observe: () => RM.get<ChapterService>('ChapterService'),
+      builder: (context, chapterRM) => AnimatedSwitcher(
+        duration: Duration(milliseconds: 600),
+        child: chapterRM.state.isNeedLoader()
+            ? chapterRM.state.wasLoadingError
+                ? Container(
+                    color: Colors.white,
+                    child: Center(
+                      child: LButton(
+                        icon: refreshIcon,
+                        buttonColor: whiteColor,
+                        text: repeatLoading.toString(),
+                        func: () => chapterRM.state.loadGame(),
+                      ),
+                    ),
+                  )
+                : LLoading(
+                    key: Key('loading home page'),
+                    percent: chapterRM.state.getLoadingPercent(),
+                    title: chapterRM.state.loadingTitle,
+                  )
+            : _Chapter(
+                chapter: chapterRM.state.currentChapter,
+                gameInfo: chapterRM.state.gameInfo,
+                onSettingsClosed: () {
+                  setState(() {
+                    // TODO fix language update
+                  });
+                },
+              ),
+      ),
+    );
   }
+}
 
-  void startGame() {
-    Navigator.of(context).pushReplacementNamed('/game');
-  }
+class _Chapter extends StatelessWidget {
+  final Chapter chapter;
+  final GameInfo gameInfo;
+  final VoidCallback onSettingsClosed;
 
-  Widget buildChapter(Chapter ch, GameInfo g) {
+  const _Chapter({
+    Key key,
+    @required this.chapter,
+    @required this.gameInfo,
+    @required this.onSettingsClosed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      key: Key(ch.number.toString()),
+      key: Key(chapter.number.toString()),
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/backgrounds/chapter_home_background.jpg'),
@@ -74,104 +92,109 @@ class _HomePageState extends State<HomePage> {
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-              actions: [
-                FittedBox(
-                  fit: BoxFit.none,
-                  child: LAction(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            swallowIcon,
-                            height: 18,
-                            color: whiteColor,
-                          ),
-                          SizedBox(width: 5),
-                          Text(
-                            g.swallowCount.toString(),
-                            style: TextStyle(
-                                color: whiteColor,
-                                fontSize: 18,
-                                height: 1,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      onTap: null),
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            actions: [
+              FittedBox(
+                fit: BoxFit.none,
+                child: _SwallowCount(
+                  swallowCount: gameInfo.swallowCount,
                 ),
-              ]),
-          body: Center(
-            child: Column(
-              // mainAxisSize: MainAxisSize.min,
-              children: [
-                Flexible(
-                  flex: 2,
-                  child: Center(),
-                ),
-                Flexible(
-                  flex: 7,
-                  child: Image.asset('assets/backgrounds/chapter_book.png'),
-                ),
-                Flexible(
-                  flex: MediaQuery.of(context).size.height < 800 ? 7 : 6,
-                  child: Container(
-                    height: double.infinity,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      // color: menuBgColor,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
+              ),
+            ],
+          ),
+          body: Column(
+            children: [
+              Spacer(
+                flex: 2,
+              ),
+              Flexible(
+                flex: 7,
+                child: Image.asset('assets/backgrounds/chapter_book.png'),
+              ),
+              Flexible(
+                flex: MediaQuery.of(context).size.height < 800 ? 7 : 6,
+                child: Column(
+                  children: [
+                    Spacer(flex: 8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 48),
+                      child: _ChapterInfo(
+                        chapter: chapter,
+                        gameInfo: gameInfo,
                       ),
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(48, 40, 48, 20),
-                          child: buildChapterInfo(ch, g),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: 15, left: 10, right: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              buildItem(aboutGame.toString(), () {
-                                Navigator.of(context).pushNamed('/about');
-                              }, Image.asset(aboutIcon)),
-                              buildItem(settings.toString(), () async {
-                                await Navigator.of(context)
-                                    .pushNamed('/settings');
-                                setState(() {
-                                  // TODO fix language update
-                                });
-                              }, Image.asset(settingsIcon)),
-                              buildItem(notes.toString(), () {
-                                Navigator.of(context).pushNamed('/notes');
-                              }, Image.asset(notesIcon)),
-                            ],
-                          ),
-                        ),
-                      ],
+                    Spacer(flex: 4),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: _GameActions(
+                        onSettingsClosed: onSettingsClosed,
+                      ),
                     ),
-                  ),
+                    Spacer(flex: 3),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
+}
 
-  Widget buildChapterInfo(Chapter ch, GameInfo g) {
+class _SwallowCount extends StatelessWidget {
+  final int swallowCount;
+
+  const _SwallowCount({
+    Key key,
+    @required this.swallowCount,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return LAction(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset(
+            swallowIcon,
+            height: 18,
+            color: whiteColor,
+          ),
+          SizedBox(width: 5),
+          Text(
+            swallowCount.toString(),
+            style: TextStyle(
+              color: whiteColor,
+              fontSize: 18,
+              height: 1,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+      onTap: null,
+    );
+  }
+}
+
+class _ChapterInfo extends StatelessWidget {
+  final Chapter chapter;
+  final GameInfo gameInfo;
+
+  const _ChapterInfo({
+    Key key,
+    @required this.chapter,
+    @required this.gameInfo,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     int lastChapterNumber = RM.get<ChapterService>().state.lastChapterNumber;
     int totalChapterNumber = RM.get<ChapterService>().state.totalChapterNumber;
     Name futureChapterText = RM.get<ChapterService>().state.futureChapterText;
-    if (totalChapterNumber < g.currentChapterId) {
+    if (totalChapterNumber < gameInfo.currentChapterId) {
       return Column(
         children: [
           Text(
@@ -188,7 +211,7 @@ class _HomePageState extends State<HomePage> {
         ],
       );
     }
-    if (lastChapterNumber < g.currentChapterId) {
+    if (lastChapterNumber < gameInfo.currentChapterId) {
       return Center(
         child: Text(futureChapterText.toString(), style: titleLightTextStyle),
       );
@@ -198,31 +221,87 @@ class _HomePageState extends State<HomePage> {
         Align(
           child: Text(
             numberChapter.toStringWithVar(variables: {
-              'number': ch?.number ?? 0,
+              'number': chapter?.number ?? 0,
             }),
             style: subtitleTextStyle,
           ),
         ),
         SizedBox(height: 10),
-        Text(ch.title.toString(), style: titleLightTextStyle),
+        Text(chapter.title.toString(), style: titleLightTextStyle),
         SizedBox(height: 34),
         LButton(
-          text: g.currentPassage == null
+          text: gameInfo.currentPassage == null
               ? letsPlay.toString()
               : continueGame.toString(),
-          func: startGame,
+          func: () => Navigator.of(context).pushReplacementNamed('/game'),
         )
       ],
     );
   }
+}
 
-  Widget buildItem(String text, Function onTap, Widget icon) {
+class _GameActions extends StatelessWidget {
+  final VoidCallback onSettingsClosed;
+
+  const _GameActions({
+    Key key,
+    @required this.onSettingsClosed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        _GameActionsItem(
+          text: aboutGame.toString(),
+          onTap: () {
+            Navigator.of(context).pushNamed('/about');
+          },
+          icon: Image.asset(aboutIcon),
+        ),
+        _GameActionsItem(
+          text: settings.toString(),
+          onTap: () async {
+            await Navigator.of(context).pushNamed('/settings');
+            onSettingsClosed();
+          },
+          icon: Image.asset(settingsIcon),
+        ),
+        _GameActionsItem(
+          text: notes.toString(),
+          onTap: () {
+            Navigator.of(context).pushNamed('/notes');
+          },
+          icon: Image.asset(notesIcon),
+        ),
+      ],
+    );
+  }
+}
+
+class _GameActionsItem extends StatelessWidget {
+  final String text;
+  final VoidCallback onTap;
+  final Widget icon;
+
+  const _GameActionsItem({
+    Key key,
+    @required this.text,
+    @required this.onTap,
+    @required this.icon,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return TextButton.icon(
       style: ButtonStyle(
         padding: MaterialStateProperty.all(
-            EdgeInsets.symmetric(horizontal: 5, vertical: 10)),
+          EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+        ),
         shape: MaterialStateProperty.all(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(25))),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+        ),
       ),
       onPressed: onTap,
       icon: SizedBox(height: 14, child: icon),
