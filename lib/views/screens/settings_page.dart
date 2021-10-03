@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/services/chapter_service.dart';
@@ -40,6 +41,7 @@ class _SettingsPageState extends State<SettingsPage> {
     setState(() {
       languageCode = code;
     });
+    FirebaseAnalytics().logEvent(name: 'Language');
   }
 
   VoidCallback /*?*/ getOnSaveSettingsTap(context) {

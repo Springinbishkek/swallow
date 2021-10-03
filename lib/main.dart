@@ -1,3 +1,5 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -45,15 +47,26 @@ void main() async {
 
 class App extends StatelessWidget {
   final ApiClient apiClient = ApiClient();
+  FirebaseAnalytics analytics = FirebaseAnalytics();
+
+   FirebaseAnalyticsObserver observer;
+
 
   @override
   Widget build(BuildContext context) {
+    observer = FirebaseAnalyticsObserver(analytics: analytics);
+    analytics.logAppOpen();
     return Injector(
         inject: [
           Inject(() => ChapterService(repository: ChapterRepository()),
               name: 'ChapterService'),
+          Inject(() => analytics,
+              name: 'Analytics'),
         ],
         builder: (context) => MaterialApp(
+          navigatorObservers: [
+            FirebaseAnalyticsObserver(analytics: analytics),
+          ],
               navigatorKey: RM.navigate.navigatorKey,
               title: 'Ласточки. Весна в Бишкеке',
               theme: ThemeData(
@@ -67,6 +80,9 @@ class App extends StatelessWidget {
   }
 
   Route _routes(RouteSettings settings) {
+    observer.analytics.setCurrentScreen(
+      screenName: settings.name,
+    );
     switch (settings.name) {
       case '/onboarding':
         {
