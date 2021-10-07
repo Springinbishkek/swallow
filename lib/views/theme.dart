@@ -15,6 +15,10 @@ const TextStyle titleLightTextStyle =
     TextStyle(color: textColor, fontSize: 24.0);
 const TextStyle subtitleTextStyle =
     TextStyle(color: textColor, fontSize: 17.0, fontWeight: FontWeight.bold);
+const TextStyle subtitleLightTextStyle = TextStyle(
+  color: textColor,
+  fontSize: 17.0,
+);
 const TextStyle contentTextStyle = TextStyle(color: textColor, fontSize: 21.0);
 const TextStyle appbarTextStyle =
     TextStyle(color: textColor, fontSize: 21.0, fontWeight: FontWeight.bold);
@@ -42,3 +46,5 @@ final String testBG = 'assets/backgrounds/test_bottom_background.png';
 final String bottomBanner = 'assets/backgrounds/note_bottom_banner.png';
 final String testImg = 'assets/icons/mw_test.png';
 final String noteImg = 'assets/icons/mw_note.png';
+final String swallowImg = 'assets/icons/mw_swallow.png';
+final String sponsoesImg = 'assets/icons/sponsors.png';

@@ -8,8 +8,8 @@ class Name {
   final String kg;
 
   const Name({
-    this.ru,
-    this.kg,
+    @required this.ru,
+    @required this.kg,
   });
 
   Name copyWith({

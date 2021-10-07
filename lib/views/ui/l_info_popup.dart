@@ -3,7 +3,7 @@ import 'package:lastochki/views/theme.dart';
 
 class LInfoPopup extends StatelessWidget {
   final String image;
-  final String title;
+  final String /*?*/ title;
   final bool isCloseEnable;
   final String content;
   final Widget actions;
@@ -55,7 +55,7 @@ class LInfoPopup extends StatelessWidget {
                 child: Text(
                   content ?? '',
                   style: noteTextStyle,
-                  textAlign: TextAlign.center,
+                  textAlign: TextAlign.left,
                 ),
               ),
               //Expanded(child: Container()),

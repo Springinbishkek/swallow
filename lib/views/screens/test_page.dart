@@ -155,29 +155,17 @@ class _TestPageState extends State<TestPage> {
 
   Widget _buildButton() {
     if (_currentPage == test.questions.length - 1) {
-      return Row(
-        children: [
-          Flexible(
-            fit: FlexFit.loose,
-            child: LButton(
-              text: done.toString(),
-              func: _isAnswerChosen ? _onTestEnd : null,
-              icon: checkIcon,
-            ),
-          ),
-        ],
+      return LButton(
+        text: done.toString(),
+        func: _isAnswerChosen ? _onTestEnd : null,
+        icon: checkIcon,
       );
     }
-    return Row(children: [
-      Flexible(
-        fit: FlexFit.loose,
-        child: LButton(
-          text: next.toString(),
-          func: _isAnswerChosen ? _navigateToNextPage : null,
-          icon: forwardIcon,
-        ),
-      )
-    ]);
+    return LButton(
+      text: next.toString(),
+      func: _isAnswerChosen ? _navigateToNextPage : null,
+      icon: forwardIcon,
+    );
   }
 
   Widget _buildBody({Widget testBox}) {

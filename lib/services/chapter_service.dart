@@ -51,7 +51,13 @@ class ChapterService {
   GameInfo gameInfo;
   double loadingPercent;
   String loadingTitle;
-  int lastChapterNumber = 0;
+
+  /// Номер последней выпущенной главы
+  int lastChapterNumber;
+
+  /// Номер последней главы по сюжету, >= lastChapterNumber
+  int totalChapterNumber;
+
   List<Note> notes = [];
   List<Question> questionBase = [];
   DBHelper dbHelper = DBHelper();
@@ -121,8 +127,9 @@ class ChapterService {
 
     chapters = values[1]['chapters'];
     futureChapterText = values[1]['futureChapterText'];
-    // TODO calc last
+
     lastChapterNumber = chapters.length;
+    totalChapterNumber = values[1]['totalChapterNumber'];
 
     final SharedPreferences prefs = values[0];
     final gameString = prefs.getString(SP_GAME_INFO_NAME);
@@ -157,7 +164,6 @@ class ChapterService {
         currentChapter?.number != currentChapterId ||
         currentChapter?.version != gameInfo.currentChapterVersion ||
         dbHelper.version != gameInfo.currentDBVersion);
-
     if (isNeedReload) {
       // TODO
       // ! bring back feature
@@ -208,6 +214,7 @@ class ChapterService {
           fileName.substring(0, fileName.lastIndexOf('.'));
       return MapEntry(fileNameWOExtention, image);
     });
+
     // clean saved images cause it eat memory
     images.removeWhere((fileName, image) => !isBaseImage(fileName));
     images.addEntries(pairs);
@@ -215,10 +222,42 @@ class ChapterService {
     gameInfo.currentChapterId = currentChapterId;
     gameInfo.currentChapterVersion = currentChapter.version;
     gameInfo.currentDBVersion = dbHelper.version;
+    if (gameInfo.currentChapterVersion != currentChapter.version &&
+        gameInfo.currentChapterVersion != 0)
+      RM.navigate.toDialog(
+        LInfoPopup(
+            isCloseEnable: false,
+            image: alertImg,
+            title: updateTitle
+                .toStringWithVar(variables: {'number': currentChapter.number}),
+            content: updateDescription.toString(),
+            actions: Column(
+              children: [
+                LButton(
+                    buttonColor: whiteColor,
+                    text: download.toString(),
+                    func: () {
+                      RM.navigate.back();
+                      loadChapterInfo(currentChapterId: currentChapterId);
+                      RM.get<ChapterService>().setState((s) {
+                        gameInfo.currentPassage = null;
+                        s.initGame();
+                      });
+                    }),
+                LButton(
+                    buttonColor: whiteColor,
+                    text: back.toString(),
+                    func: () {
+                      RM.navigate.back();
+                    }),
+              ],
+            )),
+      );
     // loadingPercent = null;
     initGame(isPassageReqired: currentChapterId > 1);
   }
 
+// NOTE Загрузка главы
   /* load new chapter data to device */
   Future<void> loadChapterInfo({int currentChapterId}) async {
     Map data;
@@ -393,9 +432,17 @@ class ChapterService {
     }
 
     if (gameInfo.currentPassage.links.length == 0) {
-      final bool isLast = lastChapterNumber == currentChapter.number;
-      String contentText =
-          !isLast ? chapterContinue.toString() : chapterNoContinue.toString();
+      final bool isLast = lastChapterNumber ==
+          currentChapter.number; //Является ли последней выпущенной главой
+      final bool isLastTotal = totalChapterNumber ==
+          currentChapter
+              .number; // Является ли последней главой вообще (по сюжету)
+
+      String contentText = !isLast
+          ? chapterContinue.toString()
+          : isLastTotal
+              ? chapterEndGame.toString()
+              : chapterNoContinue.toString();
       // story end
       RM.navigate.toDialog(
         LInfoPopup(
@@ -445,6 +492,11 @@ class ChapterService {
                       // fontSize: 10,
                       // height: 30,
                       func: () {
+                        RM.get<ChapterService>().setState((s) {
+                          s.gameInfo.currentChapterId += 1;
+                          s.gameInfo.currentPassage = null;
+                          s.gameInfo.swallowCount += END_SWALLOW_BONUS;
+                        });
                         RM.navigate.toReplacementNamed('/home');
                       }),
                 ],
@@ -458,8 +510,11 @@ class ChapterService {
         switch (setting[0]) {
           case 'SetAccessToNote':
             gameInfo.accessNoteId = int.parse(setting[1]);
-            showFirstNotePopup();
-
+            if (gameInfo.accessNoteId == 1) {
+              showFirstNotePopup();
+            } else {
+              showNewNotePopup();
+            }
             break;
           case 'SetIntVar':
             gameInfo.gameVariables[setting[1]] = int.parse(setting[2]);
@@ -500,6 +555,35 @@ class ChapterService {
                   }),
             ],
           )),
+    );
+  }
+
+  void showNewNotePopup() {
+    // first note
+    RM.navigate.toDialog(
+      LInfoPopup(
+        isCloseEnable: true,
+        image: noteImg,
+        title: newNoteTitle.toString(),
+        content: newNoteContent.toString(),
+        actions: Column(
+          children: [
+            LButton(
+              text: readNote.toString(),
+              func: () {
+                RM.navigate.backAndToNamed('/notes');
+              },
+            ),
+            LButton(
+              buttonColor: whiteColor,
+              text: backToChapter.toString(),
+              func: () {
+                RM.navigate.back();
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
