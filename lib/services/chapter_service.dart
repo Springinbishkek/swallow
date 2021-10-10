@@ -96,18 +96,18 @@ class ChapterService {
         AssetImage('assets/backgrounds/loading_background.jpg');
   }
 
-  loadNotes() async {
+  Future<void> loadNotes() async {
     // TODO load if need
   }
 
-  restartAllGame(context) async {
+  Future<void> restartAllGame(context) async {
     await SharedPreferences.getInstance()
         .then((prefs) => prefs.remove(SP_GAME_INFO_NAME));
     chapters = null;
     RM.navigate.toAndRemoveUntil(HomePage());
   }
 
-  loadGame() async {
+  Future<void> loadGame() async {
     if (chapters != null) return;
     wasLoadingError = false;
     List values;
@@ -149,7 +149,7 @@ class ChapterService {
     await prepareChapter();
   }
 
-  prepareChapter({int id}) async {
+  Future<void> prepareChapter({int id}) async {
     int currentChapterId = max(1, id ?? gameInfo.currentChapterId ?? 1);
 
     currentChapter = chapters.firstWhere(
@@ -596,7 +596,7 @@ class ChapterService {
     saveGameInfo();
   }
 
-  getNotes() {
+  List<Note> getNotes() {
     return notes
         .takeWhile((value) => value.id <= gameInfo.accessNoteId)
         .toList();
@@ -648,8 +648,8 @@ class ChapterService {
     saveGameInfo();
   }
 
-  saveGameInfo() {
-    SharedPreferences.getInstance().then((value) {
+  Future<void> saveGameInfo() {
+    return SharedPreferences.getInstance().then((value) {
       value.setString(SP_GAME_INFO_NAME, gameInfo.toJson());
       // TODO
       value.setStringList('notes', notes.map((e) => e.toJson()).toList());
@@ -694,7 +694,7 @@ class ChapterService {
     return gameInfo.gameVariables[name];
   }
 
-  setGameParam({String name, dynamic value}) {
+  void setGameParam({String name, dynamic value}) {
     gameInfo.gameVariables[name] = value;
     saveGameInfo();
   }
