@@ -148,6 +148,8 @@ const Name loading = Name(
   ru: 'Загрузка',
   kg: 'Жүктөө',
 );
+const Name gamePreparing =
+    Name(ru: 'Подготовка игры...', kg: 'Оюнду даярдоо...');
 const Name chapterPreparing =
     Name(ru: 'Подготовка главы...', kg: 'Бөлүмдү даярдоо...');
 
