@@ -107,7 +107,23 @@ class ChapterService {
     RM.navigate.toAndRemoveUntil(HomePage());
   }
 
+  /// Wraps [_loadGame] to make [isNeedLoader] true from beginning of loading
+  /// to disallow pressing [letsPlay] button at [HomePage] before game is ready
+  /// (for example, during [ChapterRepository.getChapters])
+  /// which would cause error in [GamePage]
   Future<void> loadGame() async {
+    RM.get<ChapterService>('ChapterService').setState((s) {
+      loadingPercent = null;
+      loadingTitle = gamePreparing.toString();
+    });
+    await _loadGame();
+    RM.get<ChapterService>('ChapterService').setState((s) {
+      loadingPercent = null;
+      loadingTitle = null;
+    });
+  }
+
+  Future<void> _loadGame() async {
     if (chapters != null) return;
     wasLoadingError = false;
     List values;
