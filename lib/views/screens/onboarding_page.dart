@@ -1,5 +1,7 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
+import 'package:lastochki/services/analytics.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_button.dart';
@@ -163,6 +165,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return () {
       setState(() {
         name = _textNameController.text;
+        //АНАЛИТИКА имя героини в начале игры
+        RM.get<Analytics>().state.log('InitialGameSet');
         RM
             .get<ChapterService>()
             .setState((s) => s.setGameParam(name: 'Main', value: name));
@@ -254,6 +258,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               onPageChanged: (int page) {
                 if (page == 2) {
                   if (languageCode != null) {
+
                     setState(() {
                       Name.curLocale = Locale(languageCode);
                     });

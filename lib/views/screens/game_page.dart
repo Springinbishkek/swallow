@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Choice.dart';
 import 'package:lastochki/models/entities/GameInfo.dart';
 import 'package:lastochki/models/entities/Name.dart';
-import 'package:lastochki/utils/extentions.dart';
-
 import 'package:lastochki/models/entities/Passage.dart';
 import 'package:lastochki/services/chapter_service.dart';
+import 'package:lastochki/utils/extentions.dart';
 import 'package:lastochki/views/ui/l_action.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_character_image.dart';
