@@ -42,7 +42,7 @@ class App extends StatelessWidget {
         ],
         builder: (context) => MaterialApp(
               navigatorKey: RM.navigate.navigatorKey,
-              title: 'Ласточки. Весна в Бишкеке',
+              title: 'Ласточки. Тайна Сары-Кёль',
               theme: ThemeData(
                 fontFamily: 'SourceSansPro',
                 // primarySwatch:  MaterialColor(),
