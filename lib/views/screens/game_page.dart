@@ -130,53 +130,55 @@ class _GamePageState extends State<GamePage> {
             ],
           ),
           appBar: AppBar(
-              leading: FittedBox(
+            leading: FittedBox(
+              fit: BoxFit.none,
+              child: LAction(
+                child: Image.asset(
+                  homeIcon,
+                  height: 18,
+                  color: whiteColor,
+                ),
+                minWidth: 20,
+                onTap: () {
+                  Navigator.popAndPushNamed(context, '/home');
+                },
+              ),
+            ),
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            actions: [
+              FittedBox(
                 fit: BoxFit.none,
                 child: LAction(
-                  child: Image.asset(
-                    homeIcon,
-                    height: 18,
-                    color: whiteColor,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        swallowIcon,
+                        height: 18,
+                        color: whiteColor,
+                      ),
+                      SizedBox(width: 5),
+                      Text(
+                        g.swallowCount.toString(), // TODO
+                        style: TextStyle(
+                          color: whiteColor,
+                          fontSize: 18,
+                          height: 1,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                  minWidth: 20,
-                  onTap: () {
-                    Navigator.popAndPushNamed(context, '/home');
-                  },
+                  onTap: null,
                 ),
               ),
-              backgroundColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-              actions: [
-                FittedBox(
-                  fit: BoxFit.none,
-                  child: LAction(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          swallowIcon,
-                          height: 18,
-                          color: whiteColor,
-                        ),
-                        SizedBox(width: 5),
-                        Text(
-                          g.swallowCount.toString(), // TODO
-                          style: TextStyle(
-                              color: whiteColor,
-                              fontSize: 18,
-                              height: 1,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    onTap: null,
-                    // () {
-                    //   // TODO
-                    // }
-                  ),
-                ),
-              ]),
-          body: buildBody(),
+            ],
+          ),
+        ),
+        Material(
+          type: MaterialType.transparency,
+          child: buildBody(),
         ),
         // TODO clean condition
         if (g.currentChapterId == 1 && g.currentPassage.pid == firstPid)
@@ -345,39 +347,44 @@ class _GamePageState extends State<GamePage> {
           ignoring: characterName == null,
           child: Opacity(
             opacity: characterName == null ? 0 : 1,
-            child: Column(mainAxisSize: MainAxisSize.max, children: [
-              Flexible(
-                flex: 1,
-                child: Center(),
-              ),
-              Flexible(
-                  flex: 3,
-                  child: Column(children: [
-                    if (characterImages != null && characterImages.length > 0)
-                      LCharacterImage(
-                        photoImages: characterImages,
-                        key: Key(pid.toString()),
-                        isMain: isMain,
-                        needTransition: isCharacterChanged,
-                      ),
-                    Container(
-                      width: double.infinity,
-                      transform: Matrix4.translationValues(0, -40, 0),
-                      child: LChoiceBox(
-                          name: characterName,
-                          speech: speech,
-                          isMain: isMain,
-                          isThinking: isThinking,
-                          options: options,
-                          onChoose: chooseOption,
-                          onEndAnimation: () {
-                            setState(() {
-                              isStepDisabled = false;
-                            });
-                          }),
+            child: LayoutBuilder(
+              // allow scrolling on small screens
+              builder: (context, constraints) => ListView(
+                // hide scroll effects (glow on android, overscroll on ios)
+                physics: ClampingScrollPhysics(),
+                children: [
+                  // top padding
+                  SizedBox(height: constraints.maxHeight * .29),
+                  if (characterImages != null && characterImages.length > 0)
+                    LCharacterImage(
+                      photoImages: characterImages,
+                      key: Key(pid.toString()),
+                      isMain: isMain,
+                      needTransition: isCharacterChanged,
                     ),
-                  ]))
-            ]),
+                  Container(
+                    width: double.infinity,
+                    transform: Matrix4.translationValues(0, -40, 0),
+                    child: LChoiceBox(
+                      name: characterName,
+                      speech: speech,
+                      isMain: isMain,
+                      isThinking: isThinking,
+                      options: options,
+                      onChoose: chooseOption,
+                      onEndAnimation: () {
+                        setState(() {
+                          isStepDisabled = false;
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ],
