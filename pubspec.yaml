@@ -36,9 +36,20 @@ dependencies:
   shared_preferences: ^2.0.5
   states_rebuilder: ^4.0.0+1
   url_launcher: ^6.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.9.2
+
+# flutter pub run flutter_launcher_icons:main
+flutter_icons:
+  android: true
+  image_path_android: "assets/launcher_icons/icon.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/launcher_icons/android_foreground.png"
+  ios: true
+  image_path_ios: "assets/launcher_icons/ios.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
