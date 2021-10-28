@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 const Color menuBgColor = Color(0xFFFAFAFA);
-const Color appbarBgColor = Color(0xFFEFF9FF);
-const Color scaffoldBgColor = Color(0xFFDFECF3);
-const Color textColor = Color(0xFF1F2E6C);
-const Color accentColor = Color(0xFF31D3B2);
+const Color appbarBgColor = Color(0xFFFFFDF5);
+const Color scaffoldBgColor = Color(0xFFFFFAE9);
+const Color textColor = Color(0xFF093A67);
+const Color accentColor = Color(0xFF1675CC);
 const Color whiteColor = Color(0xFFFFFFFF);
-const Color boxBorderColor = Color(0xFFA4E3FF);
+const Color boxBorderColor = Color(0xFF1675CC);
 const Color errorColor = Color(0xFFD83E58);
 
 const TextStyle titleTextStyle =

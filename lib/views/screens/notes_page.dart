@@ -96,7 +96,7 @@ class _NotesPageState extends State<NotesPage> {
                 child: Text(
                   bottom.toString(),
                   style: TextStyle(
-                    color: whiteColor,
+                    color: accentColor,
                     fontSize: 17.0,
                     fontWeight: FontWeight.bold,
                   ),
