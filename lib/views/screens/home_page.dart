@@ -230,7 +230,7 @@ class _GameActions extends StatelessWidget {
           onTap: () {
             Navigator.of(context).pushNamed('/about');
           },
-          icon: Image.asset(aboutIcon),
+          icon: Image.asset(aboutIcon, color: accentColor),
         ),
         _GameActionsItem(
           text: settings.toString(),
@@ -238,14 +238,14 @@ class _GameActions extends StatelessWidget {
             await Navigator.of(context).pushNamed('/settings');
             onSettingsClosed();
           },
-          icon: Image.asset(settingsIcon),
+          icon: Image.asset(settingsIcon, color: accentColor),
         ),
         _GameActionsItem(
           text: notes.toString(),
           onTap: () {
             Navigator.of(context).pushNamed('/notes');
           },
-          icon: Image.asset(notesIcon),
+          icon: NotesIcon(),
         ),
       ],
     );

@@ -405,7 +405,7 @@ class _GamePageState extends State<GamePage> {
         width: 36,
         child: Stack(
           children: [
-            Image.asset(notesIcon),
+            NotesIcon(),
             if (unreadCount > 0)
               Align(
                 alignment: Alignment(2, -1.8),

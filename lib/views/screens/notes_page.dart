@@ -96,9 +96,10 @@ class _NotesPageState extends State<NotesPage> {
                 child: Text(
                   bottom.toString(),
                   style: TextStyle(
-                      color: whiteColor,
-                      fontSize: 17.0,
-                      fontWeight: FontWeight.bold),
+                    color: whiteColor,
+                    fontSize: 17.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               FittedBox(

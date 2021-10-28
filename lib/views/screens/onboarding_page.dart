@@ -187,14 +187,21 @@ class _OnboardingPageState extends State<OnboardingPage> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text.rich(
-            TextSpan(children: [
-              TextSpan(text: aboutSettings.toString(), style: contentTextStyle),
-              WidgetSpan(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: aboutSettings.toString(),
+                  style: contentTextStyle,
+                ),
+                WidgetSpan(
                   child: Image.asset(
-                settingsIcon,
-                height: 20,
-              ))
-            ]),
+                    settingsIcon,
+                    color: accentColor,
+                    height: 20,
+                  ),
+                )
+              ],
+            ),
             textAlign: TextAlign.center,
           ),
         ),
