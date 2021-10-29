@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:lastochki/models/entities/Passage.dart';
 
-const defaultMainPlayerName = 'Бегайым';
+const defaultMainPlayerName = 'Эркинай';
 
 class GameInfo {
   int currentChapterId;
