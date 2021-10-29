@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lastochki/models/entities/GameInfo.dart';
 import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/theme.dart';
@@ -47,7 +48,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final PageController _pageStateController = PageController(initialPage: 0);
   final TextEditingController _textNameController = TextEditingController();
 
-  String name = 'Бегайым';
+  String name = defaultMainPlayerName;
   String languageCode;
 
   void _navigateToNextPage() {
