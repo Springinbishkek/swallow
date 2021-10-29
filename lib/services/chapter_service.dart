@@ -526,11 +526,7 @@ class ChapterService {
         switch (setting[0]) {
           case 'SetAccessToNote':
             gameInfo.accessNoteId = int.parse(setting[1]);
-            if (gameInfo.accessNoteId == 1) {
-              showFirstNotePopup();
-            } else {
-              showNewNotePopup();
-            }
+            showNotePopup(isFirstNote: gameInfo.accessNoteId == 1);
             break;
           case 'SetIntVar':
             gameInfo.gameVariables[setting[1]] = int.parse(setting[2]);
@@ -548,56 +544,28 @@ class ChapterService {
     saveGameInfo();
   }
 
-  void showFirstNotePopup() {
-    // first note
-    RM.navigate.toDialog(
-      LInfoPopup(
-          isCloseEnable: true,
-          image: noteImg,
-          title: firstNoteTitle.toString(),
-          content: firstNoteContent.toString(),
-          actions: Column(
-            children: [
-              LButton(
-                  text: readNote.toString(),
-                  func: () {
-                    RM.navigate.backAndToNamed('/notes');
-                  }),
-              LButton(
-                  buttonColor: whiteColor,
-                  text: backToChapter.toString(),
-                  func: () {
-                    RM.navigate.back();
-                  }),
-            ],
-          )),
-    );
-  }
-
-  void showNewNotePopup() {
-    // first note
+  void showNotePopup({@required bool isFirstNote}) {
     RM.navigate.toDialog(
       LInfoPopup(
         isCloseEnable: true,
         image: noteImg,
-        title: newNoteTitle.toString(),
-        content: newNoteContent.toString(),
-        actions: Column(
-          children: [
-            LButton(
-              text: readNote.toString(),
-              func: () {
-                RM.navigate.backAndToNamed('/notes');
-              },
-            ),
-            LButton(
-              buttonColor: whiteColor,
-              text: backToChapter.toString(),
-              func: () {
-                RM.navigate.back();
-              },
-            ),
-          ],
+        title: (isFirstNote ? firstNoteTitle : newNoteTitle).toString(),
+        content: (isFirstNote ? firstNoteContent : newNoteContent).toString(),
+        actions: IntrinsicWidth(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              LButton(
+                text: readNote.toString(),
+                func: () => RM.navigate.backAndToNamed('/notes'),
+              ),
+              LButton(
+                buttonColor: whiteColor,
+                text: backToChapter.toString(),
+                func: () => RM.navigate.back(),
+              ),
+            ],
+          ),
         ),
       ),
     );
