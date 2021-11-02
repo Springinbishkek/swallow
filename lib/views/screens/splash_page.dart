@@ -87,12 +87,19 @@ class _LogoPage2 extends StatelessWidget {
               height: 100,
               image: AssetImage(swallowImg),
             ),
+            Image(
+              height: 72,
+              image: AssetImage(sponsoesImg),
+            ),
             Padding(
-              padding: const EdgeInsets.all(8),
-              child: Image(
-                image: AssetImage(sponsoesImg),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'При поддержке ЮНИСЕФ (Детского фонда ООН) в рамках совместной инициативы ЕС и ООН «Луч света»',
+                textAlign: TextAlign.center,
+                style: TextStyle(height: 1),
               ),
             ),
+            SizedBox.shrink(),
           ],
         ),
       ),
