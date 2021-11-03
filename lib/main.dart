@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:lastochki/models/route_arguments.dart';
+import 'package:lastochki/services/analytics_service.dart';
 import 'package:lastochki/services/api_client.dart';
 import 'package:lastochki/services/chapter_repository.dart';
 import 'package:lastochki/services/chapter_service.dart';
@@ -20,7 +21,6 @@ import 'package:lastochki/views/screens/test_result_page.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
 import 'models/entities/Test.dart';
-import 'services/analytics.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +30,7 @@ void main() async {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  NotificationSettings settings = await messaging.requestPermission(
+  await messaging.requestPermission(
     alert: true,
     announcement: false,
     badge: true,
@@ -46,22 +46,18 @@ void main() async {
 
 class App extends StatelessWidget {
   final ApiClient apiClient = ApiClient();
-  Analytics analytics = Analytics();
-
-
 
   @override
   Widget build(BuildContext context) {
-
     return Injector(
         inject: [
           Inject(() => ChapterService(repository: ChapterRepository()),
               name: 'ChapterService'),
-          Inject(() => analytics, name: 'Analytics'),
+          Inject(() => FirebaseAnalyticsService(), name: 'AnalyticsService'),
         ],
         builder: (context) => MaterialApp(
               navigatorObservers: [
-                analytics.observer
+                RM.get<AnalyticsService>().state.observer,
               ],
               navigatorKey: RM.navigate.navigatorKey,
               title: 'Ласточки. Весна в Бишкеке',
@@ -76,9 +72,9 @@ class App extends StatelessWidget {
   }
 
   Route _routes(RouteSettings settings) {
-    analytics.analytics.setCurrentScreen(
-      screenName: settings.name,
-    );
+    RM.get<AnalyticsService>().state.setCurrentScreen(
+          screenName: settings.name,
+        );
     switch (settings.name) {
       case '/onboarding':
         {

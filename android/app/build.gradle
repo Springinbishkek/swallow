@@ -27,7 +27,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 // apply from: project(':flutter_config').projectDir.getPath() + "/dotenv.gradle"
 project.ext.envConfigFiles = [
-        debug: ".env.development",
+        debug  : ".env.development",
         release: ".env.production",
 ]
 
@@ -59,7 +59,8 @@ android {
         checkReleaseBuilds false
     }
 
-    defaultConfig {        multiDexEnabled true
+    defaultConfig {
+        multiDexEnabled true
 
         applicationId "info.scafandergames.lastochki"
         minSdkVersion 19
