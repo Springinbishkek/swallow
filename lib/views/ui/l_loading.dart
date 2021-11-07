@@ -20,6 +20,7 @@ class LLoading extends StatelessWidget {
         image: DecorationImage(
           image: AssetImage('assets/backgrounds/loading_background.jpg'),
           fit: BoxFit.cover,
+          alignment: Alignment.bottomLeft,
         ),
       ),
       child: Center(

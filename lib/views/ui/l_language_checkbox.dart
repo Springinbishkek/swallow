@@ -38,7 +38,7 @@ class _LLanguageCheckboxState extends State<LLanguageCheckbox> {
       child: Row(
         children: <Widget>[
           Radio(
-              activeColor: textColor,
+              activeColor: accentColor,
               value: val,
               groupValue: _radioVal,
               onChanged: (int value) => _onCheckboxTap(value, language)),
