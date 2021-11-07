@@ -109,7 +109,7 @@ class _AboutPageState extends State<AboutPage> {
                     text: politics.toString(),
                     recognizer: tapGestureRecognizer(
                       onTap: () => launch(
-                        'https://docs.google.com/document/d/1x-uVxUWBzuEKwvXrd3p7kqu1G3qfUS5pdsEiFTTVnAM/edit',
+                        'https://docs.google.com/document/d/1UR0_3mmcFpWCIuJFoF6h0fA0FWamG3ZFaPwCybEaAQY/edit',
                       ),
                     ),
                   ),
@@ -120,7 +120,7 @@ class _AboutPageState extends State<AboutPage> {
                     text: conditions.toString(),
                     recognizer: tapGestureRecognizer(
                       onTap: () => launch(
-                        'https://docs.google.com/document/d/1RIXCksmaxQ-zwyw6bkKugJblbMjIHg1Yj4WgGME0AD0/edit',
+                        'https://docs.google.com/document/d/1S7drJf6l1Hmjy6aYZIWblaTa-ecK6BG9PuCCvqgV6Eg/edit',
                       ),
                     ),
                   ),
