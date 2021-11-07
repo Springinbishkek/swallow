@@ -101,10 +101,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
           physics: NeverScrollableScrollPhysics(),
           controller: _pageStateController,
           children: [
-            _AboutGamePage(
+            _AskLanguagePage(
               onNext: navigateToNextPage,
             ),
-            _AskLanguagePage(
+            _AboutGamePage(
               onNext: navigateToNextPage,
             ),
             _AskNamePage(
