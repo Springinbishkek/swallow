@@ -1,41 +1,64 @@
 import 'package:flutter/material.dart';
-import 'package:lastochki/models/entities/GameInfo.dart';
 import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/theme.dart';
+import 'package:lastochki/views/translation.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_character_name_input.dart';
 import 'package:lastochki/views/ui/l_language_checkbox.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
-import '../translation.dart';
+const Name aboutGame = Name(
+  ru: 'Это игра про девчонок, дружбу, любовь и свободу.'
+      ' Главная героиня игры — это ты.',
+  kg: 'Бул кыздар жөнүндө оюн, анда достук, сүйүү жана эркиндик жөнүндө айтылат.'
+      ' Оюндун башкы каарманы - сенсиң!',
+);
 
-Name aboutGame = Name(
-    ru: 'Это игра про девчонок, дружбу, любовь и свободу. '
-        'Главная героиня игры — это ты.',
-    kg: 'Бул кыздар жөнүндө оюн, анда достук, сүйүү жана эркиндик жөнүндө айтылат.'
-        ' Оюндун башкы каарманы - сенсиң!');
-Name aboutDecisions = Name(
-    ru: 'Именно от твоих решений зависит, как будет меняться жизнь героев, и чем всё закончится. \n'
-        'Обещаем: будет интересно и очень волнительно!',
-    kg: 'Каармандардын жашоосу кандайча өзгөрүп, кандайча аяктаганы сенин чечимиңден көз каранды.'
-        ' Бул оюн кызыктуу жана абдан толкунданткан болот деп, убада беребиз!');
-Name askLanguage = Name(
-    ru: 'На каком языке ты хочешь играть?',
-    kg: 'Кайсы тилде ойногонду каалайсың?');
-Name askName = Name(
-    ru: 'Как тебя зовут?',
-    kg: 'Сенин атың ким болсо, башкы каармандын да\nаты ошондой болот');
-Name aboutName = Name(ru: 'Так же будут звать главную героиню игры', kg: '');
-Name greetingName = Name(ru: 'Отлично, \$name!', kg: 'Абдан жакшы, \$name!');
-Name aboutSettings = Name(
-    ru: 'Поменять имя, язык или начать игру заново можно в разделе «Настройки» с таким значком: ',
-    kg: 'Төмөнкү белги менен "Баптоолор" бөлүмүндө атын, тилин өзгөртүп жана оюнду кайрадан баштаса болот: ');
-Name letsStart =
-    Name(ru: 'А теперь давай начнём игру!', kg: 'Эми оюнду баштайлы!');
-Name nextFirstPage = Name(ru: 'Далее', kg: 'Андан ары');
-final String _onboardingBG = 'assets/backgrounds/onboarding_background.png';
+const Name aboutDecisions = Name(
+  ru: 'Именно от твоих решений зависит, как будет меняться жизнь героев, и чем всё закончится.'
+      '\nОбещаем: будет интересно и очень волнительно!',
+  kg: 'Каармандардын жашоосу кандайча өзгөрүп, кандайча аяктаганы сенин чечимиңден көз каранды.'
+      ' Бул оюн кызыктуу жана абдан толкунданткан болот деп, убада беребиз!',
+);
+
+const Name askLanguage = Name(
+  ru: 'На каком языке ты хочешь играть?',
+  kg: 'Кайсы тилде ойногонду каалайсың?',
+);
+
+const Name askName = Name(
+  ru: 'Как тебя зовут?',
+  kg: 'Сенин атың ким болсо, башкы каармандын да\nаты ошондой болот',
+);
+
+const Name aboutName = Name(
+  ru: 'Так же будут звать главную героиню игры',
+  kg: '',
+);
+
+const Name greetingName = Name(
+  ru: 'Отлично, \$name!',
+  kg: 'Абдан жакшы, \$name!',
+);
+
+const Name aboutSettings = Name(
+  ru: 'Поменять имя, язык или начать игру заново можно в разделе «Настройки» с таким значком: ',
+  kg: 'Төмөнкү белги менен "Баптоолор" бөлүмүндө атын, тилин өзгөртүп жана оюнду кайрадан баштаса болот: ',
+);
+
+const Name letsStart = Name(
+  ru: 'А теперь давай начнём игру!',
+  kg: 'Эми оюнду баштайлы!',
+);
+
+const Name nextFirstPage = Name(
+  ru: 'Далее',
+  kg: 'Андан ары',
+);
+
+const String _onboardingBg = 'assets/backgrounds/onboarding_background.png';
 
 class OnboardingPage extends StatefulWidget {
   @override
@@ -43,200 +66,88 @@ class OnboardingPage extends StatefulWidget {
 }
 
 class _OnboardingPageState extends State<OnboardingPage> {
-  bool needCheckTrim = false;
-
   final PageController _pageStateController = PageController(initialPage: 0);
-  final TextEditingController _textNameController = TextEditingController();
 
-  String name = defaultMainPlayerName;
-  String languageCode;
-
-  void _navigateToNextPage() {
+  void navigateToNextPage() {
     _pageStateController.nextPage(
-        duration: Duration(milliseconds: 500), curve: Curves.ease);
+      duration: Duration(milliseconds: 500),
+      curve: Curves.ease,
+    );
   }
 
-  void onChangeLanguageCode(String code) {
-    setState(() {
-      languageCode = code;
-      SharedPreferences.getInstance()
-          .then((prefs) => prefs.setString('languageCode', code));
-    });
+  void navigateToHome() {
+    Navigator.of(context).pushReplacementNamed('/home');
   }
 
   @override
   dispose() {
-    _textNameController.clear();
-    _textNameController.dispose();
     _pageStateController.dispose();
     super.dispose();
   }
 
-  Widget firstPage() {
-    return _pageConstructor(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Text(
-            aboutGame.toString(),
-            style: titleTextStyle,
-            textAlign: TextAlign.center,
-          ),
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(_onboardingBg),
+          fit: BoxFit.cover,
         ),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            aboutDecisions.toString(),
-            style: contentTextStyle,
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Expanded(child: Container()),
-        _getButton(nextFirstPage.toString(), () => _navigateToNextPage())
-      ],
-    ));
-  }
-
-  Widget secondPage() {
-    return _pageConstructor(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Text(
-            askLanguage.toString(),
-            style: titleTextStyle,
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Padding(
-            padding: const EdgeInsets.only(top: 24.0),
-            child: LLanguageCheckbox(
-              onChanged: onChangeLanguageCode,
-            )),
-        Expanded(child: Container()),
-        _getButton(next.toString(), () => _navigateToNextPage())
-      ],
-    ));
-  }
-
-  Widget thirdPage() {
-    return _pageConstructor(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Text(
-            askName.toString(),
-            style: titleTextStyle,
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            aboutName.toString(),
-            style: contentTextStyle,
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 24.0),
-          child: LCharacterNameInput(_textNameController,
-              onChanged: (v) => setState(() {
-                    needCheckTrim = true;
-                  })),
-        ),
-        Expanded(child: Container()),
-        _getButton(next.toString(), getNameSettingHandler())
-      ],
-    ));
-  }
-
-  Function getNameSettingHandler() {
-    if (needCheckTrim && _textNameController.text.trim() == '') {
-      return null;
-    }
-    return () {
-      setState(() {
-        name = _textNameController.text;
-        RM
-            .get<ChapterService>()
-            .setState((s) => s.setGameParam(name: 'Main', value: name));
-      });
-      _navigateToNextPage();
-    };
-  }
-
-  Widget fourthPage() {
-    return _pageConstructor(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Text(
-            greetingName.toStringWithVar(variables: {'name': name}),
-            style: titleTextStyle,
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: aboutSettings.toString(),
-                  style: contentTextStyle,
-                ),
-                WidgetSpan(
-                  child: Image.asset(
-                    settingsIcon,
-                    color: accentColor,
-                    height: 20,
-                  ),
-                )
-              ],
+      ),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Colors.transparent,
+        body: PageView(
+          physics: NeverScrollableScrollPhysics(),
+          controller: _pageStateController,
+          children: [
+            _AboutGamePage(
+              onNext: navigateToNextPage,
             ),
-            textAlign: TextAlign.center,
-          ),
+            _AskLanguagePage(
+              onNext: navigateToNextPage,
+            ),
+            _AskNamePage(
+              onNext: navigateToNextPage,
+            ),
+            _LetsStartPage(
+              onNext: navigateToHome,
+            ),
+          ],
         ),
-        Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Text(
-            letsStart.toString(),
-            style: titleTextStyle,
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Expanded(child: Container()),
-        _getButton(letsPlay.toString(), () {
-          Navigator.of(context).pushReplacementNamed('/home');
-        })
-      ],
-    ));
+      ),
+    );
   }
+}
 
-  Widget _pageConstructor({Widget child}) {
+class _Page extends StatelessWidget {
+  final Widget child;
+
+  const _Page({Key key, @required this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 24.0),
-      child: Container(
-        color: Colors.transparent,
+      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
+      child: SizedBox(
         height: MediaQuery.of(context).size.height * 0.8,
         width: MediaQuery.of(context).size.width * 0.8,
         child: child,
       ),
     );
   }
+}
 
-  Widget _getButton(String text, Function func) {
+class _NextButton extends StatelessWidget {
+  final String text;
+  final VoidCallback func;
+
+  const _NextButton(this.text, this.func, {Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16),
       child: LButton(
         text: text,
         func: func,
@@ -244,37 +155,219 @@ class _OnboardingPageState extends State<OnboardingPage> {
       ),
     );
   }
+}
+
+class _AboutGamePage extends StatelessWidget {
+  final VoidCallback onNext;
+
+  const _AboutGamePage({
+    Key key,
+    @required this.onNext,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage(_onboardingBG), fit: BoxFit.cover)),
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.transparent,
-        body: Container(
-            color: Colors.transparent,
-            child: PageView(
-              physics: NeverScrollableScrollPhysics(),
-              controller: _pageStateController,
-              onPageChanged: (int page) {
-                if (page == 2) {
-                  if (languageCode != null) {
-                    setState(() {
-                      Name.curLocale = Locale(languageCode);
-                    });
-                  }
-                }
-              },
-              children: <Widget>[
-                firstPage(),
-                secondPage(),
-                thirdPage(),
-                fourthPage()
-              ],
-            )),
+    return _Page(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Text(
+              aboutGame.toString(),
+              style: titleTextStyle,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              aboutDecisions.toString(),
+              style: contentTextStyle,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Spacer(),
+          _NextButton(nextFirstPage.toString(), onNext),
+        ],
+      ),
+    );
+  }
+}
+
+class _AskLanguagePage extends StatefulWidget {
+  final VoidCallback onNext;
+
+  const _AskLanguagePage({
+    Key key,
+    @required this.onNext,
+  }) : super(key: key);
+
+  @override
+  State<_AskLanguagePage> createState() => _AskLanguagePageState();
+}
+
+class _AskLanguagePageState extends State<_AskLanguagePage> {
+  @override
+  Widget build(BuildContext context) {
+    return _Page(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Text(
+              askLanguage.toString(),
+              style: titleTextStyle,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 24),
+            child: LLanguageCheckbox(
+              onChanged: onChangeLanguageCode,
+            ),
+          ),
+          Spacer(),
+          _NextButton(next.toString(), widget.onNext),
+        ],
+      ),
+    );
+  }
+
+  void onChangeLanguageCode(String code) async {
+    Name.curLocale = Locale(code);
+    setState(() {}); // update ui
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('languageCode', code);
+  }
+}
+
+class _AskNamePage extends StatefulWidget {
+  final VoidCallback onNext;
+
+  const _AskNamePage({
+    Key key,
+    @required this.onNext,
+  }) : super(key: key);
+
+  @override
+  State<_AskNamePage> createState() => _AskNamePageState();
+}
+
+class _AskNamePageState extends State<_AskNamePage> {
+  final textNameController = TextEditingController();
+  bool isTouched = false;
+
+  @override
+  void dispose() {
+    textNameController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _Page(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Text(
+              askName.toString(),
+              style: titleTextStyle,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              aboutName.toString(),
+              style: contentTextStyle,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+            child: LCharacterNameInput(
+              textNameController,
+              onChanged: (_) => setState(() {
+                isTouched = true;
+              }),
+            ),
+          ),
+          Spacer(),
+          _NextButton(next.toString(), getNameSettingHandler()),
+        ],
+      ),
+    );
+  }
+
+  VoidCallback /*?*/ getNameSettingHandler() {
+    if (isTouched && textNameController.text.trim().isEmpty) {
+      return null;
+    }
+    return () {
+      final name = textNameController.text;
+      RM
+          .get<ChapterService>()
+          .setState((s) => s.setGameParam(name: 'Main', value: name));
+      widget.onNext();
+    };
+  }
+}
+
+class _LetsStartPage extends StatelessWidget {
+  final VoidCallback onNext;
+
+  const _LetsStartPage({
+    Key key,
+    @required this.onNext,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final name = RM.get<ChapterService>().state.getGameVariable('Main');
+    return _Page(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Text(
+              greetingName.toStringWithVar(variables: {'name': name}),
+              style: titleTextStyle,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: aboutSettings.toString(),
+                    style: contentTextStyle,
+                  ),
+                  WidgetSpan(
+                    child: Image.asset(
+                      settingsIcon,
+                      color: accentColor,
+                      height: 20,
+                    ),
+                  )
+                ],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Text(
+              letsStart.toString(),
+              style: titleTextStyle,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Spacer(),
+          _NextButton(letsPlay.toString(), onNext),
+        ],
       ),
     );
   }

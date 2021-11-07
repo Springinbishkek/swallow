@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 class Name {
   static Locale curLocale = Locale('ru');
+
   final String ru;
   final String kg;
 
@@ -39,10 +40,6 @@ class Name {
   }
 
   String toJson() => json.encode(toMap());
-
-  static void setLocale(Locale l) {
-    curLocale = l;
-  }
 
   static Name fromJson(String source) => fromMap(json.decode(source));
 
