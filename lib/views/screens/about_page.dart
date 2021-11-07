@@ -86,7 +86,8 @@ class _AboutPageState extends State<AboutPage> {
                   iconOnRightSide: false,
                   icon: instagramIcon,
                   func: () => launch(
-                      'https://instagram.com/vesna_v_bishkeke?igshid=1w94jf7ztsgsg'),
+                    'https://instagram.com/vesna_v_bishkeke?igshid=1w94jf7ztsgsg',
+                  ),
                   buttonColor: whiteColor,
                 ),
                 LButton(
@@ -103,15 +104,25 @@ class _AboutPageState extends State<AboutPage> {
               textAlign: TextAlign.center,
               text: TextSpan(
                 style: Theme.of(context).textTheme.bodyText2,
-                text: '${politics.toString()}\n',
                 children: [
                   TextSpan(
+                    text: politics.toString(),
+                    recognizer: tapGestureRecognizer(
+                      onTap: () => launch(
+                        'https://docs.google.com/document/d/1x-uVxUWBzuEKwvXrd3p7kqu1G3qfUS5pdsEiFTTVnAM/edit',
+                      ),
+                    ),
+                  ),
+                  TextSpan(
+                    text: '\n',
+                  ),
+                  TextSpan(
                     text: conditions.toString(),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        launch(
-                            'https://docs.google.com/document/d/1RIXCksmaxQ-zwyw6bkKugJblbMjIHg1Yj4WgGME0AD0/edit?usp=drivesdk');
-                      },
+                    recognizer: tapGestureRecognizer(
+                      onTap: () => launch(
+                        'https://docs.google.com/document/d/1RIXCksmaxQ-zwyw6bkKugJblbMjIHg1Yj4WgGME0AD0/edit',
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -130,4 +141,10 @@ class _AboutPageState extends State<AboutPage> {
       ),
     );
   }
+}
+
+TapGestureRecognizer tapGestureRecognizer({
+  @required VoidCallback onTap,
+}) {
+  return TapGestureRecognizer()..onTap = onTap;
 }
