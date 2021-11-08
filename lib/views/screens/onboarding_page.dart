@@ -165,7 +165,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       setState(() {
         name = _textNameController.text;
         //АНАЛИТИКА имя героини в начале игры
-        RM.get<AnalyticsService>().state.log('InitialGameSet');
+        RM.get<AnalyticsService>().state.log(name: 'initial_game_set', parameters: {'name':name});
         RM
             .get<ChapterService>()
             .setState((s) => s.setGameParam(name: 'Main', value: name));

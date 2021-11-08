@@ -89,7 +89,7 @@ class _AboutPageState extends State<AboutPage> {
                                     icon: instagramIcon,
                                     func: () {
                                         //АНАЛИТИКА переход в инстаграм
-                                        RM.get<AnalyticsService>().state.log('InstagramSite');
+                                        RM.get<AnalyticsService>().state.log(name: 'instagram_site');
                                         return launch(
                                         'https://instagram.com/vesna_v_bishkeke?igshid=1w94jf7ztsgsg');
                                     },
@@ -101,7 +101,7 @@ class _AboutPageState extends State<AboutPage> {
                                     iconOnRightSide: false,
                                     func: () {
                                         //АНАЛИТИКА переход на сайт открытой линии
-                                        RM.get<AnalyticsService>().state.log('OpenLine');
+                                        RM.get<AnalyticsService>().state.log(name: 'open_line');
                                       return launch('https://openline.kg/new/');
                                     },
                                     buttonColor: whiteColor,

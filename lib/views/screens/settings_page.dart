@@ -41,7 +41,9 @@ class _SettingsPageState extends State<SettingsPage> {
     setState(() {
       languageCode = code;
     });
-    FirebaseAnalytics().logEvent(name: 'Language');
+    //АНАЛИТИКА
+    FirebaseAnalytics()
+        .logEvent(name: 'language', parameters: {'language': languageCode});
   }
 
   VoidCallback /*?*/ getOnSaveSettingsTap(context) {
