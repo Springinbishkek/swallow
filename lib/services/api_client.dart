@@ -13,29 +13,28 @@ class ApiClient {
   Dio dio = new Dio();
 
   ApiClient() {
-    dio.interceptors
-        .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
-      return options; //continue
-      // If you want to resolve the request with some custom data，
-      // you can return a `Response` object or return `dio.resolve(data)`.
-      // If you want to reject the request with a error message,
-      // you can return a `DioError` object or return `dio.reject(errMsg)`
-    }, onResponse: (Response response) async {
-      return response;
-    }, onError: (DioError e) async {
+    dio.interceptors.add(InterceptorsWrapper(onError: (e, handler) async {
       print(e.response);
-      RequestOptions options = e.request;
-      var result = await RM.navigate.toDialog(
-        getErrorDialog(options: options, error: e),
-      );
-      return result ?? e;
+      RequestOptions options = e.requestOptions;
+      Response /*?*/ response = await showErrorDialog(options: options);
+      if (response != null) {
+        handler.resolve(response);
+      } else {
+        handler.next(e);
+      }
     }));
     dio.options.baseUrl = baseUrl;
     dio.options.connectTimeout = connectTimeout;
     dio.options.headers['Accept'] = 'application/json';
   }
 
-  Widget getErrorDialog({RequestOptions options, DioError error}) {
+  Future<Response /*?*/ > showErrorDialog({@required RequestOptions options}) {
+    return RM.navigate.toDialog<Response>(
+      getErrorDialog(options: options),
+    );
+  }
+
+  Widget getErrorDialog({@required RequestOptions options}) {
     return LInfoPopup(
       isCloseEnable: true,
       image: alertImg,
@@ -46,8 +45,7 @@ class ApiClient {
           buttonColor: whiteColor,
           text: tryMsg.toString(),
           func: () async {
-            Response response =
-                await dio.request(options.path, options: options);
+            Response response = await dio.requestFrom(options);
             RM.navigate.back(response);
           }),
     );
@@ -80,5 +78,41 @@ class ApiClient {
   Future<Response> loadNotes(String path) async {
     Response response = await dio.get(path);
     return response;
+  }
+}
+
+extension on Dio {
+  Future<Response<T>> requestFrom<T>(RequestOptions options) {
+    return request(
+      options.path,
+      data: options.data,
+      queryParameters: options.queryParameters,
+      cancelToken: options.cancelToken,
+      options: options.toOptions(),
+      onSendProgress: options.onSendProgress,
+      onReceiveProgress: options.onReceiveProgress,
+    );
+  }
+}
+
+// https://github.com/aloisdeniel/dio_retry/pull/12/files
+extension on RequestOptions {
+  Options toOptions() {
+    return Options(
+      method: method,
+      sendTimeout: sendTimeout,
+      receiveTimeout: receiveTimeout,
+      extra: extra,
+      headers: headers,
+      responseType: responseType,
+      contentType: contentType,
+      validateStatus: validateStatus,
+      receiveDataWhenStatusError: receiveDataWhenStatusError,
+      followRedirects: followRedirects,
+      maxRedirects: maxRedirects,
+      requestEncoder: requestEncoder,
+      responseDecoder: responseDecoder,
+      listFormat: listFormat,
+    );
   }
 }
