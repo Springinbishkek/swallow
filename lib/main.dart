@@ -25,12 +25,11 @@ import 'models/entities/Test.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIOverlays([]);
-  await Firebase.initializeApp();
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  await messaging.requestPermission(
+  await Firebase.initializeApp();
+  await FirebaseMessaging.instance.requestPermission(
     alert: true,
     announcement: false,
     badge: true,
@@ -57,7 +56,7 @@ class App extends StatelessWidget {
         ],
         builder: (context) => MaterialApp(
               navigatorObservers: [
-                RM.get<AnalyticsService>().state.observer,
+                RM.get<AnalyticsService>().state.navigationObserver,
               ],
               navigatorKey: RM.navigate.navigatorKey,
               title: 'Ласточки. Весна в Бишкеке',

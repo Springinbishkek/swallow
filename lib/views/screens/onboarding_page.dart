@@ -49,7 +49,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final TextEditingController _textNameController = TextEditingController();
 
   String name = 'Бегайым';
-  String languageCode;
+  String languageCode = Name.curLocale.languageCode;
 
   void _navigateToNextPage() {
     _pageStateController.nextPage(
@@ -164,8 +164,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return () {
       setState(() {
         name = _textNameController.text;
-        //АНАЛИТИКА имя героини в начале игры
-        RM.get<AnalyticsService>().state.log(name: 'initial_game_set', parameters: {'name':name});
+        RM.get<AnalyticsService>().state.log(
+          name: 'initial_player_name_set',
+          parameters: {'name': name},
+        );
         RM
             .get<ChapterService>()
             .setState((s) => s.setGameParam(name: 'Main', value: name));
@@ -257,10 +259,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
               onPageChanged: (int page) {
                 if (page == 2) {
                   if (languageCode != null) {
-
                     setState(() {
                       Name.curLocale = Locale(languageCode);
                     });
+                    RM.get<AnalyticsService>().state.log(
+                      name: 'language_initial',
+                      parameters: {'language': Name.curLocale.languageCode},
+                    );
                   }
                 }
               },

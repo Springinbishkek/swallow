@@ -4,7 +4,7 @@ import 'package:lastochki/views/theme.dart';
 class LButton extends StatelessWidget {
   final String text;
   final String icon;
-  final Function func;
+  final VoidCallback func;
   final int swallow;
   final bool iconOnRightSide;
   final Color buttonColor;
@@ -12,16 +12,17 @@ class LButton extends StatelessWidget {
   final double fontSize;
   final double height;
 
-  LButton(
-      {@required this.text,
-      @required this.func,
-      this.icon,
-      this.swallow,
-      this.iconOnRightSide = true,
-      this.fontSize = 17,
-      this.height = 45.0,
-      this.buttonColor = accentColor,
-      this.borderColor = accentColor});
+  LButton({
+    @required this.text,
+    @required this.func,
+    this.icon,
+    this.swallow,
+    this.iconOnRightSide = true,
+    this.fontSize = 17,
+    this.height = 45.0,
+    this.buttonColor = accentColor,
+    this.borderColor = accentColor,
+  });
 
   Widget _buildButton() {
     if (icon == null) {

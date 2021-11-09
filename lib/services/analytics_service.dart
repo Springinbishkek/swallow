@@ -5,29 +5,36 @@ import 'package:flutter/cupertino.dart';
 abstract class AnalyticsService {
   void log({@required String name, Map<String, Object> parameters});
 
-  NavigatorObserver get observer;
+  NavigatorObserver get navigationObserver;
 
   void setCurrentScreen({@required String screenName});
 }
 
 class FirebaseAnalyticsService implements AnalyticsService {
-  FirebaseAnalytics _analytics = FirebaseAnalytics();
-  FirebaseAnalyticsObserver _observer;
+  final FirebaseAnalytics _analytics;
+  final FirebaseAnalyticsObserver _observer;
 
-  FirebaseAnalyticsService() {
-    _observer = FirebaseAnalyticsObserver(analytics: _analytics);
-    //АНАЛИТИКА время старта приложения
+  FirebaseAnalyticsService._(this._analytics, this._observer) {
     final now = DateTime.now().hour;
     log(name: 'app_start', parameters: {'time': now - now % 3});
   }
 
-  void log({@required String name, Map<String, Object> parameters}) {
-    FirebaseAnalytics().logEvent(name: name, parameters: parameters);
+  factory FirebaseAnalyticsService() {
+    final analytics = FirebaseAnalytics();
+    final observer = FirebaseAnalyticsObserver(analytics: analytics);
+    return FirebaseAnalyticsService._(analytics, observer);
   }
 
-  get observer => _observer;
+  @override
+  void log({@required String name, Map<String, Object> parameters}) {
+    _analytics.logEvent(name: name, parameters: parameters);
+  }
 
-  Future<void> setCurrentScreen({@required String screenName}) async {
+  @override
+  NavigatorObserver get navigationObserver => _observer;
+
+  @override
+  void setCurrentScreen({@required String screenName}) {
     _analytics.setCurrentScreen(screenName: screenName);
   }
 }
