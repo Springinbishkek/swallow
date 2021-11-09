@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
+import 'package:lastochki/services/analytics_service.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/translation.dart';
@@ -67,6 +68,9 @@ class OnboardingPage extends StatefulWidget {
 
 class _OnboardingPageState extends State<OnboardingPage> {
   final PageController _pageStateController = PageController(initialPage: 0);
+
+  String name = 'Бегайым';
+  String languageCode = Name.curLocale.languageCode;
 
   void navigateToNextPage() {
     _pageStateController.nextPage(
@@ -227,7 +231,13 @@ class _AskLanguagePageState extends State<_AskLanguagePage> {
             ),
           ),
           Spacer(),
-          _NextButton(next.toString(), widget.onNext),
+          _NextButton(next.toString(), () {
+            RM.get<AnalyticsService>().state.log(
+              name: 'language_initial',
+              parameters: {'language': Name.curLocale.languageCode},
+            );
+            widget.onNext();
+          }),
         ],
       ),
     );
@@ -306,6 +316,10 @@ class _AskNamePageState extends State<_AskNamePage> {
     }
     return () {
       final name = textNameController.text;
+      RM.get<AnalyticsService>().state.log(
+        name: 'initial_player_name_set',
+        parameters: {'name': name},
+      );
       RM
           .get<ChapterService>()
           .setState((s) => s.setGameParam(name: 'Main', value: name));

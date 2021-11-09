@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Name.dart';
+import 'package:lastochki/services/analytics_service.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/utils/utility.dart';
 import 'package:lastochki/views/theme.dart';
@@ -55,6 +56,10 @@ class _SettingsPageState extends State<SettingsPage> {
     setState(() {
       Name.curLocale = Locale(languageCode);
     });
+    RM.get<AnalyticsService>().state.log(
+      name: 'language_change',
+      parameters: {'language': Name.curLocale.languageCode},
+    );
     String name = _textNameController.text;
     RM
         .get<ChapterService>('ChapterService')

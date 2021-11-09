@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-
 import 'package:lastochki/models/entities/Passage.dart';
 
 const defaultMainPlayerName = 'Бегайым';
@@ -19,6 +18,7 @@ class GameInfo {
   Map<String, dynamic> gameVariables;
 
   String currentBg;
+
   GameInfo({
     this.currentChapterId = 1,
     this.currentDBVersion = 0,

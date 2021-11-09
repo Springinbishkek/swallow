@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:lastochki/services/analytics_service.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_appbar.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:package_info/package_info.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../translation.dart';
@@ -85,16 +87,28 @@ class _AboutPageState extends State<AboutPage> {
                   text: gameInst.toString(),
                   iconOnRightSide: false,
                   icon: instagramIcon,
-                  func: () => launch(
-                    'https://instagram.com/vesna_v_bishkeke?igshid=1w94jf7ztsgsg',
-                  ),
+                  func: () {
+                    RM
+                        .get<AnalyticsService>()
+                        .state
+                        .log(name: 'instagram_open');
+                    launch(
+                      'https://instagram.com/vesna_v_bishkeke?igshid=1w94jf7ztsgsg',
+                    );
+                  },
                   buttonColor: whiteColor,
                 ),
                 LButton(
                   text: aboutOpenline.toString(),
                   icon: infoIcon,
                   iconOnRightSide: false,
-                  func: () => launch('https://openline.kg/new/'),
+                  func: () {
+                    RM
+                        .get<AnalyticsService>()
+                        .state
+                        .log(name: 'openline_site_open');
+                    launch('https://openline.kg/new/');
+                  },
                   buttonColor: whiteColor,
                 ),
               ],
