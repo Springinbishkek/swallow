@@ -317,7 +317,7 @@ class _AskNamePageState extends State<_AskNamePage> {
     return () {
       final name = textNameController.text;
       RM.get<AnalyticsService>().state.log(
-        name: 'initial_player_name_set',
+        name: 'player_name_initial',
         parameters: {'name': name},
       );
       RM

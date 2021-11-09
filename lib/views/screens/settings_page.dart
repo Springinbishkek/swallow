@@ -53,17 +53,24 @@ class _SettingsPageState extends State<SettingsPage> {
   void onSaveSettingsTap(BuildContext context) async {
     SharedPreferences.getInstance()
         .then((prefs) => prefs.setString('languageCode', languageCode));
-    setState(() {
-      Name.curLocale = Locale(languageCode);
-    });
-    RM.get<AnalyticsService>().state.log(
-      name: 'language_change',
-      parameters: {'language': Name.curLocale.languageCode},
-    );
+    if (Name.curLocale.languageCode != languageCode) {
+      setState(() {
+        Name.curLocale = Locale(languageCode);
+      });
+      RM.get<AnalyticsService>().state.log(
+        name: 'language_change',
+        parameters: {'language': Name.curLocale.languageCode},
+      );
+    }
     String name = _textNameController.text;
-    RM
-        .get<ChapterService>('ChapterService')
-        .setState((s) => s.setGameParam(name: 'Main', value: name));
+    final chapterService = RM.get<ChapterService>();
+    if (chapterService.state.gameInfo.gameVariables['Main'] != name) {
+      chapterService.setState((s) => s.setGameParam(name: 'Main', value: name));
+      RM.get<AnalyticsService>().state.log(
+        name: 'player_name_change',
+        parameters: {'name': name},
+      );
+    }
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(confirmChange.toString()),
