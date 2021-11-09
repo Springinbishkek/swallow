@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>881484575715-9j6254p1an1q6j2u0gua1918r2d9b99i.apps.googleusercontent.com</string>
+	<string>432303659716-muj17veks24qh2q65teje4ji7us87821.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.881484575715-9j6254p1an1q6j2u0gua1918r2d9b99i</string>
+	<string>com.googleusercontent.apps.432303659716-muj17veks24qh2q65teje4ji7us87821</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAf8EWRsmp04oy4jTc1uw_Os2zz9UWef2c</string>
+	<string>AIzaSyDuoKYx1W3PFNRJa1oa7zW7O4hff3mlUTw</string>
 	<key>GCM_SENDER_ID</key>
-	<string>881484575715</string>
+	<string>432303659716</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>info.scafandergames.lastochki</string>
+	<string>openline.lastochki.ozero</string>
 	<key>PROJECT_ID</key>
-	<string>spring-in-bishkek</string>
+	<string>lastochki-ozero</string>
 	<key>STORAGE_BUCKET</key>
-	<string>spring-in-bishkek.appspot.com</string>
+	<string>lastochki-ozero.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,8 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:881484575715:ios:41ad6707e355632316e6d6</string>
-	<key>DATABASE_URL</key>
-	<string>https://spring-in-bishkek.firebaseio.com</string>
+	<string>1:432303659716:ios:d05aecb13b7020768cc791</string>
 </dict>
 </plist>
