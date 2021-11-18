@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "432303659716",
-    "project_id": "lastochki-ozero",
-    "storage_bucket": "lastochki-ozero.appspot.com"
+    "project_number": "18136950981",
+    "project_id": "lastochki-ozero-test",
+    "storage_bucket": "lastochki-ozero-test.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:432303659716:android:7944dab23ed61dd88cc791",
+        "mobilesdk_app_id": "1:18136950981:android:a9e19978ef7ee71d8968ac",
         "android_client_info": {
-          "package_name": "openline.lastochki.ozero"
+          "package_name": "openline.lastochki.ozero.test"
         }
       },
       "oauth_client": [
         {
-          "client_id": "432303659716-kg6qmm52ct4foi9ajp01bsvi09o2djoh.apps.googleusercontent.com",
+          "client_id": "18136950981-plf8bs5ohq3r03ej2f6io3blahd62mcd.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD1ihoTqFrLEIZASP0N66VVWiVkae5i40k"
+          "current_key": "AIzaSyA7AXeITxcCa7NUNMwNxAgOeAWPM3BBVqQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "432303659716-kg6qmm52ct4foi9ajp01bsvi09o2djoh.apps.googleusercontent.com",
+              "client_id": "18136950981-plf8bs5ohq3r03ej2f6io3blahd62mcd.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
