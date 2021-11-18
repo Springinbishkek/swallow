@@ -490,7 +490,7 @@ class ChapterService {
                           });
                           RM.navigate.back();
                         }),
-                  SizedBox(height: 10),
+                  SizedBox(height: 5),
                   LButton(
                       buttonColor: whiteColor,
                       text: replayChapter.toString(),

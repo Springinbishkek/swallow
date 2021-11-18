@@ -17,7 +17,7 @@ class LButton extends StatelessWidget {
     @required this.func,
     this.icon,
     this.swallow,
-    this.iconOnRightSide = true,
+    this.iconOnRightSide = false,
     this.fontSize = 17,
     this.height = 45.0,
     this.buttonColor = accentColor,
@@ -32,29 +32,35 @@ class LButton extends StatelessWidget {
         return ElevatedButton.icon(
             onPressed: func, icon: _buildText(), label: _buildIcon());
       } else {
-        return ElevatedButton.icon(
-            onPressed: func, icon: _buildIcon(), label: _buildText());
+        return ElevatedButton(
+            onPressed: func,child: Row(
+              children: [
+                _buildIcon(),
+                _buildText(),
+              ],
+            ));
       }
     }
   }
 
-  EdgeInsets _getTextPadding() {
-    if (icon == null) {
-      return const EdgeInsets.symmetric(horizontal: 16.0);
-    } else {
-      if (iconOnRightSide) {
-        return const EdgeInsets.only(left: 16.0);
-      } else {
-        return const EdgeInsets.only(right: 16.0);
-      }
-    }
-  }
+  // EdgeInsets _getTextPadding() {
+  //   if (icon == null) {
+  //     return const EdgeInsets.symmetric(horizontal: 16.0);
+  //   } else {
+  //     if (iconOnRightSide) {
+  //       return const EdgeInsets.only(left: 16.0);
+  //     } else {
+  //       return const EdgeInsets.only(right: 16.0);
+  //     }
+  //   }
+  // }
 
   Widget _buildText() {
-    return Padding(
-      padding: _getTextPadding(),
+    return Expanded(
+      flex: 4,
       child: Text(
         text.toUpperCase(),
+        textAlign: TextAlign.center,
         style: TextStyle(
           color: _getChildColor(),
           fontWeight: FontWeight.bold,
@@ -75,25 +81,27 @@ class LButton extends StatelessWidget {
   }
 
   Widget _buildIcon() {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8.0, left: 8.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (swallow != null)
-            Text(
-              '+$swallow',
-              style: TextStyle(
-                  color: _getChildColor(),
-                  fontSize: fontSize,
-                  fontWeight: FontWeight.bold),
+    return Expanded(
+      flex: 1,
+      child: Center(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (swallow != null)
+              Text(
+                '+$swallow',
+                style: TextStyle(
+                    color: _getChildColor(),
+                    fontSize: fontSize,
+                    fontWeight: FontWeight.bold),
+              ),
+            Image.asset(
+              icon,
+              height: 14,
+              color: _getChildColor(),
             ),
-          Image.asset(
-            icon,
-            height: 14,
-            color: _getChildColor(),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
