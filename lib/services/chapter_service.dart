@@ -476,8 +476,10 @@ class ChapterService {
                 children: [
                   if (!isLast)
                     LButton(
+                        newStyle: true,
                         text: continueGame.toString(),
-                        swallow: END_SWALLOW_BONUS, //TODO
+                        swallow: END_SWALLOW_BONUS,
+                        //TODO
                         icon: swallowIcon,
                         func: () {
                           RM.get<ChapterService>().setState((s) {
@@ -492,6 +494,7 @@ class ChapterService {
                         }),
                   SizedBox(height: 5),
                   LButton(
+                      newStyle: true,
                       buttonColor: whiteColor,
                       text: replayChapter.toString(),
                       icon: refreshIcon,
@@ -504,6 +507,7 @@ class ChapterService {
                       }),
                   SizedBox(height: 5),
                   LButton(
+                    newStyle: true,
                     text: gameInst.toString(),
                     icon: instagramIcon,
                     func: () {
@@ -519,6 +523,7 @@ class ChapterService {
                   ),
                   SizedBox(height: 5),
                   LButton(
+                      newStyle: true,
                       icon: homeIcon,
                       buttonColor: whiteColor,
                       text: toHomePage.toString(),
