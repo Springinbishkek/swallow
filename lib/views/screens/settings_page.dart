@@ -62,28 +62,31 @@ class _SettingsPageState extends State<SettingsPage> {
         parameters: {'language': Name.curLocale.languageCode},
       );
     }
-    String name = _textNameController.text;
+
+    final String name = _textNameController.text;
     final chapterService = RM.get<ChapterService>();
-    if (chapterService.state.gameInfo.gameVariables['Main'] != name) {
-      chapterService.setState((s) => s.setGameParam(name: 'Main', value: name));
-      RM.get<AnalyticsService>().state.log(
-        name: 'player_name_change',
-        parameters: {'name': name},
-      );
-    }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(confirmChange.toString()),
-      ),
-    );
     if (name.startsWith('#')) {
-      ReactiveModel<ChapterService> chapterService =
-          RM.get<ChapterService>('ChapterService');
-      var cheat = name.substring(1).split(' ');
+      final cheat = name.substring(1).split(' ');
       if (cheat.length == 2) {
         await chapterService.state.prepareChapter(id: int.parse(cheat[1]));
       }
       chapterService.state.goNext(cheat[0]);
+      Navigator.of(context).pop();
+    } else {
+      if (chapterService.state.gameInfo.gameVariables['Main'] != name) {
+        chapterService.setState(
+          (s) => s.setGameParam(name: 'Main', value: name),
+        );
+        RM.get<AnalyticsService>().state.log(
+          name: 'player_name_change',
+          parameters: {'name': name},
+        );
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(confirmChange.toString()),
+        ),
+      );
     }
   }
 
