@@ -32,7 +32,7 @@ class LTextField extends StatelessWidget {
         // LengthLimitingTextInputFormatter(maxLength),
         LengthLimitingTextFieldFormatterFixed(
             maxLength), //TODO cut then previous fixed
-        FilteringTextInputFormatter.allow(RegExp('[а-яА-Я#0-9 ]')),
+        FilteringTextInputFormatter.allow(RegExp('[а-яА-Яa-zA-Z#0-9 ]')),
       ],
       controller: controller,
       onChanged: (String name) {
