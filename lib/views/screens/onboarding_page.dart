@@ -10,6 +10,8 @@ import 'package:lastochki/views/ui/l_language_checkbox.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
+// \u{00A0} is non-breaking space
+
 const Name aboutGame = Name(
   ru: 'Привет, главная героиня!',
   kg: 'Салам, башкы каарман!',
@@ -172,23 +174,26 @@ class _AboutGamePage extends StatelessWidget {
     return _Page(
       child: Column(
         children: [
+          SizedBox(height: 16),
           Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Text(
               aboutGame.toString(),
               style: titleTextStyle,
               textAlign: TextAlign.center,
             ),
           ),
+          SizedBox(height: 40),
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Text(
               aboutDecisions.toString(),
-              style: contentTextStyle,
+              style: contentTextStyle.apply(fontSizeFactor: .9),
               textAlign: TextAlign.center,
             ),
           ),
           Spacer(),
+          SizedBox(height: 16),
           _NextButton(nextFirstPage.toString(), onNext),
         ],
       ),

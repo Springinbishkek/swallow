@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class LCharacterImage extends StatefulWidget {
@@ -61,6 +63,17 @@ class _LCharacterImageState extends State<LCharacterImage>
   }
 }
 
+class MyCurve extends Curve {
+  final double strength;
+
+  const MyCurve(this.strength) : super();
+
+  @override
+  double transformInternal(double t) {
+    return pow(1 - pow(1 - t, strength), 1 / strength);
+  }
+}
+
 class AnimatedPhoto extends AnimatedWidget {
   // Make the Tweens static because they don't change.
   static final _opacityTween = Tween<double>(begin: 0, end: 1);
@@ -83,7 +96,7 @@ class AnimatedPhoto extends AnimatedWidget {
           child: buildImage(photoImages.first),
         ),
         Opacity(
-          opacity: opacity,
+          opacity: const MyCurve(1.5).transform(opacity),
           child: buildImage(photoImages.last),
         )
       ],
