@@ -93,7 +93,7 @@ class ChapterService {
         currentChapter == null);
   }
 
-  get bgImage {
+  ImageProvider get bgImage {
     return images['${gameInfo.currentBgName}'] ??
         AssetImage('assets/backgrounds/loading_background.jpg');
   }
