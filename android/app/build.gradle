@@ -62,7 +62,7 @@ android {
     defaultConfig {
         multiDexEnabled true
 
-        applicationId "openline.lastochki.ozero"
+        applicationId "openline.lastochki.ozero.test"
         minSdkVersion 19
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
