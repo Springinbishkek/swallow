@@ -126,53 +126,55 @@ class _GamePageState extends State<GamePage> {
         ),
         Align(
           alignment: Alignment.topCenter,
-          child: SizedBox(
-            height: kToolbarHeight,
-            child: AppBar(
-              leading: FittedBox(
-                fit: BoxFit.none,
-                child: LAction(
-                  child: Image.asset(
-                    homeIcon,
-                    height: 18,
-                    color: whiteColor,
-                  ),
-                  minWidth: 20,
-                  onTap: () {
-                    Navigator.popAndPushNamed(context, '/home');
-                  },
-                ),
-              ),
-              backgroundColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-              actions: [
-                FittedBox(
+          child: SafeArea(
+            child: SizedBox(
+              height: kToolbarHeight,
+              child: AppBar(
+                leading: FittedBox(
                   fit: BoxFit.none,
                   child: LAction(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          swallowIcon,
-                          height: 18,
-                          color: whiteColor,
-                        ),
-                        SizedBox(width: 5),
-                        Text(
-                          g.swallowCount.toString(), // TODO
-                          style: TextStyle(
-                            color: whiteColor,
-                            fontSize: 18,
-                            height: 1,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                    child: Image.asset(
+                      homeIcon,
+                      height: 18,
+                      color: whiteColor,
                     ),
-                    onTap: null,
+                    minWidth: 20,
+                    onTap: () {
+                      Navigator.popAndPushNamed(context, '/home');
+                    },
                   ),
                 ),
-              ],
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                actions: [
+                  FittedBox(
+                    fit: BoxFit.none,
+                    child: LAction(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            swallowIcon,
+                            height: 18,
+                            color: whiteColor,
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            g.swallowCount.toString(), // TODO
+                            style: TextStyle(
+                              color: whiteColor,
+                              fontSize: 18,
+                              height: 1,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      onTap: null,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
