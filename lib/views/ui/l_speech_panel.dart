@@ -132,7 +132,7 @@ class LSpeechPanel extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 10.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(15.0)),
-          color: Color(0xFF48BFF5),
+          color: Color(0xFF1675CC),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
