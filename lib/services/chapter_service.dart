@@ -318,7 +318,7 @@ class ChapterService {
             debugPrint('name: ${zipEntry.name}');
             debugPrint('uncompressedSize: ${zipEntry.uncompressedSize}');
             debugPrint('compressedSize: ${zipEntry.compressedSize}');
-            return ExtractOperation.extract;
+            return ZipFileOperation.includeItem;
           });
       List<FileSystemEntity> files = destinationDir.listSync();
       await Future.forEach(files, (element) async {

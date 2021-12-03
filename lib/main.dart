@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:lastochki/models/route_arguments.dart';
 import 'package:lastochki/services/analytics_service.dart';
 import 'package:lastochki/services/api_client.dart';
@@ -38,8 +37,6 @@ void main() async {
     provisional: false,
     sound: true,
   );
-  // TODO realize env changes
-  await DotEnv.load(fileName: '.env.development');
   runApp(App());
 }
 
