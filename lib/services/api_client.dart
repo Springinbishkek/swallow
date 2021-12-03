@@ -6,7 +6,7 @@ import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_info_popup.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
-final String baseUrl = 'http://176.126.164.108/public_test/';
+final String baseUrl = 'http://176.126.164.108/spring/';
 final int connectTimeout = 10000;
 
 class ApiClient {
