@@ -593,6 +593,15 @@ class ChapterService {
   void initGame({isPassageReqired = true}) {
     // print('initGame ${gameInfo.currentPassage}');
     if (gameInfo.currentPassage == null && isPassageReqired) {
+      //АНАЛИТИКА количество ласточек
+      RM.get<AnalyticsService>().state.log(
+        name: 'swallows_count',
+        parameters: {
+          'swallows': RM.get<ChapterService>().state.gameInfo.swallowCount,
+          'chapter': currentChapter,
+        },
+      );
+
       String pid = currentChapter?.story?.firstPid;
       goNext(pid);
     }
