@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Choice.dart';
 import 'package:lastochki/models/entities/GameInfo.dart';
@@ -289,7 +287,7 @@ class _GamePageState extends State<GamePage> {
   }
 
   void chooseOption(Choice o) {
-    ReactiveModel chapterService = RM.get<ChapterService>('ChapterService');
+    final chapterService = RM.get<ChapterService>('ChapterService');
     print(o.pid);
     if (chapterService.state.gameInfo.swallowCount < o.swallow) {
       showDialog(

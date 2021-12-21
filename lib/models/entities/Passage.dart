@@ -78,7 +78,7 @@ class Passage {
   factory Passage.fromBackendMap(Map<String, dynamic> map) {
     if (map == null) return null;
 
-    Map choiceLinks = {};
+    final choiceLinks = {};
     for (var item in (map['links'] ?? {})) {
       if (choiceLinks[item['pid']] == null) {
         choiceLinks[item['pid']] = item;

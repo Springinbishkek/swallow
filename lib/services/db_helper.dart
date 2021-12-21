@@ -82,7 +82,7 @@ class DBHelper {
 
   Future<List<Photo>> getPhotos() async {
     var dbClient = await db;
-    List<Map> maps =
+    final maps =
         await dbClient.query(TABLE, columns: [ID, NAME, CHAPTER_ID, DATA]);
     List<Photo> employees = [];
     if (maps.length > 0) {
@@ -137,7 +137,7 @@ class DBHelper {
     );
   }
 
-  Future close() async {
+  Future<void> close() async {
     var dbClient = await db;
     dbClient.close();
   }
