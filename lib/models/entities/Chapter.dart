@@ -64,7 +64,7 @@ class Chapter {
     };
   }
 
-  static Map<String, dynamic> getPrepared(Map m) {
+  static Map<String, dynamic> getPrepared(Map<String, dynamic> m) {
     Map<String, dynamic> map = Map.from(m);
     if (map['title_kg'].runtimeType == String) {
       map['title'] = {

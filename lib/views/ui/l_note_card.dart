@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Note.dart';
 import 'package:lastochki/models/route_arguments.dart';

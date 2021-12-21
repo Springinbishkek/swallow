@@ -63,11 +63,11 @@ class App extends StatelessWidget {
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
               home: SplashPage(),
-              onGenerateRoute: _routes,
+              onGenerateRoute: _route,
             ));
   }
 
-  Route _routes(RouteSettings settings) {
+  Route<void> _route(RouteSettings settings) {
     RM.get<AnalyticsService>().state.setCurrentScreen(
           screenName: settings.name,
         );
