@@ -114,11 +114,12 @@ class LSpeechPanel extends StatelessWidget {
   final bool isThinking;
   final GlobalKey textKey = GlobalKey();
 
-  LSpeechPanel(
-      {@required this.name,
-      @required this.speech,
-      this.isLeftSide = true,
-      this.isThinking = false});
+  LSpeechPanel({
+    @required this.name,
+    @required this.speech,
+    this.isLeftSide = true,
+    this.isThinking = false,
+  });
 
   Widget _buildNamePanel() {
     return Positioned(

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lastochki/models/route_arguments.dart';
 import 'package:lastochki/services/analytics_service.dart';
-import 'package:lastochki/services/api_client.dart';
 import 'package:lastochki/services/chapter_repository.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/screens/about_page.dart';
@@ -18,8 +17,6 @@ import 'package:lastochki/views/screens/settings_page.dart';
 import 'package:lastochki/views/screens/test_page.dart';
 import 'package:lastochki/views/screens/test_result_page.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
-
-import 'models/entities/Test.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,30 +38,27 @@ void main() async {
 }
 
 class App extends StatelessWidget {
-  final ApiClient apiClient = ApiClient();
-
   @override
   Widget build(BuildContext context) {
     return Injector(
-        inject: [
-          Inject(() => ChapterService(repository: ChapterRepository()),
-              name: 'ChapterService'),
-          Inject(() => FirebaseAnalyticsService(), name: 'AnalyticsService'),
+      inject: [
+        Inject(() => ChapterService(repository: ChapterRepository())),
+        Inject<AnalyticsService>(() => FirebaseAnalyticsService()),
+      ],
+      builder: (context) => MaterialApp(
+        navigatorObservers: [
+          RM.get<AnalyticsService>().state.navigationObserver,
         ],
-        builder: (context) => MaterialApp(
-              navigatorObservers: [
-                RM.get<AnalyticsService>().state.navigationObserver,
-              ],
-              navigatorKey: RM.navigate.navigatorKey,
-              title: 'Ласточки. Весна в Бишкеке',
-              theme: ThemeData(
-                fontFamily: 'SourceSansPro',
-                // primarySwatch:  MaterialColor(),
-                visualDensity: VisualDensity.adaptivePlatformDensity,
-              ),
-              home: SplashPage(),
-              onGenerateRoute: _route,
-            ));
+        navigatorKey: RM.navigate.navigatorKey,
+        title: 'Ласточки. Весна в Бишкеке',
+        theme: ThemeData(
+          fontFamily: 'SourceSansPro',
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: SplashPage(),
+        onGenerateRoute: _route,
+      ),
+    );
   }
 
   Route<void> _route(RouteSettings settings) {
@@ -75,71 +69,72 @@ class App extends StatelessWidget {
       case '/onboarding':
         {
           return MaterialPageRoute(
-              settings: settings,
-              builder: (BuildContext context) => OnboardingPage());
+            settings: settings,
+            builder: (_) => OnboardingPage(),
+          );
         }
       case '/about':
         {
           return MaterialPageRoute(
-              settings: settings,
-              builder: (BuildContext context) => AboutPage());
+            settings: settings,
+            builder: (_) => AboutPage(),
+          );
         }
       case '/home':
         {
           return MaterialPageRoute(
-              settings: settings,
-              builder: (BuildContext context) => HomePage());
+            settings: settings,
+            builder: (_) => HomePage(),
+          );
         }
       case '/game':
         {
           return MaterialPageRoute(
-              settings: settings,
-              builder: (BuildContext context) => GamePage());
+            settings: settings,
+            builder: (_) => GamePage(),
+          );
         }
       case '/notes':
         {
           return MaterialPageRoute(
-              settings: settings,
-              builder: (BuildContext context) => NotesPage());
+            settings: settings,
+            builder: (_) => NotesPage(),
+          );
         }
       case '/note':
         {
-          final ArgumentsNotePage args = settings.arguments;
+          final args = settings.arguments as ArgumentsNotePage;
           return MaterialPageRoute(
-              settings: settings,
-              builder: (BuildContext context) =>
-                  NotePage(note: args.note, onRead: args.onRead));
+            settings: settings,
+            builder: (_) => NotePage(note: args.note),
+          );
         }
       case '/settings':
         {
           return MaterialPageRoute(
-              settings: settings,
-              builder: (BuildContext context) => SettingsPage());
+            settings: settings,
+            builder: (_) => SettingsPage(),
+          );
         }
       case '/test':
         {
-          // final ArgumentsTestPage args = settings?.arguments;
-          ReactiveModel<ChapterService> service = RM.get<ChapterService>();
-          Test test = service.state.getTest();
+          final service = RM.get<ChapterService>();
+          final test = service.state.getTest();
           return MaterialPageRoute(
-              settings: settings,
-              builder: (BuildContext context) => TestPage(
-                    test: test,
-                    onTestPassed: ({bool successful}) {
-                      service.setState((s) =>
-                          s.onTestPassed(successful: successful ?? false));
-                    },
-                  ));
+            settings: settings,
+            builder: (_) => TestPage(test: test),
+          );
         }
       case '/test_result':
         {
-          final ArgumentsTestResultPage args = settings.arguments;
+          final args = settings.arguments as ArgumentsTestResultPage;
           return MaterialPageRoute(
-              settings: settings,
-              builder: (BuildContext context) => TestResultPage(
-                    questions: args.questions,
-                    userAnswers: args.userAnswers,
-                  ));
+            settings: settings,
+            builder: (_) => TestResultPage(
+              questions: args.questions,
+              userAnswers: args.userAnswers,
+            ),
+          );
         }
     }
     throw Exception('invalid page');

@@ -64,7 +64,10 @@ class ChapterRepository {
     }
   }
 
-  Future<StoryData> getStory(Chapter chapter, Function onReceiveProgress) async {
+  Future<StoryData> getStory(
+    Chapter chapter,
+    void Function(int, int) onReceiveProgress,
+  ) async {
     try {
       Directory tempDir = await getTemporaryDirectory();
       String tempFilePath = '${tempDir.path}/images.zip';
@@ -93,19 +96,10 @@ class ChapterRepository {
       return StoryData(
         story: Story.fromBackendMap(story),
         zipPath: tempFilePath,
-        notes: response.item2
-            .data['list']
+        notes: response.item2.data['list']
             .map<Note>((n) => Note.fromBackendMap(n, chapterId))
             .toList(),
       );
-    } catch (e) {
-      throw PersistanceException(e);
-    }
-  }
-
-  Future<void> loadChapter(String path, Function onReceiveProgress) async {
-    try {
-      await _apiClient.loadSource(path, onReceiveProgress);
     } catch (e) {
       throw PersistanceException(e);
     }

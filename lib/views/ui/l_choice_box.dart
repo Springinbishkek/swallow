@@ -6,28 +6,82 @@ import 'package:lastochki/views/ui/l_speech_panel.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
 class LChoiceBox extends StatelessWidget {
-  final String premiumStar = 'assets/icons/premium_star.png';
   final String name;
   final String speech;
   final bool isMain;
   final bool isThinking;
   final List<Choice> options;
-  final Function onChoose;
-  final Function onEndAnimation; //TODO
+  final ValueChanged<Choice> onChoose;
 
-  LChoiceBox(
-      {this.name,
-      @required this.speech,
-      @required this.options,
-      @required this.onChoose,
-      this.onEndAnimation,
-      this.isMain = false,
-      this.isThinking = false});
+  LChoiceBox({
+    this.name,
+    @required this.speech,
+    @required this.options,
+    @required this.onChoose,
+    this.isMain = false,
+    this.isThinking = false,
+  });
 
-  Widget _buildOptionButton(
-    Choice option,
-    double width,
-  ) {
+  Widget _buildButtons() {
+    return TweenAnimationBuilder(
+      tween: Tween<double>(begin: 0, end: 1),
+      duration: Duration(milliseconds: 300),
+      builder: (BuildContext context, double size, Widget child) {
+        return Column(
+          children: [
+            for (final option in options)
+              Transform.scale(
+                scale: size,
+                origin: Offset(0, 0),
+                child: _OptionsButton(
+                  option: option,
+                  onChoose: () => onChoose(option),
+                ),
+              )
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        LSpeechPanel(
+          name: name,
+          speech: speech,
+          isLeftSide: isMain,
+          isThinking: isThinking,
+        ),
+        if (options != null)
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            transform: Matrix4.translationValues(0, -7, 0),
+            child: SingleChildScrollView(
+              child: _buildButtons(),
+            ),
+          )
+      ],
+    );
+  }
+}
+
+class _OptionsButton extends StatelessWidget {
+  static const String premiumStar = 'assets/icons/premium_star.png';
+  final Choice option;
+  final VoidCallback onChoose;
+
+  const _OptionsButton({
+    Key /*?*/ key,
+    @required this.option,
+    @required this.onChoose,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width * 0.95;
     bool isPremium = option.swallow != null && option.swallow > 0;
     var variables = RM.get<ChapterService>().state.gameInfo.gameVariables;
     return Stack(
@@ -36,7 +90,6 @@ class LChoiceBox extends StatelessWidget {
         Container(
           width: width,
           margin: EdgeInsets.only(bottom: 5),
-          // margin: EdgeInsets.only(bottom: 8.0),
           decoration: BoxDecoration(
               borderRadius: boxBorderRadius,
               border: isPremium
@@ -62,7 +115,7 @@ class LChoiceBox extends StatelessWidget {
               highlightColor: isPremium ? Color(0xFFFAD289) : Color(0xFFA3D5EC),
               onTap: () {
                 debugPrint(option.toString());
-                onChoose(option);
+                onChoose();
               },
               child: Padding(
                 padding: const EdgeInsets.only(
@@ -71,12 +124,7 @@ class LChoiceBox extends StatelessWidget {
                   bottom: 10,
                   right: 10,
                 ),
-                child:
-                    // Text(
-                    //   option.name.toString(),
-                    //   style: contentTextStyle,
-                    // ),
-                    Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -130,55 +178,6 @@ class LChoiceBox extends StatelessWidget {
               ),
             ),
           ),
-      ],
-    );
-  }
-
-  Widget buildOption(Choice option, double width) {
-    return _buildOptionButton(option, width);
-  }
-
-  Widget _buildButtons(double width) {
-    return TweenAnimationBuilder(
-        tween: Tween<double>(begin: 0, end: 1),
-        duration: Duration(milliseconds: 300),
-        builder: (BuildContext context, double size, Widget child) {
-          List<Widget> children = [];
-          options.forEach((o) {
-            children.add(Transform.scale(
-              scale: size,
-              origin: Offset(0, 0),
-              child: buildOption(o, width),
-            ));
-          });
-
-          return Column(
-            children: children,
-          );
-        });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    double widgetWidth = MediaQuery.of(context).size.width;
-    double width = widgetWidth * 0.95;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        LSpeechPanel(
-            name: name,
-            speech: speech,
-            isLeftSide: isMain,
-            isThinking: isThinking),
-        if (options != null)
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            transform: Matrix4.translationValues(0.0, -7, 0.0),
-            child: SingleChildScrollView(
-              // TODO pass size to this widget container to calc scroll window, now dont work
-              child: _buildButtons(width),
-            ),
-          )
       ],
     );
   }

@@ -61,11 +61,10 @@ class _AboutPageState extends State<AboutPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: scaffoldBgColor,
-      appBar: lAppbar(
-          title: aboutGame.toString(),
-          func: () {
-            Navigator.pop(context);
-          }),
+      appBar: LAppBar(
+        title: aboutGame.toString(),
+        onBack: () => Navigator.pop(context),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: ListView(
