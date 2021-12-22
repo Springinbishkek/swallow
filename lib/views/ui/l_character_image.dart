@@ -109,8 +109,8 @@ class AnimatedPhoto extends AnimatedWidget {
     }
     return Image(
       image: photo,
-      width: 220,
-      height: 205,
+      width: 220 * 1.2,
+      height: 205 * 1.2,
       errorBuilder: (context, error, stackTrace) => photoPlaceholder,
     );
   }

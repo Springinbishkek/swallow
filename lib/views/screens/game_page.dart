@@ -353,7 +353,7 @@ class _GamePageState extends State<GamePage> {
         physics: ClampingScrollPhysics(),
         children: [
           // top padding
-          SizedBox(height: constraints.maxHeight * .29),
+          SizedBox(height: constraints.maxHeight * .2),
           if (characterImages != null && characterImages.length > 0)
             LCharacterImage(
               photoImages: characterImages,
