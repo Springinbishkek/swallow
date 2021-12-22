@@ -13,6 +13,7 @@ class PanelPainter extends CustomPainter {
 
   PanelPainter(
       {@required this.radius, @required this.side, this.isThinking = false});
+
   @override
   void paint(Canvas canvas, Size size) {
     const height = 25.0;
@@ -48,7 +49,7 @@ class PanelPainter extends CustomPainter {
       ..lineTo(radius + height / 2, height);
 
     final Path leftPath = Path()
-      ..moveTo(radius + height / 2, height)
+      ..moveTo(radius + height / 2 - 1, height)
       ..lineTo(radius + height / 2 + height, 0.0)
       ..lineTo(radius + height / 2 + height, height)
       ..lineTo(size.width - radius, height)
@@ -66,7 +67,7 @@ class PanelPainter extends CustomPainter {
       ..lineTo(radius + height / 2, height);
 
     final Path rightPath = Path()
-      ..moveTo(size.width - radius - height / 2 - height, height)
+      ..moveTo(size.width - radius - height / 2 - height, height + 2)
       ..lineTo(size.width - radius - height / 2 - height, 0.0)
       ..lineTo(size.width - radius - height / 2, height)
       ..lineTo(size.width - radius, height)
