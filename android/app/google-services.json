@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "881484575715",
+    "firebase_url": "https://spring-in-bishkek.firebaseio.com",
+    "project_id": "spring-in-bishkek",
+    "storage_bucket": "spring-in-bishkek.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881484575715:android:471b026f9be8b9ff16e6d6",
+        "android_client_info": {
+          "package_name": "info.scafandergames.lastochki"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881484575715-h7r6firj3ogqc5p7mujsi0r9mhjrg3r7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBx2bswa3Xw6bcHWOFwDnlcAhAinp75p5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881484575715-h7r6firj3ogqc5p7mujsi0r9mhjrg3r7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "881484575715-9j6254p1an1q6j2u0gua1918r2d9b99i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "info.scafandergames.lastochki"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

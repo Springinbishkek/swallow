@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/translation.dart';
 
 class LLoading extends StatelessWidget {
@@ -31,7 +31,7 @@ class LLoading extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .headline6
-                  .copyWith(color: Colors.white),
+                  .copyWith(color: loadingTextColor),
             ),
             SizedBox(height: 10),
             SizedBox(

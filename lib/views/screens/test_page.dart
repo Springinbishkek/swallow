@@ -168,11 +168,32 @@ class _TestPageState extends State<TestPage> {
     );
   }
 
-  Widget _buildBody({Widget testBox}) {
+  Widget _buildBody({@required Widget testBox}) {
     const double bottomControlsHeight = 200;
-    return Container(
-      margin: EdgeInsets.only(top: 8.0),
+    Widget _bottom({@required Widget child}) {
+      return Align(
+        alignment: Alignment.bottomCenter,
+        child: SizedBox(
+          width: double.infinity,
+          height: bottomControlsHeight,
+          child: child,
+        ),
+      );
+    }
+
+    return Padding(
+      padding: EdgeInsets.only(top: 8.0),
       child: Stack(children: [
+        _bottom(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(testBG),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ),
         SingleChildScrollView(
           child: Column(
             children: [
@@ -188,19 +209,11 @@ class _TestPageState extends State<TestPage> {
             ],
           ),
         ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            height: bottomControlsHeight,
-            decoration: BoxDecoration(
-              image:
-                  DecorationImage(image: AssetImage(testBG), fit: BoxFit.cover),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 36.0),
-              child: Center(
-                child: _buildButton(),
-              ),
+        _bottom(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 36),
+            child: Center(
+              child: _buildButton(),
             ),
           ),
         ),

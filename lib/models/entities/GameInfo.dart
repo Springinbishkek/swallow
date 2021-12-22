@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-
 import 'package:lastochki/models/entities/Passage.dart';
+
+const defaultMainPlayerName = 'Бегайым';
 
 class GameInfo {
   int currentChapterId;
@@ -17,6 +18,7 @@ class GameInfo {
   Map<String, dynamic> gameVariables;
 
   String currentBg;
+
   GameInfo({
     this.currentChapterId = 1,
     this.currentDBVersion = 0,
@@ -29,7 +31,7 @@ class GameInfo {
     this.languageCode,
     gameVariables,
     this.currentBg,
-  }) : this.gameVariables = gameVariables ?? {'Main': 'Бегайым'};
+  }) : this.gameVariables = gameVariables ?? {'Main': defaultMainPlayerName};
 
   GameInfo copyWith({
     int currentChapterId,

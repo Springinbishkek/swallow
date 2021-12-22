@@ -1,7 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:lastochki/models/route_arguments.dart';
+import 'package:lastochki/services/analytics_service.dart';
 import 'package:lastochki/services/api_client.dart';
 import 'package:lastochki/services/chapter_repository.dart';
 import 'package:lastochki/services/chapter_service.dart';
@@ -25,8 +27,16 @@ void main() async {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  // TODO realize env changes
-  await DotEnv.load(fileName: '.env.development');
+  await Firebase.initializeApp();
+  await FirebaseMessaging.instance.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
   runApp(App());
 }
 
@@ -39,8 +49,12 @@ class App extends StatelessWidget {
         inject: [
           Inject(() => ChapterService(repository: ChapterRepository()),
               name: 'ChapterService'),
+          Inject(() => FirebaseAnalyticsService(), name: 'AnalyticsService'),
         ],
         builder: (context) => MaterialApp(
+              navigatorObservers: [
+                RM.get<AnalyticsService>().state.navigationObserver,
+              ],
               navigatorKey: RM.navigate.navigatorKey,
               title: 'Ласточки. Весна в Бишкеке',
               theme: ThemeData(
@@ -54,6 +68,9 @@ class App extends StatelessWidget {
   }
 
   Route _routes(RouteSettings settings) {
+    RM.get<AnalyticsService>().state.setCurrentScreen(
+          screenName: settings.name,
+        );
     switch (settings.name) {
       case '/onboarding':
         {

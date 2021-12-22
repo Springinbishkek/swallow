@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Choice.dart';
 import 'package:lastochki/models/entities/GameInfo.dart';
 import 'package:lastochki/models/entities/Name.dart';
-import 'package:lastochki/utils/extentions.dart';
-
 import 'package:lastochki/models/entities/Passage.dart';
 import 'package:lastochki/services/chapter_service.dart';
+import 'package:lastochki/utils/extentions.dart';
 import 'package:lastochki/views/ui/l_action.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_character_image.dart';
@@ -121,62 +120,72 @@ class _GamePageState extends State<GamePage> {
             ),
           ),
         ),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          bottomNavigationBar: Row(
+        Material(
+          type: MaterialType.transparency,
+          child: Center(child: buildBody()),
+        ),
+        Align(
+          alignment: Alignment.topCenter,
+          child: SafeArea(
+            child: SizedBox(
+              height: kToolbarHeight,
+              child: AppBar(
+                leading: FittedBox(
+                  fit: BoxFit.none,
+                  child: LAction(
+                    child: Image.asset(
+                      homeIcon,
+                      height: 18,
+                      color: whiteColor,
+                    ),
+                    minWidth: 20,
+                    onTap: () {
+                      Navigator.popAndPushNamed(context, '/home');
+                    },
+                  ),
+                ),
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                actions: [
+                  FittedBox(
+                    fit: BoxFit.none,
+                    child: LAction(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            swallowIcon,
+                            height: 18,
+                            color: whiteColor,
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            g.swallowCount.toString(), // TODO
+                            style: TextStyle(
+                              color: whiteColor,
+                              fontSize: 18,
+                              height: 1,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      onTap: null,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               buildNotes(unreadCount: unreadNotes),
             ],
           ),
-          appBar: AppBar(
-              leading: FittedBox(
-                fit: BoxFit.none,
-                child: LAction(
-                  child: Image.asset(
-                    homeIcon,
-                    height: 18,
-                    color: whiteColor,
-                  ),
-                  minWidth: 20,
-                  onTap: () {
-                    Navigator.popAndPushNamed(context, '/home');
-                  },
-                ),
-              ),
-              backgroundColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-              actions: [
-                FittedBox(
-                  fit: BoxFit.none,
-                  child: LAction(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          swallowIcon,
-                          height: 18,
-                          color: whiteColor,
-                        ),
-                        SizedBox(width: 5),
-                        Text(
-                          g.swallowCount.toString(), // TODO
-                          style: TextStyle(
-                              color: whiteColor,
-                              fontSize: 18,
-                              height: 1,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    onTap: null,
-                    // () {
-                    //   // TODO
-                    // }
-                  ),
-                ),
-              ]),
-          body: buildBody(),
         ),
         // TODO clean condition
         if (g.currentChapterId == 1 && g.currentPassage.pid == firstPid)
@@ -325,62 +334,57 @@ class _GamePageState extends State<GamePage> {
     String characterName,
     List<Choice> options,
   }) {
-    return Stack(
-      children: [
-        IgnorePointer(
-          ignoring: characterName != null,
-          child: Opacity(
-            opacity: characterName == null ? 1 : 0,
-            child: Center(
-              child: LChoiceBox(
-                name: characterName,
-                speech: speech,
-                options: options,
-                onChoose: chooseOption,
-              ),
+    if (characterName == null) {
+      return SingleChildScrollView(
+        // hide scroll effects (glow on android, overscroll on ios)
+        physics: ClampingScrollPhysics(),
+        child: Center(
+          child: LChoiceBox(
+            name: characterName,
+            speech: speech,
+            options: options,
+            onChoose: chooseOption,
+          ),
+        ),
+      );
+    }
+    return LayoutBuilder(
+      // allow scrolling on small screens
+      builder: (context, constraints) => ListView(
+        // hide scroll effects (glow on android, overscroll on ios)
+        physics: ClampingScrollPhysics(),
+        children: [
+          // top padding
+          SizedBox(height: constraints.maxHeight * .29),
+          if (characterImages != null && characterImages.length > 0)
+            LCharacterImage(
+              photoImages: characterImages,
+              key: Key(pid.toString()),
+              isMain: isMain,
+              needTransition: isCharacterChanged,
+            ),
+          Container(
+            width: double.infinity,
+            transform: Matrix4.translationValues(0, -40, 0),
+            child: LChoiceBox(
+              name: characterName,
+              speech: speech,
+              isMain: isMain,
+              isThinking: isThinking,
+              options: options,
+              onChoose: chooseOption,
+              onEndAnimation: () {
+                setState(() {
+                  isStepDisabled = false;
+                });
+              },
             ),
           ),
-        ),
-        IgnorePointer(
-          ignoring: characterName == null,
-          child: Opacity(
-            opacity: characterName == null ? 0 : 1,
-            child: Column(mainAxisSize: MainAxisSize.max, children: [
-              Flexible(
-                flex: 1,
-                child: Center(),
-              ),
-              Flexible(
-                  flex: 3,
-                  child: Column(children: [
-                    if (characterImages != null && characterImages.length > 0)
-                      LCharacterImage(
-                        photoImages: characterImages,
-                        key: Key(pid.toString()),
-                        isMain: isMain,
-                        needTransition: isCharacterChanged,
-                      ),
-                    Container(
-                      width: double.infinity,
-                      transform: Matrix4.translationValues(0, -40, 0),
-                      child: LChoiceBox(
-                          name: characterName,
-                          speech: speech,
-                          isMain: isMain,
-                          isThinking: isThinking,
-                          options: options,
-                          onChoose: chooseOption,
-                          onEndAnimation: () {
-                            setState(() {
-                              isStepDisabled = false;
-                            });
-                          }),
-                    ),
-                  ]))
-            ]),
+          SizedBox(
+            height: 16,
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -398,7 +402,7 @@ class _GamePageState extends State<GamePage> {
         width: 36,
         child: Stack(
           children: [
-            Image.asset(notesIcon),
+            NotesIcon(),
             if (unreadCount > 0)
               Align(
                 alignment: Alignment(2, -1.8),

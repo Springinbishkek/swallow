@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>881484575715-9j6254p1an1q6j2u0gua1918r2d9b99i.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.881484575715-9j6254p1an1q6j2u0gua1918r2d9b99i</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAf8EWRsmp04oy4jTc1uw_Os2zz9UWef2c</string>
+	<key>GCM_SENDER_ID</key>
+	<string>881484575715</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>info.scafandergames.lastochki</string>
+	<key>PROJECT_ID</key>
+	<string>spring-in-bishkek</string>
+	<key>STORAGE_BUCKET</key>
+	<string>spring-in-bishkek.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:881484575715:ios:41ad6707e355632316e6d6</string>
+	<key>DATABASE_URL</key>
+	<string>https://spring-in-bishkek.firebaseio.com</string>
+</dict>
+</plist>

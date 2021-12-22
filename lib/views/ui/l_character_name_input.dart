@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lastochki/models/entities/GameInfo.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/ui/l_text_field.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
@@ -19,7 +20,8 @@ class _LCharacterNameInputState extends State<LCharacterNameInput> {
   @override
   void initState() {
     widget.controller.text =
-        RM.get<ChapterService>().state.getGameVariable('Main') ?? 'Бегайым';
+        RM.get<ChapterService>().state.getGameVariable('Main') ??
+            defaultMainPlayerName;
     super.initState();
   }
 

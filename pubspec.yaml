@@ -15,7 +15,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 2.0.9+209
+version: 2.1.7+217
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -23,22 +23,33 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  auto_size_text: 2.1.0
-  cupertino_icons: ^1.0.2
   device_info: ^2.0.0
-  dio: ^3.0.10
-  flutter_archive: ^3.0.0
-  flutter_cache_manager: 2.1.2
-  flutter_dotenv: 3.1.0
+  dio: ^4.0.0
+  flutter_archive: ^4.1.0
+  sqflite: ^2.0.0
   flutter_html: ^2.0.0
   package_info: ^2.0.0
-  path_provider: 2.0.1
+  path_provider: ^2.0.1
   shared_preferences: ^2.0.5
   states_rebuilder: ^4.0.0+1
   url_launcher: ^6.0.2
+  firebase_core: ^1.7.0
+  firebase_messaging: ^11.0.0
+  firebase_analytics: ^8.3.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.9.2
+
+# flutter pub run flutter_launcher_icons:main
+flutter_icons:
+  android: true
+  image_path_android: "assets/launcher_icons/icon.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/launcher_icons/android_foreground.png"
+  ios: true
+  image_path_ios: "assets/launcher_icons/ios.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -57,5 +68,3 @@ flutter:
   assets:
     - assets/icons/
     - assets/backgrounds/
-    - .env.production
-    - .env.development

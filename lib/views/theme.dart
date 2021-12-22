@@ -7,6 +7,8 @@ const Color textColor = Color(0xFF1F2E6C);
 const Color accentColor = Color(0xFF31D3B2);
 const Color whiteColor = Color(0xFFFFFFFF);
 const Color boxBorderColor = Color(0xFFA4E3FF);
+const Color languageBorderColor = menuBgColor;
+const Color loadingTextColor = whiteColor;
 const Color errorColor = Color(0xFFD83E58);
 
 const TextStyle titleTextStyle =
@@ -30,7 +32,8 @@ final String alertImg = 'assets/icons/mw_alert.png';
 final String endImg = 'assets/icons/mw_end_book.png';
 
 final String homeIcon = 'assets/icons/home.png';
-final String notesIcon = 'assets/icons/notes.png';
+final String notesIconBg = 'assets/icons/notes_bg.png';
+final String notesIconFg = 'assets/icons/notes_fg.png';
 final String aboutIcon = 'assets/icons/about.png';
 final String settingsIcon = 'assets/icons/settings_home_icon.png';
 final String instagramIcon = 'assets/icons/instagram.png';
@@ -48,3 +51,16 @@ final String testImg = 'assets/icons/mw_test.png';
 final String noteImg = 'assets/icons/mw_note.png';
 final String swallowImg = 'assets/icons/mw_swallow.png';
 final String sponsoesImg = 'assets/icons/sponsors.png';
+
+class NotesIcon extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Image.asset(notesIconBg, color: whiteColor),
+        Image.asset(notesIconFg, color: accentColor),
+      ],
+    );
+  }
+}
+

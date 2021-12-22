@@ -24,7 +24,9 @@ import 'package:lastochki/views/ui/l_info_popup.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import 'analytics_service.dart';
 import 'db_helper.dart';
 
 const SP_GAME_INFO_NAME = 'gameInfo';
@@ -91,7 +93,7 @@ class ChapterService {
         currentChapter == null);
   }
 
-  get bgImage {
+  ImageProvider get bgImage {
     return images['${gameInfo.currentBgName}'] ??
         AssetImage('assets/backgrounds/loading_background.jpg');
   }
@@ -316,7 +318,7 @@ class ChapterService {
             debugPrint('name: ${zipEntry.name}');
             debugPrint('uncompressedSize: ${zipEntry.uncompressedSize}');
             debugPrint('compressedSize: ${zipEntry.compressedSize}');
-            return ExtractOperation.extract;
+            return ZipFileOperation.includeItem;
           });
       List<FileSystemEntity> files = destinationDir.listSync();
       await Future.forEach(files, (element) async {
@@ -502,6 +504,21 @@ class ChapterService {
                       }),
                   SizedBox(height: 5),
                   LButton(
+                    text: gameInst.toString(),
+                    icon: instagramIcon,
+                    func: () {
+                      RM
+                          .get<AnalyticsService>()
+                          .state
+                          .log(name: 'instagram_open');
+                      launch(
+                        'https://instagram.com/vesna_v_bishkeke?igshid=1w94jf7ztsgsg',
+                      );
+                    },
+                    buttonColor: whiteColor,
+                  ),
+                  SizedBox(height: 5),
+                  LButton(
                       icon: homeIcon,
                       buttonColor: whiteColor,
                       text: toHomePage.toString(),
@@ -526,11 +543,7 @@ class ChapterService {
         switch (setting[0]) {
           case 'SetAccessToNote':
             gameInfo.accessNoteId = int.parse(setting[1]);
-            if (gameInfo.accessNoteId == 1) {
-              showFirstNotePopup();
-            } else {
-              showNewNotePopup();
-            }
+            showNotePopup(isFirstNote: gameInfo.accessNoteId == 1);
             break;
           case 'SetIntVar':
             gameInfo.gameVariables[setting[1]] = int.parse(setting[2]);
@@ -548,56 +561,28 @@ class ChapterService {
     saveGameInfo();
   }
 
-  void showFirstNotePopup() {
-    // first note
-    RM.navigate.toDialog(
-      LInfoPopup(
-          isCloseEnable: true,
-          image: noteImg,
-          title: firstNoteTitle.toString(),
-          content: firstNoteContent.toString(),
-          actions: Column(
-            children: [
-              LButton(
-                  text: readNote.toString(),
-                  func: () {
-                    RM.navigate.backAndToNamed('/notes');
-                  }),
-              LButton(
-                  buttonColor: whiteColor,
-                  text: backToChapter.toString(),
-                  func: () {
-                    RM.navigate.back();
-                  }),
-            ],
-          )),
-    );
-  }
-
-  void showNewNotePopup() {
-    // first note
+  void showNotePopup({@required bool isFirstNote}) {
     RM.navigate.toDialog(
       LInfoPopup(
         isCloseEnable: true,
         image: noteImg,
-        title: newNoteTitle.toString(),
-        content: newNoteContent.toString(),
-        actions: Column(
-          children: [
-            LButton(
-              text: readNote.toString(),
-              func: () {
-                RM.navigate.backAndToNamed('/notes');
-              },
-            ),
-            LButton(
-              buttonColor: whiteColor,
-              text: backToChapter.toString(),
-              func: () {
-                RM.navigate.back();
-              },
-            ),
-          ],
+        title: (isFirstNote ? firstNoteTitle : newNoteTitle).toString(),
+        content: (isFirstNote ? firstNoteContent : newNoteContent).toString(),
+        actions: IntrinsicWidth(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              LButton(
+                text: readNote.toString(),
+                func: () => RM.navigate.backAndToNamed('/notes'),
+              ),
+              LButton(
+                buttonColor: whiteColor,
+                text: backToChapter.toString(),
+                func: () => RM.navigate.back(),
+              ),
+            ],
+          ),
         ),
       ),
     );

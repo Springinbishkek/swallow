@@ -22,13 +22,8 @@ if (flutterVersionName == null) {
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
-// apply from: project(':flutter_config').projectDir.getPath() + "/dotenv.gradle"
-project.ext.envConfigFiles = [
-        debug: ".env.development",
-        release: ".env.production",
-]
+apply plugin: 'com.google.gms.google-services'  // Google Services plugin for Firebase
 
 def keystoreProperties = new Properties()
 if (gradle.startParameter.taskNames.any { it in ['assembleRelease', 'bundleRelease'] }) {
@@ -49,16 +44,14 @@ storeFile=<location of the key store file>''')
 android {
     compileSdkVersion 30
 
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
-
-    lintOptions {
-        disable 'InvalidPackage'
-        checkReleaseBuilds false
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     defaultConfig {
+        multiDexEnabled true
+
         applicationId "info.scafandergames.lastochki"
         minSdkVersion 19
         targetSdkVersion 30
@@ -87,5 +80,5 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.multidex:multidex:2.0.1'
 }
