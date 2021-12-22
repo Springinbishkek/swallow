@@ -639,8 +639,8 @@ class ChapterService {
   }
 
   void onTestPassed({@required bool successful}) {
-    gameInfo.numberOfTestAttempt++;
     if (successful) {
+      gameInfo.numberOfTestAttempt++;
       gameInfo.swallowCount += TEST_SWALLOW;
     }
     saveGameInfo();
