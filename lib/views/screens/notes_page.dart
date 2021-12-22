@@ -3,7 +3,6 @@ import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/models/entities/Note.dart';
 import 'package:lastochki/models/entities/PopupText.dart';
 import 'package:lastochki/models/entities/Test.dart';
-import 'package:lastochki/models/route_arguments.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_appbar.dart';
@@ -14,29 +13,39 @@ import 'package:states_rebuilder/states_rebuilder.dart';
 
 import '../translation.dart';
 
+const Name bottom = Name(
+  ru: 'Хочешь больше ласточек?',
+  kg: 'Көбүрөөк чабалекей алгың келеби?',
+);
+const Name title = Name(
+  ru: 'Тест',
+  kg: 'Тест',
+);
+const Name content = Name(
+  ru: 'Ответь правильно на все вопросы и получи новую стаю ласточек!',
+  kg: 'Бардык суроолорго туура жооп берип, чабалекейлердин үйүрүн толукта!',
+);
+const Name startTest = Name(
+  ru: 'Начать тест',
+  kg: 'Тестти баштоо',
+);
+const Name noNotes = Name(
+  ru: 'Скоро будут ещё!',
+  kg: 'Жакында дагы жаңысы болот!',
+);
+
 class NotesPage extends StatefulWidget {
   @override
   _NotesPageState createState() => _NotesPageState();
 }
 
 class _NotesPageState extends State<NotesPage> {
-  Name bottom = Name(
-      ru: 'Хочешь больше ласточек?', kg: 'Көбүрөөк чабалекей алгың келеби?');
-  Name title = Name(ru: 'Тест', kg: 'Тест');
-  Name content = Name(
-      ru: 'Ответь правильно на все вопросы и получи новую стаю ласточек!',
-      kg: 'Бардык суроолорго туура жооп берип, чабалекейлердин үйүрүн толукта!');
-  Name startTest = Name(ru: 'Начать тест', kg: 'Тестти баштоо');
-  final Name noNotes =
-      Name(ru: 'Скоро будут ещё!', kg: 'Жакында дагы жаңысы болот!');
-
   void _navigateBack() {
     Navigator.pop(context);
   }
 
-  void _navigateToNewTest(Test test, Function onPassed) {
-    Navigator.of(context).popAndPushNamed('/test',
-        arguments: ArgumentsTestPage(test: test, onTestPassed: onPassed));
+  void _navigateToNewTest(Test test) {
+    Navigator.of(context).popAndPushNamed('/test');
   }
 
   void _openNoTestPopup(PopupText popupText) {
@@ -50,30 +59,27 @@ class _NotesPageState extends State<NotesPage> {
             actions: LButton(text: toNotes.toString(), func: _navigateBack)));
   }
 
-  void _openTestPopup(Test test, Function onPassed) {
+  void _openTestPopup(Test test) {
     showDialog(
         barrierDismissible: false,
         context: context,
-        builder: (BuildContext context) => LInfoPopup(
+        builder: (context) => LInfoPopup(
               image: testImg,
               title: title.toString(),
               content: content.toString(),
               actions: LButton(
                   text: startTest.toString(),
-                  func: () => _navigateToNewTest(test, onPassed)),
+                  func: () => _navigateToNewTest(test)),
             ));
   }
 
-  Function _getPopupToOpen() {
+  VoidCallback _getPopupToOpen() {
     var service = RM.get<ChapterService>('ChapterService');
     Test test = service.state.getTest();
     if (test == null) {
       return () => _openNoTestPopup(service.state.getPopupText());
     }
-    return () => _openTestPopup(test, ({bool successful}) {
-          service
-              .setState((s) => s.onTestPassed(successful: successful ?? false));
-        });
+    return () => _openTestPopup(test);
   }
 
   Widget _buildBottom() {
@@ -125,13 +131,7 @@ class _NotesPageState extends State<NotesPage> {
                 itemBuilder: (context, index) => LNoteCard(
                     index: index,
                     note: notes[index],
-                    onRead: () {
-                      service.setState((s) {
-                        if (notes[index].isRead == null) {
-                          s.onNewNoteRead(notes[index].id);
-                        }
-                      });
-                    }))));
+                    ))));
   }
 
   @override
@@ -145,16 +145,19 @@ class _NotesPageState extends State<NotesPage> {
         bool isOneNote = chapterService.state.getNotes().length == 1;
         return Scaffold(
           backgroundColor: scaffoldBgColor,
-          appBar: lAppbar(title: notes.toString(), func: _navigateBack),
+          appBar: LAppBar(title: notes.toString(), onBack: _navigateBack),
           body: Stack(
             children: [
               if (isOneNote)
                 Center(
-                    child: Text(
-                  noNotes.toString(),
-                  style: TextStyle(
-                      color: textColor.withOpacity(0.6), fontSize: 17.0),
-                )),
+                  child: Text(
+                    noNotes.toString(),
+                    style: TextStyle(
+                      color: textColor.withOpacity(0.6),
+                      fontSize: 17,
+                    ),
+                  ),
+                ),
               _buildNotesBody()
             ],
           ),

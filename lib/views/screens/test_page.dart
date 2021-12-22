@@ -13,10 +13,14 @@ import 'package:states_rebuilder/states_rebuilder.dart';
 import '../translation.dart';
 
 class TestPage extends StatefulWidget {
-  final Test test;
-  final TestPassFunction onTestPassed;
+  final Test /*?*/ test;
 
-  TestPage({@required this.test, @required this.onTestPassed});
+  void onTestPassed({@required bool successful}) {
+    final service = RM.get<ChapterService>();
+    service.setState((s) => s.onTestPassed(successful: successful));
+  }
+
+  TestPage({@required this.test});
 
   @override
   _TestPageState createState() => _TestPageState();
@@ -24,8 +28,8 @@ class TestPage extends StatefulWidget {
 
 class _TestPageState extends State<TestPage> {
   final PageController _testPageController = PageController(initialPage: 0);
-  final String rocketImg = 'assets/icons/mw_rocket.png';
-  final String cloverImg = 'assets/icons/mw_clover.png';
+  static const String rocketImg = 'assets/icons/mw_rocket.png';
+  static const String cloverImg = 'assets/icons/mw_clover.png';
   Test test;
 
   int _currentPage = 0;
@@ -39,7 +43,7 @@ class _TestPageState extends State<TestPage> {
   void initState() {
     test = widget.test ?? Test(questions: []);
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.test == null) {
         PopupText popupText = RM.get<ChapterService>().state.getPopupText();
         showDialog(
@@ -108,9 +112,7 @@ class _TestPageState extends State<TestPage> {
                         // TODO unificate swallow logic, too long handlers chain
                         widget.onTestPassed(successful: false);
                         Navigator.pop(context);
-                        Navigator.pushReplacementNamed(context, '/test',
-                            arguments: ArgumentsTestPage(
-                                test: test, onTestPassed: widget.onTestPassed));
+                        Navigator.pushReplacementNamed(context, '/test');
                       }),
                   SizedBox(
                     height: 8.0,

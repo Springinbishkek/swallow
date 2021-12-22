@@ -371,11 +371,11 @@ class _GamePageState extends State<GamePage> {
               isThinking: isThinking,
               options: options,
               onChoose: chooseOption,
-              onEndAnimation: () {
+              /*onEndAnimation: () {
                 setState(() {
                   isStepDisabled = false;
                 });
-              },
+              },*/
             ),
           ),
           SizedBox(

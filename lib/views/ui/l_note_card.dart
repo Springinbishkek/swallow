@@ -11,42 +11,41 @@ class LNoteCard extends StatelessWidget {
 
   final int index;
   final Note note;
-  final Function onRead;
 
-  LNoteCard({@required this.index, @required this.note, @required this.onRead});
+  LNoteCard({@required this.index, @required this.note});
 
   Widget _buildReadIcon() {
     return Container(
-        height: 24.0,
-        margin: EdgeInsets.only(top: 10, right: 0),
-        padding: EdgeInsets.all(2.0),
-        decoration: BoxDecoration(color: accentColor, shape: BoxShape.circle),
-        child: CircleAvatar(
-          backgroundColor: accentColor,
-          child: Image.asset(
-            checkIcon,
-            height: 14,
-          ),
-        ));
+      height: 24.0,
+      margin: EdgeInsets.only(top: 10, right: 0),
+      padding: EdgeInsets.all(2.0),
+      decoration: BoxDecoration(color: accentColor, shape: BoxShape.circle),
+      child: CircleAvatar(
+        backgroundColor: accentColor,
+        child: Image.asset(
+          checkIcon,
+          height: 14,
+        ),
+      ),
+    );
   }
 
-  Widget _buildUnreadIcon({int profit}) {
+  Widget _buildUnreadIcon({@required int profit}) {
     Color blueColor = Color(0xFF2589F6);
     return Container(
       height: 26,
-      width: 60.0,
-      margin: EdgeInsets.only(top: 10, right: 8.0, left: 16.0),
-      padding: EdgeInsets.all(4.0),
+      width: 60,
+      margin: EdgeInsets.only(top: 10, right: 8, left: 16),
+      padding: EdgeInsets.all(4),
       decoration: BoxDecoration(
-        border: Border.all(color: blueColor, width: 2.0),
-        borderRadius: BorderRadius.all(Radius.circular(14.0)),
+        border: Border.all(color: blueColor, width: 2),
+        borderRadius: BorderRadius.all(Radius.circular(14)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.baseline,
         textBaseline: TextBaseline.alphabetic,
-        children: <Widget>[
+        children: [
           Flexible(
-            flex: 1,
             fit: FlexFit.tight,
             child: Text(
               '+$profit',
@@ -69,7 +68,7 @@ class LNoteCard extends StatelessWidget {
     bool isRead = note.isRead ?? false;
     if (note.swallow == 0 && !isRead) {
       return Container(
-        margin: EdgeInsets.symmetric(horizontal: 24.0),
+        margin: EdgeInsets.symmetric(horizontal: 24),
       );
     } else if (isRead) {
       return _buildReadIcon();
@@ -80,16 +79,15 @@ class LNoteCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0, bottom: 4.0),
+      padding: const EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 4),
       child: GestureDetector(
         onTap: () {
           Navigator.pushNamed(context, '/note',
-              arguments: ArgumentsNotePage(note: note, onRead: onRead));
+              arguments: ArgumentsNotePage(note: note));
         },
         child: Container(
             height: 85,
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.symmetric(horizontal: 8),
             decoration: BoxDecoration(
               borderRadius: boxBorderRadius,
               image: DecorationImage(
@@ -108,14 +106,14 @@ class LNoteCard extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.only(left: 16.0, right: 8.0),
+                    margin: EdgeInsets.only(left: 16, right: 8),
                     child: Text(
                       '${index + 1}. ${note.title}',
                       maxLines: 3,
                       style: note.isRead ?? false
                           ? TextStyle(
                               color: textColor.withOpacity(0.6),
-                              fontSize: 17.0,
+                              fontSize: 17,
                               fontWeight: FontWeight.bold)
                           : subtitleTextStyle,
                     ),
