@@ -21,7 +21,7 @@ const TextStyle subtitleLightTextStyle = TextStyle(
   color: textColor,
   fontSize: 17.0,
 );
-const TextStyle contentTextStyle = TextStyle(color: textColor, fontSize: 21.0);
+const TextStyle contentTextStyle = TextStyle(color: textColor, fontSize: 18.0);
 const TextStyle appbarTextStyle =
     TextStyle(color: textColor, fontSize: 21.0, fontWeight: FontWeight.bold);
 const TextStyle noteTextStyle = TextStyle(color: textColor, fontSize: 17.0);

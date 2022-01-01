@@ -44,13 +44,7 @@ class Story {
     if (map == null) return null;
     Map<String, Passage> m = {};
     map['script'].forEach((k, v) {
-      Map value;
-      if (v is String) {
-        value = json.decode(v);
-      } else {
-        value = v;
-      }
-      m[k] = Passage.fromMap(value);
+      m[k] = Passage.fromMap(v is String ? json.decode(v) : v);
     });
 
     return Story(

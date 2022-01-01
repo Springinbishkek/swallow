@@ -66,12 +66,12 @@ class _LTestBoxState extends State<LTestBox> {
     return _buildCheckIcon(color: Colors.transparent, icon: null);
   }
 
-  Widget _buildRadioButton(int val, Function func) {
+  Widget _buildRadioButton(int val, ValueChanged<int> func) {
     return Radio(
         activeColor: textColor,
         value: val,
         groupValue: _radioVal,
-        onChanged: (int value) => Function.apply(func, [value]));
+        onChanged: func);
   }
 
   Widget _buildCheckBox(int val, String answer) {

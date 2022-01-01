@@ -1,30 +1,21 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/translation.dart';
 import 'package:lastochki/views/ui/l_button.dart';
-import 'dart:convert';
-
 import 'package:lastochki/views/ui/l_info_popup.dart';
 import 'package:lastochki/views/ui/l_loading.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
+import 'package:tuple/tuple.dart';
 
-class Utility {
-  static Image imageFromBase64String(String base64String) {
-    return Image.memory(
-      base64Decode(base64String),
-      fit: BoxFit.fill,
-    );
-  }
+extension Tuple2FX<T1, T2> on Tuple2<Future<T1>, Future<T2>> {
+  Future<Tuple2<T1, T2>> get wait =>
+      Future.wait([item1, item2]).then((it) => Tuple2.fromList(it));
+}
 
-  static Uint8List dataFromBase64String(String base64String) {
-    return base64Decode(base64String);
-  }
-
-  static String base64String(Uint8List data) {
-    return base64Encode(data);
-  }
+extension Tuple3FX<T1, T2, T3> on Tuple3<Future<T1>, Future<T2>, Future<T3>> {
+  Future<Tuple3<T1, T2, T3>> get wait =>
+      Future.wait([item1, item2, item3]).then((it) => Tuple3.fromList(it));
 }
 
 void onRestartGame(BuildContext context) async {

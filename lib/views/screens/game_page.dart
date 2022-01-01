@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Choice.dart';
 import 'package:lastochki/models/entities/GameInfo.dart';
@@ -289,7 +287,7 @@ class _GamePageState extends State<GamePage> {
   }
 
   void chooseOption(Choice o) {
-    ReactiveModel chapterService = RM.get<ChapterService>('ChapterService');
+    final chapterService = RM.get<ChapterService>('ChapterService');
     print(o.pid);
     if (chapterService.state.gameInfo.swallowCount < o.swallow) {
       showDialog(
@@ -355,7 +353,7 @@ class _GamePageState extends State<GamePage> {
         physics: ClampingScrollPhysics(),
         children: [
           // top padding
-          SizedBox(height: constraints.maxHeight * .29),
+          SizedBox(height: constraints.maxHeight * .2),
           if (characterImages != null && characterImages.length > 0)
             LCharacterImage(
               photoImages: characterImages,
@@ -373,11 +371,11 @@ class _GamePageState extends State<GamePage> {
               isThinking: isThinking,
               options: options,
               onChoose: chooseOption,
-              onEndAnimation: () {
+              /*onEndAnimation: () {
                 setState(() {
                   isStepDisabled = false;
                 });
-              },
+              },*/
             ),
           ),
           SizedBox(

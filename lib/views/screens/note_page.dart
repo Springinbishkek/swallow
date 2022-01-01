@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
 import 'package:lastochki/models/entities/Note.dart';
+import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/translation.dart';
 import 'package:lastochki/views/ui/l_button.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
 
 class NotePage extends StatefulWidget {
   final Note note;
-  final Function onRead;
 
-  NotePage({@required this.note, @required this.onRead});
+  void onRead() {
+    RM.get<ChapterService>().setState((s) {
+      if (note.isRead == null) {
+        s.onNewNoteRead(note.id);
+      }
+    });
+  }
+
+  NotePage({@required this.note});
 
   @override
   _NotePageState createState() => _NotePageState();
