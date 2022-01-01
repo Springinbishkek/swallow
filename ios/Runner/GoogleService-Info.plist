@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>432303659716-muj17veks24qh2q65teje4ji7us87821.apps.googleusercontent.com</string>
+	<string>18136950981-mghparug65u9o6robs7l9u32ql5d33dp.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.432303659716-muj17veks24qh2q65teje4ji7us87821</string>
+	<string>com.googleusercontent.apps.18136950981-mghparug65u9o6robs7l9u32ql5d33dp</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDuoKYx1W3PFNRJa1oa7zW7O4hff3mlUTw</string>
+	<string>AIzaSyCRyMq55UAd6W4BTE9PtH_afSdQ08tXFsA</string>
 	<key>GCM_SENDER_ID</key>
-	<string>432303659716</string>
+	<string>18136950981</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>openline.lastochki.ozero</string>
+	<string>openline.lastochki.ozero.test</string>
 	<key>PROJECT_ID</key>
-	<string>lastochki-ozero</string>
+	<string>lastochki-ozero-test</string>
 	<key>STORAGE_BUCKET</key>
-	<string>lastochki-ozero.appspot.com</string>
+	<string>lastochki-ozero-test.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:432303659716:ios:d05aecb13b7020768cc791</string>
+	<string>1:18136950981:ios:29e79421e279ed838968ac</string>
 </dict>
 </plist>

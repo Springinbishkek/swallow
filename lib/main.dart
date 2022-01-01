@@ -50,7 +50,7 @@ class App extends StatelessWidget {
           RM.get<AnalyticsService>().state.navigationObserver,
         ],
         navigatorKey: RM.navigate.navigatorKey,
-        title: 'Ласточки. Тайна Сары-Кёль',
+        title: 'lake_test',
         theme: ThemeData(
           fontFamily: 'SourceSansPro',
           visualDensity: VisualDensity.adaptivePlatformDensity,
