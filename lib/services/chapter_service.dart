@@ -498,6 +498,16 @@ class ChapterService {
                       text: replayChapter.toString(),
                       icon: refreshIcon,
                       func: () {
+                        RM.get<AnalyticsService>().state.log(
+                          name: 'replay_chapter',
+                          parameters: {
+                            'chapter_number': RM
+                                .get<ChapterService>()
+                                .state
+                                .gameInfo
+                                .currentChapterId
+                          },
+                        );
                         RM.get<ChapterService>().setState((s) {
                           gameInfo.currentPassage = null;
                           s.initGame();
