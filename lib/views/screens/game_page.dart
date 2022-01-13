@@ -3,6 +3,7 @@ import 'package:lastochki/models/entities/Choice.dart';
 import 'package:lastochki/models/entities/GameInfo.dart';
 import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/models/entities/Passage.dart';
+import 'package:lastochki/services/analytics_service.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/utils/extentions.dart';
 import 'package:lastochki/views/ui/l_action.dart';
@@ -289,6 +290,23 @@ class _GamePageState extends State<GamePage> {
   void chooseOption(Choice o) {
     final chapterService = RM.get<ChapterService>('ChapterService');
     print(o.pid);
+    if (o.swallow > 0) {
+      if (o.swallow == chapterService.state.gameInfo.swallowCount)
+        RM.get<AnalyticsService>().state.log(
+          name: 'swallows_count_test',
+          parameters: {'count': 'exactly'},
+        );
+      else if (chapterService.state.gameInfo.swallowCount < o.swallow)
+        RM.get<AnalyticsService>().state.log(
+          name: 'swallows_count_test',
+          parameters: {'count': 'not enough'},
+        );
+      else
+        RM.get<AnalyticsService>().state.log(
+          name: 'swallows_count_test',
+          parameters: {'count': 'more than enough'},
+        );
+    }
     if (chapterService.state.gameInfo.swallowCount < o.swallow) {
       showDialog(
         barrierDismissible: false,
