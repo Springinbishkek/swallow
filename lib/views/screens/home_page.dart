@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lastochki/models/entities/Chapter.dart';
 import 'package:lastochki/models/entities/GameInfo.dart';
 import 'package:lastochki/models/entities/Name.dart';
+import 'package:lastochki/services/analytics_service.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/utils/utility.dart';
 import 'package:lastochki/views/screens/cover_page.dart';
@@ -226,6 +227,9 @@ class _GameActions extends StatelessWidget {
         _GameActionsItem(
           text: aboutGame.toString(),
           onTap: () {
+            RM.get<AnalyticsService>().state.log(
+              name: 'about_open',
+            );
             Navigator.of(context).pushNamed('/about');
           },
           icon: Image.asset(aboutIcon, color: accentColor),
