@@ -3,6 +3,7 @@ import 'package:lastochki/models/entities/AnswerOption.dart';
 import 'package:lastochki/models/entities/PopupText.dart';
 import 'package:lastochki/models/entities/Test.dart';
 import 'package:lastochki/models/route_arguments.dart';
+import 'package:lastochki/services/analytics_service.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/ui/l_button.dart';
@@ -87,6 +88,18 @@ class _TestPageState extends State<TestPage> {
     if (isSuccessful) {
       _openWellDonePopup();
     } else {
+      for (int i = 0; i < _chosenAnswers.length; i++) {
+        if (!_chosenAnswers[i].isRight) {
+          RM
+              .get<AnalyticsService>()
+              .state
+              .log(name: 'answer_failed', parameters: {
+            'question': test.questions[i].title,
+            'answer': _chosenAnswers[i].title,
+          });
+        }
+      }
+
       _openFailedPopup();
     }
   }
