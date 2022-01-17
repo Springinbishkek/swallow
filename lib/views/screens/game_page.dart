@@ -335,6 +335,21 @@ class _GamePageState extends State<GamePage> {
         ),
       );
     } else {
+      final p = RM
+          .get<ChapterService>('ChapterService')
+          .state
+          .gameInfo
+          .currentPassage;
+      p.tags.forEach((tag) {
+        var t = tag.split(':');
+        switch (t[0]) {
+          case 'KeyChoice':
+            RM.get<AnalyticsService>().state.log(
+                name: t[1],
+                parameters: {'choice': o.name.ru, 'question': p.text.ru});
+            break;
+        }
+      });
       chapterService.state.changeSwallowDelta(-o.swallow);
       goNext(o.pid);
     }
