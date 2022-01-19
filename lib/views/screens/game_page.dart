@@ -304,7 +304,7 @@ class _GamePageState extends State<GamePage> {
       else
         RM.get<AnalyticsService>().state.log(
           name: 'swallows_count_test',
-          parameters: {'count': 'more than enough'},
+          parameters: {'count': 'many'},
         );
     }
     if (chapterService.state.gameInfo.swallowCount < o.swallow) {

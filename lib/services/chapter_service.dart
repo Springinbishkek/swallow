@@ -608,7 +608,7 @@ class ChapterService {
         name: 'swallows_count',
         parameters: {
           'swallows': RM.get<ChapterService>().state.gameInfo.swallowCount,
-          'chapter': currentChapter,
+          'chapter': currentChapter.number,
         },
       );
 

@@ -12,9 +12,6 @@ class NotePage extends StatefulWidget {
   final Note note;
 
   void onRead() {
-    RM.get<AnalyticsService>().state.log(
-          name: 'about_open',
-        );
     RM.get<ChapterService>().setState((s) {
       if (note.isRead == null) {
         s.onNewNoteRead(note.id);

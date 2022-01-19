@@ -19,14 +19,13 @@ class ApiClient {
       // АНАЛИТИКА ошибка при отсутствии интернета.
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final currentTime = DateTime.now();
-      final difference = prefs.getInt('last_no_internet') ??
-          0 - currentTime.millisecondsSinceEpoch;
+      final difference = currentTime.millisecondsSinceEpoch -
+          (prefs.getInt('last_no_internet') ?? 0);
       // Проверяем, что прошёл хотя бы час
       if (difference > 3600000) {
         prefs.setInt('last_no_internet', currentTime.millisecondsSinceEpoch);
         RM.get<AnalyticsService>().state.log(
-            name: 'no_internet',
-            parameters: {'time': currentTime.toString()});
+            name: 'no_internet', parameters: {'time': currentTime.toString()});
       }
       print(e.response);
       RequestOptions options = e.requestOptions;
