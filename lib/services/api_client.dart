@@ -56,7 +56,10 @@ class ApiClient {
     return response;
   }
 
-  Future<Response> loadSource(String path, Function onReceiveProgress) async {
+  Future<Response> loadSource(
+    String path,
+    ProgressCallback onReceiveProgress,
+  ) async {
     Response response = await dio.get(
       path,
       onReceiveProgress: onReceiveProgress,
@@ -65,7 +68,10 @@ class ApiClient {
   }
 
   Future<Response> downloadFiles(
-      String path, String savingPath, Function onReceiveProgress) async {
+    String path,
+    String savingPath,
+    ProgressCallback onReceiveProgress,
+  ) async {
     Response response = await dio.download(
       path,
       savingPath,

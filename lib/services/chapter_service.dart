@@ -16,6 +16,7 @@ import 'package:lastochki/models/entities/Question.dart';
 import 'package:lastochki/models/entities/Story.dart';
 import 'package:lastochki/models/entities/Test.dart';
 import 'package:lastochki/services/chapter_repository.dart';
+import 'package:lastochki/utils/utility.dart';
 import 'package:lastochki/views/screens/home_page.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/translation.dart';
@@ -24,6 +25,7 @@ import 'package:lastochki/views/ui/l_info_popup.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
+import 'package:tuple/tuple.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'analytics_service.dart';
@@ -128,12 +130,12 @@ class ChapterService {
   Future<void> _loadGame() async {
     if (chapters != null) return;
     wasLoadingError = false;
-    List values;
+    Tuple2<SharedPreferences, ChaptersData> /*?*/ values;
     try {
-      values = await Future.wait([
+      values = await Tuple2(
         SharedPreferences.getInstance(),
         _repository.getChapters(),
-      ]);
+      ).wait;
     } catch (e, stackTrace) {
       print(stackTrace);
       wasLoadingError = true;
@@ -143,13 +145,13 @@ class ChapterService {
     print(values);
     if (values == null) return;
 
-    chapters = values[1]['chapters'];
-    futureChapterText = values[1]['futureChapterText'];
+    chapters = values.item2.chapters;
+    futureChapterText = values.item2.futureChapterText;
 
     lastChapterNumber = chapters.length;
-    totalChapterNumber = values[1]['totalChapterNumber'];
+    totalChapterNumber = values.item2.totalChapterNumber;
 
-    final SharedPreferences prefs = values[0];
+    final SharedPreferences prefs = values.item1;
     final gameString = prefs.getString(SP_GAME_INFO_NAME);
     gameInfo = (gameString == null)
         ? GameInfo(currentChapterId: 1)
@@ -278,7 +280,7 @@ class ChapterService {
 // NOTE Загрузка главы
   /* load new chapter data to device */
   Future<void> loadChapterInfo({int currentChapterId}) async {
-    Map data;
+    StoryData /*?*/ data;
     try {
       data = await _repository.getStory(
           currentChapter,
@@ -291,7 +293,7 @@ class ChapterService {
       RM.get<ChapterService>('ChapterService').setState((s) {});
     }
     if (data == null) return;
-    final zipFile = File(data['zipPath']);
+    final zipFile = File(data.zipPath);
     final Directory dir = await getApplicationDocumentsDirectory();
 
     Directory destinationDir;
@@ -333,10 +335,10 @@ class ChapterService {
     } catch (e) {
       print(e);
     }
-    Story s = data['story'];
+    Story s = data.story;
     await dbHelper.saveStory(s);
     var uniqNotes = notes.toSet();
-    uniqNotes.addAll(data['notes']);
+    uniqNotes.addAll(data.notes);
     notes = uniqNotes.toList();
     notes.sort((Note a, Note b) => a.id.compareTo(b.id));
     RM.get<ChapterService>('ChapterService').setState((s) {
@@ -636,9 +638,9 @@ class ChapterService {
     saveGameInfo();
   }
 
-  void onTestPassed({bool successful = false}) {
-    gameInfo.numberOfTestAttempt++;
+  void onTestPassed({@required bool successful}) {
     if (successful) {
+      gameInfo.numberOfTestAttempt++;
       gameInfo.swallowCount += TEST_SWALLOW;
     }
     saveGameInfo();

@@ -95,11 +95,10 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: scaffoldBgColor,
-      appBar: lAppbar(
-          title: settings.toString(),
-          func: () {
-            Navigator.pop(context);
-          }),
+      appBar: LAppBar(
+        title: settings.toString(),
+        onBack: () => Navigator.pop(context),
+      ),
       body: Column(
         children: <Widget>[
           Expanded(

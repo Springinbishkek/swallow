@@ -5,7 +5,7 @@ import 'package:lastochki/views/theme.dart';
 class LTextField extends StatelessWidget {
   final TextEditingController controller;
   final int maxLength;
-  final Function(String) onChanged;
+  final void Function(String) onChanged;
 
   LTextField(this.controller, this.maxLength, this.onChanged);
 
