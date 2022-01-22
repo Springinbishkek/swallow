@@ -1,5 +1,4 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/cupertino.dart';
 
 abstract class AnalyticsService {
@@ -20,7 +19,7 @@ class FirebaseAnalyticsService implements AnalyticsService {
   }
 
   factory FirebaseAnalyticsService() {
-    final analytics = FirebaseAnalytics();
+    final analytics = FirebaseAnalytics.instance;
     final observer = FirebaseAnalyticsObserver(analytics: analytics);
     return FirebaseAnalyticsService._(analytics, observer);
   }
