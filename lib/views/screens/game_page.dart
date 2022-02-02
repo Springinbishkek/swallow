@@ -3,6 +3,7 @@ import 'package:lastochki/models/entities/Choice.dart';
 import 'package:lastochki/models/entities/GameInfo.dart';
 import 'package:lastochki/models/entities/Name.dart';
 import 'package:lastochki/models/entities/Passage.dart';
+import 'package:lastochki/services/analytics_service.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/utils/extentions.dart';
 import 'package:lastochki/views/ui/l_action.dart';
@@ -289,6 +290,19 @@ class _GamePageState extends State<GamePage> {
   void chooseOption(Choice o) {
     final chapterService = RM.get<ChapterService>('ChapterService');
     print(o.pid);
+    if (o.swallow > 0) {
+      String count = '';
+      if (o.swallow == chapterService.state.gameInfo.swallowCount)
+        count = 'exactly';
+      else if (chapterService.state.gameInfo.swallowCount < o.swallow)
+        count = 'insufficient';
+      else
+        count = 'many';
+      RM.get<AnalyticsService>().state.log(
+        name: 'swallows_count_choice',
+        parameters: {'count': count},
+      );
+    }
     if (chapterService.state.gameInfo.swallowCount < o.swallow) {
       showDialog(
         barrierDismissible: false,
@@ -317,6 +331,25 @@ class _GamePageState extends State<GamePage> {
         ),
       );
     } else {
+      final p = RM
+          .get<ChapterService>('ChapterService')
+          .state
+          .gameInfo
+          .currentPassage;
+      p.tags.forEach((tag) {
+        var t = tag.split(':');
+        switch (t[0]) {
+          case 'KeyChoice':
+            RM.get<AnalyticsService>().state.log(
+                name: 'key_choice',
+                parameters: {
+                  'choice': o.name.ru,
+                  'question': p.text.ru,
+                  'action': t[1]
+                });
+            break;
+        }
+      });
       chapterService.state.changeSwallowDelta(-o.swallow);
       goNext(o.pid);
     }
