@@ -291,21 +291,17 @@ class _GamePageState extends State<GamePage> {
     final chapterService = RM.get<ChapterService>('ChapterService');
     print(o.pid);
     if (o.swallow > 0) {
+      String count = '';
       if (o.swallow == chapterService.state.gameInfo.swallowCount)
-        RM.get<AnalyticsService>().state.log(
-          name: 'swallows_count_test',
-          parameters: {'count': 'exactly'},
-        );
+        count = 'exactly';
       else if (chapterService.state.gameInfo.swallowCount < o.swallow)
-        RM.get<AnalyticsService>().state.log(
-          name: 'swallows_count_test',
-          parameters: {'count': 'not enough'},
-        );
+        count = 'insufficient';
       else
-        RM.get<AnalyticsService>().state.log(
-          name: 'swallows_count_test',
-          parameters: {'count': 'many'},
-        );
+        count = 'many';
+      RM.get<AnalyticsService>().state.log(
+        name: 'swallows_count_choice',
+        parameters: {'count': count},
+      );
     }
     if (chapterService.state.gameInfo.swallowCount < o.swallow) {
       showDialog(
@@ -345,8 +341,12 @@ class _GamePageState extends State<GamePage> {
         switch (t[0]) {
           case 'KeyChoice':
             RM.get<AnalyticsService>().state.log(
-                name: t[1],
-                parameters: {'choice': o.name.ru, 'question': p.text.ru});
+                name: 'key_choice',
+                parameters: {
+                  'choice': o.name.ru,
+                  'question': p.text.ru,
+                  'action': t[1]
+                });
             break;
         }
       });
