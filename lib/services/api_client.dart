@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:lastochki/services/analytics_service.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/translation.dart';
 import 'package:lastochki/views/ui/l_button.dart';
 import 'package:lastochki/views/ui/l_info_popup.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
 final String baseUrl = 'http://176.126.164.108/lake/';
@@ -14,6 +16,17 @@ class ApiClient {
 
   ApiClient() {
     dio.interceptors.add(InterceptorsWrapper(onError: (e, handler) async {
+      // АНАЛИТИКА ошибка при отсутствии интернета.
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final currentTime = DateTime.now();
+      final difference = currentTime.millisecondsSinceEpoch -
+          (prefs.getInt('last_no_internet') ?? 0);
+      // Проверяем, что прошёл хотя бы час
+      if (difference > 3600000) {
+        prefs.setInt('last_no_internet', currentTime.millisecondsSinceEpoch);
+        RM.get<AnalyticsService>().state.log(
+            name: 'no_internet', parameters: {'time': currentTime.toString()});
+      }
       print(e.response);
       RequestOptions options = e.requestOptions;
       Response /*?*/ response = await showErrorDialog(options: options);
