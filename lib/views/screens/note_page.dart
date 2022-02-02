@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:lastochki/models/entities/Note.dart';
+import 'package:lastochki/services/analytics_service.dart';
 import 'package:lastochki/services/chapter_service.dart';
 import 'package:lastochki/views/theme.dart';
 import 'package:lastochki/views/translation.dart';
@@ -27,9 +28,16 @@ class NotePage extends StatefulWidget {
 class _NotePageState extends State<NotePage> {
   final String bottomBG = 'assets/backgrounds/note_bottom_background.png';
   final String topBG = 'assets/backgrounds/note_top_background.jpg';
+  DateTime openTime;
 
   void navigateBack() {
     Navigator.pop(context);
+  }
+
+  @override
+  void initState() {
+    openTime = DateTime.now();
+    super.initState();
   }
 
   @override
@@ -97,6 +105,16 @@ class _NotePageState extends State<NotePage> {
                     text: understood.toString(),
                     func: () {
                       widget.onRead();
+                      RM
+                          .get<AnalyticsService>()
+                          .state
+                          .log(name: 'note_read', parameters: {
+                        'carefully':
+                            openTime.difference(DateTime.now()).inSeconds > 30,
+                        'duration':
+                            openTime.difference(DateTime.now()).inSeconds,
+                        'note_id': widget.note.id,
+                      });
                       navigateBack();
                     }),
               ),

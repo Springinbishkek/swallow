@@ -498,6 +498,16 @@ class ChapterService {
                       text: replayChapter.toString(),
                       icon: refreshIcon,
                       func: () {
+                        RM.get<AnalyticsService>().state.log(
+                          name: 'replay_chapter',
+                          parameters: {
+                            'chapter_number': RM
+                                .get<ChapterService>()
+                                .state
+                                .gameInfo
+                                .currentChapterId
+                          },
+                        );
                         RM.get<ChapterService>().setState((s) {
                           gameInfo.currentPassage = null;
                           s.initGame();
@@ -593,6 +603,15 @@ class ChapterService {
   void initGame({isPassageReqired = true}) {
     // print('initGame ${gameInfo.currentPassage}');
     if (gameInfo.currentPassage == null && isPassageReqired) {
+      //АНАЛИТИКА количество ласточек
+      RM.get<AnalyticsService>().state.log(
+        name: 'swallows_count',
+        parameters: {
+          'swallows': RM.get<ChapterService>().state.gameInfo.swallowCount,
+          'chapter': currentChapter.number,
+        },
+      );
+
       String pid = currentChapter?.story?.firstPid;
       goNext(pid);
     }
